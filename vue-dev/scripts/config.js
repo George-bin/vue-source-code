@@ -25,6 +25,7 @@ const weexFactoryPlugin = {
   }
 }
 
+// 根据别名配置和用户输入匹配到正确路径（最终路径）
 const aliases = require('./alias')
 const resolve = p => {
   const base = p.split('/')[0]
@@ -38,9 +39,9 @@ const resolve = p => {
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
-    entry: resolve('web/entry-runtime.js'),
-    dest: resolve('dist/vue.runtime.common.dev.js'),
-    format: 'cjs',
+    entry: resolve('web/entry-runtime.js'), // 构建的入口JS文件地址
+    dest: resolve('dist/vue.runtime.common.dev.js'), // 构建后的JS文件地址
+    format: 'cjs', // 构建的格式 cjs：构建出来的文件遵守CommonJS规范 es：构建出来的文件遵守Es Module规范 umd：构建出来的文件遵守UMD规范
     env: 'development',
     banner
   },
