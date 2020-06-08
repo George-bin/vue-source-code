@@ -26,13 +26,13 @@ export function initMixin (Vue: Class<Component>) {
       mark(startTag)
     }
 
-    // a flag to avoid this being observed
+    // a flag to avoid this being observed(一个避免被观察的标志)
     vm._isVue = true
-    // merge options
+    // merge options（合并配置）
     if (options && options._isComponent) {
-      // optimize internal component instantiation
-      // since dynamic options merging is pretty slow, and none of the
-      // internal component options needs special treatment.
+      // optimize internal component instantiation（优化内部组件实例）
+      // since dynamic options merging is pretty slow, and none of the（因为动态选项合并是相当慢的，而且没有）
+      // internal component options needs special treatment.（内部组件选项需要特殊处理）
       initInternalComponent(vm, options)
     } else {
       vm.$options = mergeOptions(
@@ -42,20 +42,22 @@ export function initMixin (Vue: Class<Component>) {
       )
     }
     /* istanbul ignore else */
+    // 判断是否为生产环境
     if (process.env.NODE_ENV !== 'production') {
       initProxy(vm)
     } else {
       vm._renderProxy = vm
     }
+
     // expose real self
     vm._self = vm
-    initLifecycle(vm)
-    initEvents(vm)
-    initRender(vm)
+    initLifecycle(vm) // 初始化生命周期
+    initEvents(vm) // 初始化事件中心
+    initRender(vm) // 初始化渲染
     callHook(vm, 'beforeCreate')
-    initInjections(vm) // resolve injections before data/props
-    initState(vm)
-    initProvide(vm) // resolve provide after data/props
+    initInjections(vm) // resolve injections before data/props（数据初始化前）
+    initState(vm) // 数据代理
+    initProvide(vm) // resolve provide after data/props（数据初始化后）
     callHook(vm, 'created')
 
     /* istanbul ignore if */
@@ -65,6 +67,7 @@ export function initMixin (Vue: Class<Component>) {
       measure(`vue ${vm._name} init`, startTag, endTag)
     }
 
+    // 执行挂载
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
     }

@@ -31,6 +31,7 @@ export function initRender (vm: Component) {
   vm._c = (a, b, c, d) => createElement(vm, a, b, c, d, false)
   // normalization is always applied for the public version, used in
   // user-written render functions.
+  // 手写render函数
   vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true)
 
   // $attrs & $listeners are exposed for easier HOC creation.
@@ -68,6 +69,7 @@ export function renderMixin (Vue: Class<Component>) {
 
   Vue.prototype._render = function (): VNode {
     const vm: Component = this
+    // 获取render函数
     const { render, _parentVnode } = vm.$options
 
     if (_parentVnode) {
@@ -88,6 +90,7 @@ export function renderMixin (Vue: Class<Component>) {
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm
+      // 生产环境下vm._renderProxy === vm
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e) {
       handleError(e, vm, `render`)
@@ -113,6 +116,7 @@ export function renderMixin (Vue: Class<Component>) {
     }
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
+      // 存在多个根节点
       if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
         warn(
           'Multiple root nodes returned from render function. Render function ' +

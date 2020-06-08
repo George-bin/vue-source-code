@@ -28,6 +28,7 @@ import {
   isReservedAttribute
 } from '../util/index'
 
+// 定义了一个存取描述符
 const sharedPropertyDefinition = {
   enumerable: true,
   configurable: true,
@@ -36,6 +37,7 @@ const sharedPropertyDefinition = {
 }
 
 export function proxy (target: Object, sourceKey: string, key: string) {
+  // 存取描述符
   sharedPropertyDefinition.get = function proxyGetter () {
     return this[sourceKey][key]
   }
@@ -114,6 +116,7 @@ function initData (vm: Component) {
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
     : data || {}
+  // 判断data是否为一个对象
   if (!isPlainObject(data)) {
     data = {}
     process.env.NODE_ENV !== 'production' && warn(
@@ -127,8 +130,10 @@ function initData (vm: Component) {
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
+  // 遍历data
   while (i--) {
     const key = keys[i]
+    // 判断key是否与methods中的key是否冲突
     if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
@@ -137,6 +142,7 @@ function initData (vm: Component) {
         )
       }
     }
+    // 判断key是否与props中的key是否冲突
     if (props && hasOwn(props, key)) {
       process.env.NODE_ENV !== 'production' && warn(
         `The data property "${key}" is already declared as a prop. ` +
@@ -144,6 +150,7 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
+      // 代理数据vm.message === vm._data.message
       proxy(vm, `_data`, key)
     }
   }
