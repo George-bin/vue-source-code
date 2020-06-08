@@ -36,6 +36,7 @@ const sharedPropertyDefinition = {
   set: noop
 }
 
+// 设置代理vm.key = vm._data.key
 export function proxy (target: Object, sourceKey: string, key: string) {
   // 存取描述符
   sharedPropertyDefinition.get = function proxyGetter () {
@@ -47,6 +48,7 @@ export function proxy (target: Object, sourceKey: string, key: string) {
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 
+// 
 export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
@@ -112,6 +114,7 @@ function initProps (vm: Component, propsOptions: Object) {
 }
 
 function initData (vm: Component) {
+  // vm.$options.data === vm._data
   let data = vm.$options.data
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
@@ -126,11 +129,12 @@ function initData (vm: Component) {
     )
   }
   // proxy data on instance
+  // 代理data数据 vm.key = vm._data.key
   const keys = Object.keys(data)
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
-  // 遍历data
+  // 循环对比data、props、methods是否使用了相同的键（避免冲突 ）
   while (i--) {
     const key = keys[i]
     // 判断key是否与methods中的key是否冲突
@@ -158,6 +162,7 @@ function initData (vm: Component) {
   observe(data, true /* asRootData */)
 }
 
+// 从获取func中获取对象并绑定this对象为vm（当前实例对象）
 export function getData (data: Function, vm: Component): any {
   // #7573 disable dep collection when invoking data getters
   pushTarget()
