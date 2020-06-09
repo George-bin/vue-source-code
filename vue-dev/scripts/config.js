@@ -36,6 +36,7 @@ const resolve = p => {
   }
 }
 
+// 一堆的配置对象，不同的构建方式选择不同的配置对象，比如npm run dev会选择web-full-dev
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
@@ -214,16 +215,17 @@ const builds = {
   }
 }
 
+// 生成Rollup配置的方法
 function genConfig (name) {
   const opts = builds[name]
   const config = {
-    input: opts.entry,
+    input: opts.entry, // 输入文件
     external: opts.external,
-    plugins: [
+    plugins: [ // 插件
       flow(),
       alias(Object.assign({}, aliases, opts.alias))
     ].concat(opts.plugins || []),
-    output: {
+    output: { // 输出文件
       file: opts.dest,
       format: opts.format,
       banner: opts.banner,

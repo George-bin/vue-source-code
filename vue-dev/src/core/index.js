@@ -6,6 +6,7 @@ import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
 // 在Vue扩展一些全局的静态方法
 initGlobalAPI(Vue)
 
+// 服务端渲染相关
 Object.defineProperty(Vue.prototype, '$isServer', {
   get: isServerRendering
 })
