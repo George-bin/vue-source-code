@@ -114,12 +114,12 @@ function initProps (vm: Component, propsOptions: Object) {
 }
 
 function initData (vm: Component) {
-  // vm.$options.data === vm._data
+  // vm.$options.data = vm._data
   let data = vm.$options.data
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
     : data || {}
-  // 判断data是否为一个对象
+  // 如果data不是一个对象，报警告信息
   if (!isPlainObject(data)) {
     data = {}
     process.env.NODE_ENV !== 'production' && warn(
@@ -134,10 +134,10 @@ function initData (vm: Component) {
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
-  // 循环对比data、props、methods是否使用了相同的键（避免冲突 ）
+  // 遍历data，分别对比methods、props是否使用了相同的键（避免冲突 ）
   while (i--) {
     const key = keys[i]
-    // 判断key是否与methods中的key是否冲突
+    // 判断key是否与methods中的key有冲突
     if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
@@ -146,7 +146,7 @@ function initData (vm: Component) {
         )
       }
     }
-    // 判断key是否与props中的key是否冲突
+    // 判断key是否与props中的key有冲突
     if (props && hasOwn(props, key)) {
       process.env.NODE_ENV !== 'production' && warn(
         `The data property "${key}" is already declared as a prop. ` +

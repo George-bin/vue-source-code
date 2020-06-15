@@ -29,7 +29,7 @@ export function initMixin (Vue: Class<Component>) {
     // a flag to avoid this being observed(一个避免被观察的标志)
     vm._isVue = true
     // merge options（合并配置）
-    if (options && options._isComponent) {
+    if (options && options._isComponent) { // 组件相关
       // optimize internal component instantiation（优化内部组件实例）
       // since dynamic options merging is pretty slow, and none of the（因为动态选项合并是相当慢的，而且没有）
       // internal component options needs special treatment.（内部组件选项需要特殊处理）
