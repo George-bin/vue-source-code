@@ -11,10 +11,11 @@
     <script>
         let app = new Vue({
             // el: '#app',
-            template: '#app',
+            // template: '#app',
             data: {
                 message: 'Hello Word'
-            }
+            },
+            render: h => h(App)
         })
     </script>
 </body>

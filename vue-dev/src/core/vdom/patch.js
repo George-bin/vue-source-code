@@ -67,12 +67,14 @@ function createKeyToOldIdx (children, beginIdx, endIdx) {
   return map
 }
 
+// 创建一个patch闭包
 export function createPatchFunction (backend) {
   let i, j
   const cbs = {}
 
   const { modules, nodeOps } = backend
 
+  // 收集模块中的钩子，在具体阶段调用某一类钩子，比如：模块中的所有create钩子
   for (i = 0; i < hooks.length; ++i) {
     cbs[hooks[i]] = []
     for (j = 0; j < modules.length; ++j) {
@@ -697,6 +699,12 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /**
+   * @params oldVnode：旧vnode
+   * @params vnode：新vnode
+   * @params hydrating：是否为服务端渲染
+   * @params removeOnly：给transition-group使用的
+   */
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
@@ -758,7 +766,7 @@ export function createPatchFunction (backend) {
           nodeOps.nextSibling(oldElm)
         )
 
-        // update parent placeholder node element, recursively
+        // update parent placeholder node element, recursively（父级占位节点）
         if (isDef(vnode.parent)) {
           let ancestor = vnode.parent
           const patchable = isPatchable(vnode)
@@ -788,7 +796,7 @@ export function createPatchFunction (backend) {
           }
         }
 
-        // destroy old node
+        // destroy old node（删除旧的父级节点）
         if (isDef(parentElm)) {
           removeVnodes([oldVnode], 0, 0)
         } else if (isDef(oldVnode.tag)) {
