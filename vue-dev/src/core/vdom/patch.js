@@ -144,7 +144,7 @@ export function createPatchFunction (backend) {
 
     vnode.isRootInsert = !nested // for transition enter check
     if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
-      return
+      return 
     }
 
     const data = vnode.data
