@@ -1,5 +1,5 @@
 const path = require('path')
-
+// 获取文件绝对路径
 const resolve = p => path.resolve(__dirname, '../', p)
 
 // 一堆的别名映射

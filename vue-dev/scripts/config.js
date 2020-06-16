@@ -218,6 +218,7 @@ const builds = {
 // 生成Rollup配置的方法
 function genConfig (name) {
   const opts = builds[name]
+  // 标准的rollup配置项
   const config = {
     input: opts.entry, // 输入文件
     external: opts.external,
