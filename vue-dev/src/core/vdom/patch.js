@@ -124,6 +124,9 @@ export function createPatchFunction (backend) {
 
   let creatingElmInVPre = 0
 
+  /**
+   * 创建真实DOM节点
+   */
   function createElm (
     vnode,
     insertedVnodeQueue,
@@ -209,6 +212,9 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /**
+   * 创建一个组件
+   */
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
     let i = vnode.data
     if (isDef(i)) {

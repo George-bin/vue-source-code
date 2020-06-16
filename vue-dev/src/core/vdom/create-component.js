@@ -209,6 +209,9 @@ export function createComponent (
   return vnode
 }
 
+/**
+ * 创建一个Vue实例
+ */
 export function createComponentInstanceForVnode (
   vnode: any, // we know it's MountedComponentVNode but flow doesn't
   parent: any, // activeInstance in lifecycle state
