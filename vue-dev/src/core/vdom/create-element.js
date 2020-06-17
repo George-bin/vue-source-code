@@ -20,8 +20,8 @@ import {
   simpleNormalizeChildren
 } from './helpers/index'
 
-const SIMPLE_NORMALIZE = 1
-const ALWAYS_NORMALIZE = 2
+const SIMPLE_NORMALIZE = 1 // 编译成render函数
+const ALWAYS_NORMALIZE = 2 // 手写render函数
 
 // wrapper function for providing a more flexible interface
 // without getting yelled at by flow
@@ -30,10 +30,10 @@ const ALWAYS_NORMALIZE = 2
  * @params tag: 标签名
  * @params data: 跟vnode相关的数据
  * @params children: 子节点（tree）
- * @params normalizationType: 标签名
- * @params alwaysNormalize: 标签名
+ * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
+ * @params alwaysNormalize:  是否深层规划化（递归子节点）
  */
-export function createElement (
+export function createElement 
   context: Component,
   tag: any,
   data: any,
@@ -54,11 +54,12 @@ export function createElement (
 }
 
 /**
+ * 
  * @params context: vnode的上下文环境，它是Component类型；
  * @params tag: 标签名，可以是一个字符串，也可以是一个Component；
  * @params data: 表示vnode的相关数据，是一个VNodeData类型；
  * @params dhilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组；
- * @params normalizationType: 表示子节点规范的类型，类型不同的方法就不同，它主要参考render函数是编译生成的还是用户手写的。
+ * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
  */
 export function _createElement (
   context: Component,
@@ -110,16 +111,18 @@ export function _createElement (
   }
   // 对children做normaliza（转换为一维数组）
   if (normalizationType === ALWAYS_NORMALIZE) {
+    // 
     children = normalizeChildren(children)
   } else if (normalizationType === SIMPLE_NORMALIZE) {
     children = simpleNormalizeChildren(children)
   }
   let vnode, ns
-  // 创建vnode
+  // 开始创建vnode
   if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
-    if (config.isReservedTag(tag)) { // 是否为平台的保留标签
+    if (config.isReservedTag(tag)) {
+      // 是否为平台的保留标签
       // platform built-in elements
       if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn)) {
         warn(

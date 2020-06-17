@@ -56,13 +56,17 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+  /**
+   * @params vnode：当前实例的VNode数据
+   * @parmas hydrating：是否为服务端渲染
+   */
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     // 数据更新时会用到这些变量
     const prevEl = vm.$el
-    const prevVnode = vm._vnode
+    const prevVnode = vm._vnode // 旧的VNode
     const restoreActiveInstance = setActiveInstance(vm)
-    vm._vnode = vnode
+    vm._vnode = vnode // 新的VNode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
@@ -73,7 +77,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
     restoreActiveInstance()
-    // update __vue__ reference
+    // update __vue__ reference（更新__vue__引用）
     if (prevEl) {
       prevEl.__vue__ = null
     }
@@ -139,7 +143,12 @@ export function lifecycleMixin (Vue: Class<Component>) {
   }
 }
 
-// 挂载组件
+/**
+ * 执行挂载
+ * @params vm: 实例对象本身
+ * @params el：真实DOM元素（要挂载的元素）
+ * @params hydrating：是否为服务端渲染
+ */
 export function mountComponent (
   vm: Component,
   el: ?Element,
@@ -208,7 +217,7 @@ export function mountComponent (
   }, true /* isRenderWatcher */)
   hydrating = false
 
-  // manually mounted instance, call mounted on self
+  // manually mounted instance, call mounted on self（手动挂载实例）
   // mounted is called for render-created child components in its inserted hook
   if (vm.$vnode == null) {
     vm._isMounted = true

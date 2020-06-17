@@ -33,7 +33,11 @@ extend(Vue.options.components, platformComponents)
 // install platform patch function（根据isBrowser对__patch进行赋值）
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
-// public mount method
+/**
+ * public mount method
+ * @params el: 选择符或真实DOM元素
+ * @params hydrating: 是否为服务端渲染
+ */
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean

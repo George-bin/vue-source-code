@@ -352,6 +352,7 @@ export function createPatchFunction (backend) {
     }
   }
 
+  // 调用销毁钩子
   function invokeDestroyHook (vnode) {
     let i, j
     const data = vnode.data
@@ -712,12 +713,14 @@ export function createPatchFunction (backend) {
    * @params removeOnly：给transition-group使用的
    */
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
+    // 新的Vnode不存在直接返回
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
     }
 
     let isInitialPatch = false
+    // 收集插入的组件，用于调用insert钩子
     const insertedVnodeQueue = []
 
     if (isUndef(oldVnode)) {

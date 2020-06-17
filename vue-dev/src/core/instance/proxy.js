@@ -35,6 +35,7 @@ if (process.env.NODE_ENV !== 'production') {
     )
   }
 
+  // 判断当前浏览器是否支持Proxy
   const hasProxy =
     typeof Proxy !== 'undefined' && isNative(Proxy)
 
@@ -79,7 +80,7 @@ if (process.env.NODE_ENV !== 'production') {
   initProxy = function initProxy (vm) {
     // 判断浏览器是否支持proxy
     if (hasProxy) {
-      // determine which proxy handler to use
+      // determine which proxy handler to use（确定使用哪个代理程序）
       const options = vm.$options
       const handlers = options.render && options.render._withStripped
         ? getHandler

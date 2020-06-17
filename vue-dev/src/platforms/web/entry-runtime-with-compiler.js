@@ -19,7 +19,7 @@ const mount = Vue.prototype.$mount
 /**
  * 编译生成render函数（Runtime+Compiler版本的相关逻辑，Runtime Only版本并不需要）
  * @params el：要挂载的元素的id选择器，例如：#app
- * @params hydrating：和服务端渲染相关，浏览器环境下不需要传第二个参数
+ * @params hydrating：是否为服务端渲染，浏览器环境下不需要传第二个参数
  */
 Vue.prototype.$mount = function (
   el?: string | Element,
@@ -38,14 +38,16 @@ Vue.prototype.$mount = function (
   }
 
   const options = this.$options
-  // resolve template/el and convert to render function
-  if (!options.render) { // 不存在render函数
+  // resolve template/el and convert to render function（解析template/el并转换成render函数）
+  if (!options.render) {
     let template = options.template
-    if (template) { // 存在template
+    if (template) {
+      // 字符串类型（选择符）
       if (typeof template === 'string') {
         if (template.charAt(0) === '#') {
           template = idToTemplate(template)
           /* istanbul ignore if */
+          // template元素未找到或为空
           if (process.env.NODE_ENV !== 'production' && !template) {
             warn(
               `Template element not found or is empty: ${options.template}`,
@@ -54,14 +56,17 @@ Vue.prototype.$mount = function (
           }
         }
       } else if (template.nodeType) {
+        // 真实DOM元素
         template = template.innerHTML
       } else {
+        // 无效的template
         if (process.env.NODE_ENV !== 'production') {
           warn('invalid template option:' + template, this)
         }
         return this
       }
     } else if (el) {
+      // 没有写template的情况下，会尝试从el挂载元素中解析template模板
       template = getOuterHTML(el)
     }
     if (template) {
