@@ -119,6 +119,7 @@ export function _createElement (
   let vnode, ns
   // 开始创建vnode
   if (typeof tag === 'string') {
+    // 字符串
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     if (config.isReservedTag(tag)) {

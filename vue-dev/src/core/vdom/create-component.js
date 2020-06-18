@@ -98,6 +98,14 @@ const componentVNodeHooks = {
 
 const hooksToMerge = Object.keys(componentVNodeHooks)
 
+/**
+ * 创建一个组件Vnode
+ * @params Ctor: 组件类/函数/对象
+ * @params data: Vnode相关数据
+ * @params context: 当前Vue实例对象 => vm
+ * @params children: 子Vnode
+ * @params tag:
+ */
 export function createComponent (
   Ctor: Class<Component> | Function | Object | void,
   data: ?VNodeData,
@@ -109,12 +117,13 @@ export function createComponent (
     return
   }
 
+  // baseCtor = vm.$options._base = vm.options._base = Vue
   const baseCtor = context.$options._base
 
   // plain options object: turn it into a constructor
   // 构造子类构造函数
   if (isObject(Ctor)) {
-    Ctor = baseCtor.extend(Ctor)
+    Ctor = baseCtor.extend(Ctor) // => Vue.extend
   }
 
   // if at this stage it's not a constructor or an async component factory,

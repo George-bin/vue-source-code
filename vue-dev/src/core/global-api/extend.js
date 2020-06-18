@@ -14,7 +14,8 @@ export function initExtend (Vue: GlobalAPI) {
   let cid = 1
 
   /**
-   * Class inheritance
+   * Class inheritance（类继承）
+   * @params extendOptions：相关扩展选项
    */
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}
