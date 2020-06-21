@@ -30,7 +30,7 @@ declare interface Component {
   $refs: { [key: string]: Component | Element | Array<Component | Element> | void };
   $slots: { [key: string]: Array<VNode> };
   $scopedSlots: { [key: string]: () => VNodeChildren };
-  $vnode: VNode; // the placeholder node for the component in parent's render tree
+  $vnode: VNode; // the placeholder node for the component in parent's render tree（父组件在树中的占位符）
   $attrs: { [key: string] : string };
   $listeners: { [key: string]: Function | Array<Function> };
   $isServer: boolean;

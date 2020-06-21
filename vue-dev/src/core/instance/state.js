@@ -48,9 +48,12 @@ export function proxy (target: Object, sourceKey: string, key: string) {
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 
-// 
+/**
+ * 初始化状态（数据）
+ * @params vm: 当前实例对象
+ */
 export function initState (vm: Component) {
-  vm._watchers = []
+  vm._watchers = [] // 监听器
   const opts = vm.$options
   if (opts.props) initProps(vm, opts.props)
   if (opts.methods) initMethods(vm, opts.methods)
@@ -158,7 +161,7 @@ function initData (vm: Component) {
       proxy(vm, `_data`, key)
     }
   }
-  // observe data
+  // observe data（数据响应设置）
   observe(data, true /* asRootData */)
 }
 

@@ -14,8 +14,8 @@ export function initProvide (vm: Component) {
 }
 
 /**
- * 
- * @params vm：
+ * 数据注入前
+ * @params vm：当前实例对象
  */
 export function initInjections (vm: Component) {
   const result = resolveInject(vm.$options.inject, vm)
@@ -40,6 +40,11 @@ export function initInjections (vm: Component) {
   }
 }
 
+/**
+ * 数据注入后
+ * @params inject: 
+ * @params vm：当前实例对象
+ */
 export function resolveInject (inject: any, vm: Component): ?Object {
   if (inject) {
     // inject is :any because flow is not smart enough to figure out cached

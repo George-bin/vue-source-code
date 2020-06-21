@@ -276,6 +276,7 @@ function checkComponents (options: Object) {
   }
 }
 
+// 校验组件name
 export function validateComponentName (name: string) {
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeRegExp.source}]*$`).test(name)) {
     warn(
@@ -283,6 +284,7 @@ export function validateComponentName (name: string) {
       'should conform to valid custom element name in html5 specification.'
     )
   }
+  // 与内置html标签冲突
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
     warn(
       'Do not use built-in or reserved HTML elements as component ' +

@@ -16,12 +16,17 @@ import VNode, { createEmptyVNode } from '../vdom/vnode'
 
 import { isUpdatingChildComponent } from './lifecycle'
 
+/**
+ * 初始化渲染
+ * @params vm: 实例对象
+ */
 export function initRender (vm: Component) {
-  vm._vnode = null // the root of the child tree
+  vm._vnode = null // the root of the child tree（子节点树的根）
   vm._staticTrees = null // v-once cached trees
   const options = vm.$options
-  const parentVnode = vm.$vnode = options._parentVnode // the placeholder node in parent tree
-  const renderContext = parentVnode && parentVnode.context
+  const parentVnode = vm.$vnode = options._parentVnode // the placeholder node in parent tree（父节点树中的占位符节点）
+  // 插槽相关
+  const renderContext = parentVnode && parentVnode.context // 渲染上下文
   vm.$slots = resolveSlots(options._renderChildren, renderContext)
   vm.$scopedSlots = emptyObject
   // bind the createElement fn to this instance
@@ -37,7 +42,7 @@ export function initRender (vm: Component) {
 
   // $attrs & $listeners are exposed for easier HOC creation.
   // they need to be reactive so that HOCs using them are always updated
-  const parentData = parentVnode && parentVnode.data
+  const parentData = parentVnode && parentVnode.data // 父节点数据
 
   /* istanbul ignore else */
   if (process.env.NODE_ENV !== 'production') {

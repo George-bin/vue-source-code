@@ -29,10 +29,15 @@ export function setActiveInstance(vm: Component) {
   }
 }
 
+/**
+ * 初始化生命周期
+ * @params vm: 实例本身
+ */
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
   // locate first non-abstract parent
+  // options.parent = activeInstance
   let parent = options.parent
   if (parent && !options.abstract) {
     while (parent.$options.abstract && parent.$parent) {
@@ -144,8 +149,8 @@ export function lifecycleMixin (Vue: Class<Component>) {
 }
 
 /**
- * 执行挂载
- * @params vm: 实例对象本身
+ * 执行挂载操作
+ * @params vm: 当前实例对象
  * @params el：真实DOM元素（要挂载的元素）
  * @params hydrating：是否为服务端渲染
  */
@@ -199,6 +204,7 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
+    // 定义渲染更新的回调函数
     updateComponent = () => {
       vm._update(vm._render(), hydrating)
     }

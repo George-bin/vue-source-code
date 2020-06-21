@@ -225,14 +225,15 @@ export function createPatchFunction (backend) {
 
   /**
    * 创建一个组件
-   * @params vnode：
-   * @params insertedVnodeQueue：
+   * @params vnode：组件Vnode
+   * @params insertedVnodeQueue：用于收集插入的组件
    * @params parentElm：
    * @params refElm：
    */
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
     let i = vnode.data
     if (isDef(i)) {
+      // keep-alive相关
       const isReactivated = isDef(vnode.componentInstance) && i.keepAlive
       if (isDef(i = i.hook) && isDef(i = i.init)) {
         i(vnode, false /* hydrating */)

@@ -9,10 +9,14 @@ import {
 } from '../util/index'
 import { updateListeners } from '../vdom/helpers/index'
 
+/**
+ * 初始化事件中心
+ * @params vm: 实例本身
+ */
 export function initEvents (vm: Component) {
   vm._events = Object.create(null)
   vm._hasHookEvent = false
-  // init parent attached events
+  // init parent attached events（初始化父节点相关事件）
   const listeners = vm.$options._parentListeners
   if (listeners) {
     updateComponentListeners(vm, listeners)

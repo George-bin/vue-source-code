@@ -130,7 +130,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 }
 
 /**
- * Define a reactive property on an Object.
+ * Define a reactive property on an Object.（定义了对象上的响应属性）
  */
 export function defineReactive (
   obj: Object,

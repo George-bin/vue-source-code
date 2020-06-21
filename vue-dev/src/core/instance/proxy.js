@@ -77,6 +77,10 @@ if (process.env.NODE_ENV !== 'production') {
     }
   }
 
+  /**
+   * 设置代理
+   * @params vm: 当前Vue实例
+   */
   initProxy = function initProxy (vm) {
     // 判断浏览器是否支持proxy
     if (hasProxy) {

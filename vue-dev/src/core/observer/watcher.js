@@ -23,7 +23,14 @@ let uid = 0
  * and fires callback when the expression value changes.
  * This is used for both the $watch() api and directives.
  */
-// 监视程序解析表达式、收集依赖项并在表达式值更改时触发回调。
+/**
+ * 监视程序解析表达式、收集依赖项并在表达式值更改时触发回调。
+ * @params vm: 当前vue实例
+ * @params expOrFn: 回调渲染函数
+ * @params cb: 不做任何操作
+ * @params options: 配置对象
+ * @params isRenderWatcher: 是否为渲染watcher
+ */
 export default class Watcher {
   vm: Component;
   expression: string;

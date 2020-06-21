@@ -10,10 +10,12 @@ import { initLifecycle, callHook } from './lifecycle'
 import { initProvide, initInjections } from './inject'
 import { extend, mergeOptions, formatComponentName } from '../util/index'
 
+// Vue实例id => 如果uid为0，表示为根实例
 let uid = 0
 
 export function initMixin (Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
+    // 当前Vue实例
     const vm: Component = this
     // a uid
     vm._uid = uid++
@@ -29,12 +31,13 @@ export function initMixin (Vue: Class<Component>) {
     // a flag to avoid this being observed(一个避免被观察的标志)
     vm._isVue = true
     // merge options（合并配置）
-    if (options && options._isComponent) { // 组件相关
+    if (options && options._isComponent) { // 是一个组件
       // optimize internal component instantiation（优化内部组件实例）
       // since dynamic options merging is pretty slow, and none of the（因为动态选项合并是相当慢的，而且没有）
       // internal component options needs special treatment.（内部组件选项需要特殊处理）
       initInternalComponent(vm, options)
-    } else {
+    } else { // 不是组件
+      // 合并参数
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
         options || {},
@@ -42,21 +45,22 @@ export function initMixin (Vue: Class<Component>) {
       )
     }
     /* istanbul ignore else */
-    // 判断是否为生产环境
+    // vm._renderProxy实际上指向vm实例本身，开发环境下会设置一层代理，抛出各种开发问题
     if (process.env.NODE_ENV !== 'production') {
+      // 开发环境，Vue会报出各种错误
       initProxy(vm)
     } else {
       vm._renderProxy = vm
     }
 
     // expose real self
-    vm._self = vm
+    vm._self = vm // 缓存实例本身
     initLifecycle(vm) // 初始化生命周期
     initEvents(vm) // 初始化事件中心
     initRender(vm) // 初始化渲染
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props（数据初始化前）
-    initState(vm) // 数据代理
+    initState(vm) // 数据代理，即vm.message = vm._data.message
     initProvide(vm) // resolve provide after data/props（数据初始化后）
     callHook(vm, 'created')
 
@@ -74,8 +78,13 @@ export function initMixin (Vue: Class<Component>) {
   }
 }
 
+/**
+ * 初始化内部组件
+ * @params vm: 当前组件实例
+ * @params options: 
+ */
 export function initInternalComponent (vm: Component, options: InternalComponentOptions) {
-  const opts = vm.$options = Object.create(vm.constructor.options)
+  const opts = vm.$options = Object. (vm.constructor.options)
   // doing this because it's faster than dynamic enumeration.
   const parentVnode = options._parentVnode
   opts.parent = options.parent
@@ -93,12 +102,16 @@ export function initInternalComponent (vm: Component, options: InternalComponent
   }
 }
 
+/**
+ * 重新计算options，避免被全局的Mixin影响
+ * @params Ctor: 子类构造函数
+ */
 export function resolveConstructorOptions (Ctor: Class<Component>) {
-  let options = Ctor.options
-  if (Ctor.super) {
-    const superOptions = resolveConstructorOptions(Ctor.super)
+  let options = Ctor.options // 子构造器的静态参数
+  if (Ctor.super) { // Vue
+    const superOptions = resolveConstructorOptions(Ctor.super) // 递归调用
     const cachedSuperOptions = Ctor.superOptions
-    if (superOptions !== cachedSuperOptions) {
+    if (superOptions !== cachedSuperOptions) { // Vue配置参数发生改变
       // super option changed,
       // need to resolve new options.
       Ctor.superOptions = superOptions
