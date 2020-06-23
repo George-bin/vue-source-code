@@ -33,7 +33,7 @@ const ALWAYS_NORMALIZE = 2 // 手写render函数
  * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
  * @params alwaysNormalize:  是否深层规划化（递归子节点）
  */
-export function createElement 
+export function createElement (
   context: Component,
   tag: any,
   data: any,
