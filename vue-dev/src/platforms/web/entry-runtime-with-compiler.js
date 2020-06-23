@@ -97,7 +97,8 @@ Vue.prototype.$mount = function (
 
 /**
  * Get outerHTML of elements, taking care
- * of SVG elements in IE as well.
+ * of SVG elements in IE as well（获取html内容）.
+ * @params el: 要挂载的真实DOM元素
  */
 function getOuterHTML (el: Element): string {
   if (el.outerHTML) {

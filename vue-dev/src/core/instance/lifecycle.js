@@ -21,6 +21,7 @@ import {
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
+// 设置当前激活实例
 export function setActiveInstance(vm: Component) {
   const prevActiveInstance = activeInstance
   activeInstance = vm
@@ -62,22 +63,23 @@ export function initLifecycle (vm: Component) {
 
 export function lifecycleMixin (Vue: Class<Component>) {
   /**
+   * 
    * @params vnode：当前实例的VNode数据
    * @parmas hydrating：是否为服务端渲染
    */
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     // 数据更新时会用到这些变量
-    const prevEl = vm.$el
+    const prevEl = vm.$el // 旧的挂载元素
     const prevVnode = vm._vnode // 旧的VNode
-    const restoreActiveInstance = setActiveInstance(vm)
-    vm._vnode = vnode // 新的VNode
+    const restoreActiveInstance = setActiveInstance(vm) // 恢复当前实例
+    vm._vnode = vnode // 设置新的VNode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
-    if (!prevVnode) {
+    if (!prevVnode) { // 不存在旧的Vnode
       // initial render（初始化渲染）
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
-    } else {
+    } else { // 存在旧的Vnode，对比新旧Vnode，更新真实DOM元素
       // updates（对比更新渲染）
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
@@ -149,9 +151,9 @@ export function lifecycleMixin (Vue: Class<Component>) {
 }
 
 /**
- * 执行挂载操作
+ * 执行具体挂载操作
  * @params vm: 当前实例对象
- * @params el：真实DOM元素（要挂载的元素）
+ * @params el：真实DOM元素（要挂载到的元素）
  * @params hydrating：是否为服务端渲染
  */
 export function mountComponent (
@@ -160,6 +162,7 @@ export function mountComponent (
   hydrating?: boolean
 ): Component {
   vm.$el = el
+  // 没有定义render函数
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
@@ -186,6 +189,7 @@ export function mountComponent (
 
   let updateComponent
   /* istanbul ignore if */
+  // 在开发模式下，Vue提供了一些性能相关的记录（需要开启）
   if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
     updateComponent = () => {
       const name = vm._name

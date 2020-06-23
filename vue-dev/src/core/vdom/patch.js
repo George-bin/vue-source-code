@@ -67,7 +67,10 @@ function createKeyToOldIdx (children, beginIdx, endIdx) {
   return map
 }
 
-// 创建一个patch闭包
+/**
+ * 创建一个patch闭包
+ * @params backend: 定义了一些模块和原生DOM API
+ */
 export function createPatchFunction (backend) {
   let i, j
   const cbs = {}
@@ -127,15 +130,15 @@ export function createPatchFunction (backend) {
 
   /**
    * 通过虚拟DOM创建真实DOM节点
-   * @params vnode: 虚拟DOM
+   * @params vnode: 当前实例的Vnode数据
    * @params insertedVnodeQueue: 收集新插入的组件
-   * @params parentElm: 父元素（真实DOM节点 => 当前Vnode的父Vnode所对应的真实DOM）
-   * @params refElm: 
+   * @params parentElm: 父节点（真实DOM节点 => 当前Vnode对应的真实DOM的父级节点）
+   * @params refElm: 下一兄弟节点
    * @params nested: 是否嵌套
    * @params ownerArray: 同一层级的子元素数组（包含当前Vnode）
    * @params index: 同一层级中的位置id
    */
-  function createElm (
+  function createElm ( 
     vnode,
     insertedVnodeQueue,
     parentElm,
@@ -153,6 +156,7 @@ export function createPatchFunction (backend) {
       vnode = ownerArray[index] = cloneVNode(vnode)
     }
 
+    // 是否在根节点插入
     vnode.isRootInsert = !nested // for transition enter check
     // 尝试创建子组件
     if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
@@ -182,6 +186,7 @@ export function createPatchFunction (backend) {
       vnode.elm = vnode.ns
         ? nodeOps.createElementNS(vnode.ns, tag)
         : nodeOps.createElement(tag, vnode)
+      // 设置CSS作用域
       setScope(vnode)
 
       /* istanbul ignore if */
@@ -204,20 +209,22 @@ export function createPatchFunction (backend) {
           insert(parentElm, vnode.elm, refElm)
         }
       } else {
+        // 创建VNode的子元素
         createChildren(vnode, children, insertedVnodeQueue)
         if (isDef(data)) {
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
+        // 将子元素插入到真实DOM中
         insert(parentElm, vnode.elm, refElm)
       }
 
       if (process.env.NODE_ENV !== 'production' && data && data.pre) {
         creatingElmInVPre--
       }
-    } else if (isTrue(vnode.isComment)) {
+    } else if (isTrue(vnode.isComment)) { // 注释节点
       vnode.elm = nodeOps.createComment(vnode.text)
       insert(parentElm, vnode.elm, refElm)
-    } else {
+    } else { // 文本节点
       vnode.elm = nodeOps.createTextNode(vnode.text)
       insert(parentElm, vnode.elm, refElm)
     }
@@ -312,9 +319,9 @@ export function createPatchFunction (backend) {
   }
 
   /**
-   * 创建子元素
-   * @params vnode：虚拟DOM
-   * @params children：vnode的子节点（数组）
+   * 创建Vnode子元素
+   * @params vnode：当前实例的VNode
+   * @params children：Vnode的子节点（数组）
    * @params insertedVnodeQueue：用于收集插入的组件
    */
   function createChildren (vnode, children, insertedVnodeQueue) {
@@ -749,8 +756,8 @@ export function createPatchFunction (backend) {
   }
 
   /**
-   * @params oldVnode：旧vnode
-   * @params vnode：新vnode
+   * @params oldVnode：旧Vnode
+   * @params vnode：新Vnode
    * @params hydrating：是否为服务端渲染
    * @params removeOnly：给transition-group使用的
    */

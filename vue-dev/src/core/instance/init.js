@@ -60,7 +60,7 @@ export function initMixin (Vue: Class<Component>) {
     initRender(vm) // 初始化渲染
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props（数据初始化前）
-    initState(vm) // 数据代理，即vm.message = vm._data.message
+    initState(vm) // 数据代理和双向绑定，即vm.message = vm._data.message
     initProvide(vm) // resolve provide after data/props（数据初始化后）
     callHook(vm, 'created')
 

@@ -22,7 +22,7 @@ import { isUpdatingChildComponent } from './lifecycle'
  */
 export function initRender (vm: Component) {
   vm._vnode = null // the root of the child tree（子节点树的根）
-  vm._staticTrees = null // v-once cached trees
+  vm._staticTrees = null // v-once cached trees（缓存的树）
   const options = vm.$options
   const parentVnode = vm.$vnode = options._parentVnode // the placeholder node in parent tree（父节点树中的占位符节点）
   // 插槽相关
@@ -58,6 +58,7 @@ export function initRender (vm: Component) {
   }
 }
 
+// 当前渲染实例
 export let currentRenderingInstance: Component | null = null
 
 // for testing only
@@ -75,9 +76,13 @@ export function renderMixin (Vue: Class<Component>) {
 
   Vue.prototype._render = function (): VNode {
     const vm: Component = this
-    // 获取render函数
+    /**
+     * render: 渲染函数
+     * parentVnode: 父级Vnode
+     */
     const { render, _parentVnode } = vm.$options
 
+    // 作用域相关
     if (_parentVnode) {
       vm.$scopedSlots = normalizeScopedSlots(
         _parentVnode.data.scopedSlots,
@@ -88,16 +93,18 @@ export function renderMixin (Vue: Class<Component>) {
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
-    // 设置父Vnode
+    // 这允许render函数访问占位符节点上的数据
     vm.$vnode = _parentVnode
+
     // render self
     let vnode
     try {
       // There's no need to maintain a stack because all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
+      // 没有必要去维护一个堆栈，因为所有的渲染函数都是被单独调用的。当父组件被patch时，嵌套组件的render函数也会被调用
       currentRenderingInstance = vm
-      // 生产环境下vm._renderProxy === vm
+      // 生产环境下vm._renderProxy === vm，开发环境下会通过代理对象抛出各种错误
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e) {
       handleError(e, vm, `render`)
@@ -123,7 +130,7 @@ export function renderMixin (Vue: Class<Component>) {
     }
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
-      // 存在多个根节点
+      // 存在多个根节点（渲染函数应该只返回一个根节点）
       if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
         warn(
           'Multiple root nodes returned from render function. Render function ' +

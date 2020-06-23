@@ -82,7 +82,7 @@ if (process.env.NODE_ENV !== 'production') {
    * @params vm: 当前Vue实例
    */
   initProxy = function initProxy (vm) {
-    // 判断浏览器是否支持proxy
+    // 判断浏览器是否支持proxy，抛出各种开发问题
     if (hasProxy) {
       // determine which proxy handler to use（确定使用哪个代理程序）
       const options = vm.$options

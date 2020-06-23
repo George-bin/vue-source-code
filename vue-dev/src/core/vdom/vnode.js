@@ -1,5 +1,13 @@
 /* @flow */
-
+/**
+ * VNode类
+ * @params tag: 标签名
+ * @params data: VNodeData
+ * @params children: 子VNode数组
+ * @params text: 文本 => 文本节点
+ * @params elm: 真实DOM节点
+ * @params context: 当前实例对象
+ */
 export default class VNode {
   tag: string | void;
   data: VNodeData | void;

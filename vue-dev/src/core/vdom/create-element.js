@@ -54,11 +54,11 @@ export function createElement
 }
 
 /**
- * 
- * @params context: vnode的上下文环境，它是Component类型；
- * @params tag: 标签名，可以是一个字符串，也可以是一个Component；
+ * 创建Vnode
+ * @params context: 当前实例对象
+ * @params tag: 标签名 => 字符串 | 组件 | 函数 | 对象；
  * @params data: 表示vnode的相关数据，是一个VNodeData类型；
- * @params dhilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组；
+ * @params chilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组；
  * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
  */
 export function _createElement (
@@ -105,13 +105,14 @@ export function _createElement (
   if (Array.isArray(children) &&
     typeof children[0] === 'function'
   ) {
+    // 作用域插槽相关
     data = data || {}
     data.scopedSlots = { default: children[0] }
     children.length = 0
   }
   // 对children做normaliza（转换为一维数组）
   if (normalizationType === ALWAYS_NORMALIZE) {
-    // 
+    // 递归打平
     children = normalizeChildren(children)
   } else if (normalizationType === SIMPLE_NORMALIZE) {
     children = simpleNormalizeChildren(children)
@@ -126,6 +127,7 @@ export function _createElement (
       // 是否为平台的保留标签
       // platform built-in elements
       if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn)) {
+        // .native只能用在组件上
         warn(
           `The .native modifier for v-on is only valid on components but it was used on <${tag}>.`,
           context
