@@ -35,11 +35,12 @@ import {
 // inline hooks to be invoked on component VNodes during patch
 const componentVNodeHooks = {
   /**
-   * 初始化
-   * @params vnode: vnode.data
+   * 初始化组件
+   * @params vnode: 组件Vnode
    * @params hydrating: 是否为服务端渲染
    */
   init (vnode: VNodeWithData, hydrating: boolean): ?boolean {
+    // keep-alive相关
     if (
       vnode.componentInstance &&
       !vnode.componentInstance._isDestroyed &&
@@ -230,7 +231,7 @@ export function createComponent (
 }
 
 /**
- * 创建一个Vue实例
+ * 使用Vnode创建一个组件实例
  * @params vnode: 组件vnode
  * @params parent: 当前vm实例 
  */

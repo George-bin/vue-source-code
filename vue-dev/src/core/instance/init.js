@@ -79,13 +79,13 @@ export function initMixin (Vue: Class<Component>) {
 }
 
 /**
- * 初始化内部组件
+ * 初始化组件
  * @params vm: 当前组件实例
  * @params options: 
  */
 export function initInternalComponent (vm: Component, options: InternalComponentOptions) {
   const opts = vm.$options = Object. (vm.constructor.options)
-  // doing this because it's faster than dynamic enumeration.
+  // doing this because it's faster than dynamic enumeration.（因为它比动态枚举更快）
   const parentVnode = options._parentVnode
   opts.parent = options.parent
   opts._parentVnode = parentVnode

@@ -7,6 +7,8 @@
  * @params text: 文本 => 文本节点
  * @params elm: 真实DOM节点
  * @params context: 当前实例对象
+ * @params componentOptions: 
+ * @params asyncFactory: 
  */
 export default class VNode {
   tag: string | void;

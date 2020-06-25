@@ -18,6 +18,7 @@ import {
   invokeWithErrorHandling
 } from '../util/index'
 
+// 当前实例对象
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
