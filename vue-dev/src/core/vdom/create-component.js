@@ -33,6 +33,7 @@ import {
 } from 'weex/runtime/recycle-list/render-component-template'
 
 // inline hooks to be invoked on component VNodes during patch
+// 组件Vnode相关钩子
 const componentVNodeHooks = {
   /**
    * 初始化组件
@@ -110,7 +111,7 @@ const hooksToMerge = Object.keys(componentVNodeHooks)
  * 创建一个组件Vnode
  * @params Ctor: 组件类/函数/对象
  * @params data: Vnode相关数据
- * @params context: 当前实例对象vm => 父级节点
+ * @params context: 当前实例对象vm => 将要创建的子组件实例的父实例
  * @params children: 组件的子Vnode
  * @params tag: 
  */
@@ -241,8 +242,8 @@ export function createComponentInstanceForVnode (
 ): Component {
   const options: InternalComponentOptions = {
     _isComponent: true,
-    _parentVnode: vnode, // 占位符vnode
-    parent
+    _parentVnode: vnode, // 占位符父vnode
+    parent // 当前实例的父实例
   }
   // check inline-template render functions
   const inlineTemplate = vnode.data.inlineTemplate

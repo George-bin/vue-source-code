@@ -26,12 +26,12 @@ const ALWAYS_NORMALIZE = 2 // 手写render函数
 // wrapper function for providing a more flexible interface
 // without getting yelled at by flow
 /**
- * @params context: vm实例对象
+ * @params context: 当前vm实例对象
  * @params tag: 标签名
  * @params data: 跟vnode相关的数据
  * @params children: 子节点（tree）
  * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
- * @params alwaysNormalize:  是否深层规划化（递归子节点）
+ * @params alwaysNormalize:  是否深层规划化（递归子节点）=> 手写render函数：true；编译生成render函数：false
  */
 export function createElement (
   context: Component,
@@ -56,7 +56,7 @@ export function createElement (
 /**
  * 创建Vnode
  * @params context: 当前实例对象
- * @params tag: 标签名 => 字符串 | 组件 | 函数 | 对象；
+ * @params tag: 字符串（标签名） | 组件 | 函数 | 对象；
  * @params data: 表示vnode的相关数据，是一个VNodeData类型；
  * @params chilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组；
  * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
@@ -151,7 +151,7 @@ export function _createElement (
       )
     }
   } else {
-    // direct component options / constructor（创建组件）
+    // direct component options / constructor（创建组件Vnode）
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {

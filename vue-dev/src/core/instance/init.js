@@ -55,7 +55,7 @@ export function initMixin (Vue: Class<Component>) {
 
     // expose real self
     vm._self = vm // 缓存实例本身
-    initLifecycle(vm) // 初始化生命周期
+    initLifecycle(vm) // 初始化生命周期 => 建立实例间的父子关系
     initEvents(vm) // 初始化事件中心
     initRender(vm) // 初始化渲染
     callHook(vm, 'beforeCreate')
@@ -79,12 +79,12 @@ export function initMixin (Vue: Class<Component>) {
 }
 
 /**
- * 初始化组件
+ * 初始化组件（合并Options）
  * @params vm: 当前组件实例
- * @params options: 
+ * @params options: 组件相关参数
  */
-export function initInternalComponent (vm: Component, options: InternalComponentOptions) {
-  const opts = vm.$options = Object. (vm.constructor.options)
+export function  initInternalComponent (vm: Component, options: InternalComponentOptions) {
+  const opts = vm.$options = Object.create(vm.constructor.options)
   // doing this because it's faster than dynamic enumeration.（因为它比动态枚举更快）
   const parentVnode = options._parentVnode
   opts.parent = options.parent

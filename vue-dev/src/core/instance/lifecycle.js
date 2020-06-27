@@ -24,10 +24,10 @@ export let isUpdatingChildComponent: boolean = false
 
 // 设置当前激活实例
 export function setActiveInstance(vm: Component) {
-  const prevActiveInstance = activeInstance
-  activeInstance = vm
+  const prevActiveInstance = activeInstance // 缓存旧的实例
+  activeInstance = vm // 设置新的实例
   return () => {
-    activeInstance = prevActiveInstance
+    activeInstance = prevActiveInstance // 重新激活新的实例
   }
 }
 
@@ -64,17 +64,17 @@ export function initLifecycle (vm: Component) {
 
 export function lifecycleMixin (Vue: Class<Component>) {
   /**
-   * 
-   * @params vnode：当前实例的VNode数据
+   * 更新渲染真实DOM
+   * @params vnode：当前实例的渲染Vnode
    * @parmas hydrating：是否为服务端渲染
    */
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     // 数据更新时会用到这些变量
-    const prevEl = vm.$el // 旧的挂载元素
-    const prevVnode = vm._vnode // 旧的VNode
-    const restoreActiveInstance = setActiveInstance(vm) // 恢复当前实例
-    vm._vnode = vnode // 设置新的VNode
+    const prevEl = vm.$el // 挂载元素
+    const prevVnode = vm._vnode // 旧的渲染VNode
+    const restoreActiveInstance = setActiveInstance(vm) // 恢复激活实例
+    vm._vnode = vnode // 新的渲染VNode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) { // 不存在旧的Vnode

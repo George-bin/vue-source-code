@@ -234,8 +234,8 @@ export function createPatchFunction (backend) {
    * 创建一个组件
    * @params vnode：组件Vnode
    * @params insertedVnodeQueue：用于收集插入的组件
-   * @params parentElm：
-   * @params refElm：
+   * @params parentElm：当前实例挂载元素的父节点
+   * @params refElm：当前实例挂载元素的下一兄弟节点
    */
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
     let i = vnode.data
@@ -243,7 +243,7 @@ export function createPatchFunction (backend) {
       // keep-alive相关
       const isReactivated = isDef(vnode.componentInstance) && i.keepAlive
       if (isDef(i = i.hook) && isDef(i = i.init)) {
-        // 执行this.hook._init方法
+        // 执行this.hook.init方法
         i(vnode, false /* hydrating */)
       }
       // after calling the init hook, if the vnode is a child component
@@ -261,6 +261,11 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /**
+   * 初始化组件
+   * @params vnode:
+   * @params insertedVnodeQueue:
+   */
   function initComponent (vnode, insertedVnodeQueue) {
     if (isDef(vnode.data.pendingInsert)) {
       insertedVnodeQueue.push.apply(insertedVnodeQueue, vnode.data.pendingInsert)
@@ -757,7 +762,7 @@ export function createPatchFunction (backend) {
   }
 
   /**
-   * @params oldVnode：旧Vnode
+   * @params oldVnode：旧Vnode（初次渲染是一个真实DOM元素）
    * @params vnode：新Vnode
    * @params hydrating：是否为服务端渲染
    * @params removeOnly：给transition-group使用的
@@ -816,8 +821,8 @@ export function createPatchFunction (backend) {
         }
 
         // replacing existing element
-        const oldElm = oldVnode.elm
-        const parentElm = nodeOps.parentNode(oldElm)
+        const oldElm = oldVnode.elm // 旧的挂载元素
+        const parentElm = nodeOps.parentNode(oldElm) // 挂载元素的父节点
 
         // create new node（创建一个新的Vnode）
         createElm(

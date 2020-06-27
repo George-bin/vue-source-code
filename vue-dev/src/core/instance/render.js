@@ -75,10 +75,11 @@ export function renderMixin (Vue: Class<Component>) {
   }
 
   Vue.prototype._render = function (): VNode {
+    // 当前vm实例
     const vm: Component = this
     /**
      * render: 渲染函数
-     * parentVnode: 父级Vnode
+     * parentVnode: 父级Vnode（占位符）
      */
     const { render, _parentVnode } = vm.$options
 
@@ -104,7 +105,7 @@ export function renderMixin (Vue: Class<Component>) {
       // when parent component is patched.
       // 没有必要去维护一个堆栈，因为所有的渲染函数都是被单独调用的。当父组件被patch时，嵌套组件的render函数也会被调用
       currentRenderingInstance = vm
-      // 生产环境下vm._renderProxy === vm，开发环境下会通过代理对象抛出各种错误
+      // 生产环境下vm._renderProxy === vm，开发环境下会通过代理对象抛出各种错误（渲染Vnode）
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e) {
       handleError(e, vm, `render`)
