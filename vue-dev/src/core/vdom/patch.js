@@ -656,6 +656,12 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /**
+   * dom插入完成，调用insert钩子
+   * @params vnode: 刚插入的DOM节点的Vnode
+   * @params queue: 所有插入的组件
+   * @params initial:
+   */
   function invokeInsertHook (vnode, queue, initial) {
     // delay insert hooks for component root nodes, invoke them after the
     // element is really inserted

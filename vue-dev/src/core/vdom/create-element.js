@@ -27,7 +27,7 @@ const ALWAYS_NORMALIZE = 2 // 手写render函数
 // without getting yelled at by flow
 /**
  * 创建vnode（包装函数）
- * @params context: 当前vm实例
+ * @params context: 当前vm实例（当前上下文环境）
  * @params tag: 标签名
  * @params data: 跟vnode相关的数据
  * @params children: 子节点（tree）
@@ -56,7 +56,7 @@ export function createElement (
 
 /**
  * 创建Vnode
- * @params context: 当前实例对象
+ * @params context: 当前vm实例（当前上下文环境）
  * @params tag: 字符串（标签名） | 组件 | 函数 | 对象；
  * @params data: 表示vnode的相关数据，是一个VNodeData类型；
  * @params chilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组；
