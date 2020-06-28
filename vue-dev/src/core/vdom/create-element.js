@@ -26,7 +26,8 @@ const ALWAYS_NORMALIZE = 2 // 手写render函数
 // wrapper function for providing a more flexible interface
 // without getting yelled at by flow
 /**
- * @params context: 当前vm实例对象
+ * 创建vnode（包装函数）
+ * @params context: 当前vm实例
  * @params tag: 标签名
  * @params data: 跟vnode相关的数据
  * @params children: 子节点（tree）
@@ -41,7 +42,7 @@ export function createElement (
   normalizationType: any,
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
-  // 参数重载（针对传参个数不一致的处理）
+  // 参数重载（传参个数差异化处理）
   if (Array.isArray(data) || isPrimitive(data)) {
     normalizationType = children
     children = data
@@ -119,8 +120,7 @@ export function _createElement (
   }
   let vnode, ns
   // 开始创建vnode
-  if (typeof tag === 'string') {
-    // 字符串
+  if (typeof tag === 'string') { // 普通dom节点
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     if (config.isReservedTag(tag)) {
@@ -150,7 +150,7 @@ export function _createElement (
         undefined, undefined, context
       )
     }
-  } else {
+  } else { // 组件
     // direct component options / constructor（创建组件Vnode）
     vnode = createComponent(tag, data, context, children)
   }

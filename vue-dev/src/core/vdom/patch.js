@@ -91,6 +91,11 @@ export function createPatchFunction (backend) {
     return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm)
   }
 
+  /**
+   * 创建一个删除回调
+   * @params childElm: 将被删除的真实DOM
+   * @params listeners: 监听数量
+   */
   function createRmCb (childElm, listeners) {
     function remove () {
       if (--remove.listeners === 0) {
@@ -130,7 +135,7 @@ export function createPatchFunction (backend) {
 
   /**
    * 通过虚拟DOM创建真实DOM节点
-   * @params vnode: 当前实例的Vnode数据
+   * @params vnode: 当前实例的Vnode
    * @params insertedVnodeQueue: 收集新插入的组件
    * @params parentElm: 父节点（真实DOM节点 => 当前Vnode对应的真实DOM的父级节点）
    * @params refElm: 下一兄弟节点
@@ -326,7 +331,7 @@ export function createPatchFunction (backend) {
 
   /**
    * 创建Vnode子元素
-   * @params vnode：当前实例的VNode
+   * @params vnode：当前插入节点的Vnode
    * @params children：Vnode的子节点（数组）
    * @params insertedVnodeQueue：用于收集插入的组件
    */
@@ -418,6 +423,12 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /**
+   * 删除虚拟节点
+   * @params vnodes: Vnode数组
+   * @params startIdx: 起始位置
+   * @params endIdx: 结束位置
+   */
   function removeVnodes (vnodes, startIdx, endIdx) {
     for (; startIdx <= endIdx; ++startIdx) {
       const ch = vnodes[startIdx]
@@ -432,6 +443,11 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /**
+   * 移除并调用remove钩子
+   * @params vnode: 将被移除的Vnode
+   * @params rm:
+   */
   function removeAndInvokeRemoveHook (vnode, rm) {
     if (isDef(rm) || isDef(vnode.data)) {
       let i
@@ -461,6 +477,9 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /**
+   * 更新子节点
+   */
   function updateChildren (parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly) {
     let oldStartIdx = 0
     let newStartIdx = 0
@@ -865,7 +884,7 @@ export function createPatchFunction (backend) {
           }
         }
 
-        // destroy old node（删除旧的父级节点）
+        // destroy old node（删除旧的节点）
         if (isDef(parentElm)) {
           removeVnodes([oldVnode], 0, 0)
         } else if (isDef(oldVnode.tag)) {
