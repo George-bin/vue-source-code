@@ -109,7 +109,7 @@ const hooksToMerge = Object.keys(componentVNodeHooks)
 
 /**
  * 创建一个组件Vnode
- * @params Ctor: 组件类/函数/对象
+ * @params Ctor: 组件类 | 函数 | 对象
  * @params data: Vnode相关数据
  * @params context: 当前实例对象vm => 将要创建的子组件实例的父实例
  * @params children: 组件的子Vnode

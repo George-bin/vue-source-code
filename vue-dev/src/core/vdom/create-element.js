@@ -28,7 +28,7 @@ const ALWAYS_NORMALIZE = 2 // 手写render函数
 /**
  * 创建vnode（包装函数）
  * @params context: 当前vm实例（当前上下文环境）
- * @params tag: 标签名
+ * @params tag: 标签名 | 对象(组件)
  * @params data: 跟vnode相关的数据
  * @params children: 子节点（tree）
  * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
