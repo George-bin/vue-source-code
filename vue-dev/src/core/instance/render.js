@@ -77,10 +77,9 @@ export function renderMixin (Vue: Class<Component>) {
   Vue.prototype._render = function (): VNode {
     // 当前vm实例
     const vm: Component = this
-    /**
-     * render: 渲染函数
-     * parentVnode: 父级Vnode（占位符）
-     */
+    
+    // render: 渲染函数
+    // parentVnode: 父级Vnode（占位符）
     const { render, _parentVnode } = vm.$options
 
     // 作用域相关
