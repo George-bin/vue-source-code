@@ -68,6 +68,10 @@ export function initState (vm: Component) {
   }
 }
 
+/**
+ * @params vm: 当前实例对象
+ * @params propsOptions: 用户传入的props字段
+ */
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}

@@ -79,7 +79,7 @@ export function initMixin (Vue: Class<Component>) {
 }
 
 /**
- * 初始化组件（合并Options）
+ * 初始化内部组件（合并Options）
  * @params vm: 当前组件实例
  * @params options: 组件相关参数
  */

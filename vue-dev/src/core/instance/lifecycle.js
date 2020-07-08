@@ -71,9 +71,9 @@ export function lifecycleMixin (Vue: Class<Component>) {
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     // 数据更新时会用到这些变量
-    const prevEl = vm.$el // 挂载元素
+    const prevEl = vm.$el // 旧的挂载元素
     const prevVnode = vm._vnode // 旧的渲染VNode
-    const restoreActiveInstance = setActiveInstance(vm) // 恢复激活实例
+    const restoreActiveInstance = setActiveInstance(vm) // 设置为全局当前激活实例
     vm._vnode = vnode // 新的渲染VNode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
@@ -358,6 +358,11 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
   }
 }
 
+/**
+ * 调用声明周期函数
+ * @params vm: 当前实例对象
+ * @params hook: 钩子名称
+ */
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
   pushTarget()

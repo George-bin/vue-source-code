@@ -135,11 +135,11 @@ export function createPatchFunction (backend) {
 
   /**
    * 通过虚拟DOM创建真实DOM节点
-   * @params vnode: 当前实例的Vnode
+   * @params vnode: 当前实例的渲染Vnode
    * @params insertedVnodeQueue: 收集新插入的组件
    * @params parentElm: 父节点（真实DOM节点 => 当前Vnode对应的真实DOM的父级节点）
    * @params refElm: 下一兄弟节点
-   * @params nested: 是否嵌套
+   * @params nested: 是否为嵌套节点
    * @params ownerArray: 同一层级的子元素数组（包含当前Vnode）
    * @params index: 同一层级中的位置id
    */
@@ -187,7 +187,7 @@ export function createPatchFunction (backend) {
         }
       }
 
-      // 调用平台DOM的操作去创建一个占位符元素
+      // 调用平台原生DOM的操作去创建一个占位符元素
       vnode.elm = vnode.ns
         ? nodeOps.createElementNS(vnode.ns, tag)
         : nodeOps.createElement(tag, vnode)
@@ -216,7 +216,7 @@ export function createPatchFunction (backend) {
       } else {
         // 创建VNode的子元素
         createChildren(vnode, children, insertedVnodeQueue)
-        if (isDef(data)) {
+        if (isDef(data)) { // 调用create钩子，用于创建style、class等
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
         // 将子元素插入到真实DOM中
@@ -239,8 +239,8 @@ export function createPatchFunction (backend) {
    * 创建一个组件
    * @params vnode：组件Vnode
    * @params insertedVnodeQueue：用于收集插入的组件
-   * @params parentElm：当前实例挂载元素的父节点
-   * @params refElm：当前实例挂载元素的下一兄弟节点
+   * @params parentElm：父级节点 => 真实DOM
+   * @params refElm：旧的挂载节点的下一兄弟节点
    */
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
     let i = vnode.data
@@ -444,7 +444,7 @@ export function createPatchFunction (backend) {
   }
 
   /**
-   * 移除并调用remove钩子
+   * 移除DOM元素并调用remove钩子
    * @params vnode: 将被移除的Vnode
    * @params rm:
    */

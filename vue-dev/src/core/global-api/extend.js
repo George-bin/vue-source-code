@@ -14,8 +14,8 @@ export function initExtend (Vue: GlobalAPI) {
   let cid = 1 // 子组件cid
 
   /**
-   * Class inheritance（类继承）=> 利用原型继承的方式创建了子构造器
-   * @params extendOptions：相关扩展选项
+   * Class inheritance（类继承）=> 利用原型继承的方式创建子类构造器
+   * @params extendOptions：组件选项
    */
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}
@@ -42,7 +42,8 @@ export function initExtend (Vue: GlobalAPI) {
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
     Sub.cid = cid++
-    Sub.options = mergeOptions( // 合并配置（扩展）
+    // 合并配置（扩展）
+    Sub.options = mergeOptions(
       Super.options,
       extendOptions
     )

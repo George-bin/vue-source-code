@@ -1,10 +1,10 @@
 /* @flow */
 /**
  * VNode类
- * @params tag: 标签名
- * @params data: VNodeData
+ * @params tag: 标签名 | 组件名
+ * @params data: VNodeData => 用户传参
  * @params children: 子VNode数组
- * @params text: 文本 => 文本节点
+ * @params text: 文本 => 表明这是一个文本Vnode
  * @params elm: 真实DOM节点
  * @params context: 当前实例对象
  * @params componentOptions: 

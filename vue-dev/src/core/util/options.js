@@ -142,6 +142,8 @@ strats.data = function (
 
 /**
  * Hooks and props are merged as arrays.
+ * @params parentVal: 同个属性已存在的属性值
+ * @params childVal: 同个属性不存在的属性值
  */
 function mergeHook (
   parentVal: ?Array<Function>,
@@ -159,6 +161,10 @@ function mergeHook (
     : res
 }
 
+/**
+ * 做了一层过滤处理
+ * @params hooks: 某一类型的hook
+ */
 function dedupeHooks (hooks) {
   const res = []
   for (let i = 0; i < hooks.length; i++) {
@@ -268,7 +274,7 @@ const defaultStrat = function (parentVal: any, childVal: any): any {
 }
 
 /**
- * Validate component names
+ * Validate component names（校验组件name）
  */
 function checkComponents (options: Object) {
   for (const key in options.components) {
@@ -359,7 +365,7 @@ function normalizeInject (options: Object, vm: ?Component) {
 }
 
 /**
- * Normalize raw function directives into object format.
+ * Normalize raw function directives into object format.（将原始函数指令规范化为对象格式）
  */
 function normalizeDirectives (options: Object) {
   const dirs = options.directives
@@ -386,6 +392,10 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
 /**
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
+ * 将两个对象合并成一个新的对象
+ * @params parent: 类的相关静态属性
+ * @params child: 用户手动传入的参数
+ * @params vm: 当前实例
  */
 export function mergeOptions (
   parent: Object,
@@ -400,6 +410,7 @@ export function mergeOptions (
     child = child.options
   }
 
+  // 对用户传入的字段进行规范化处理
   normalizeProps(child, vm)
   normalizeInject(child, vm)
   normalizeDirectives(child)
@@ -429,6 +440,7 @@ export function mergeOptions (
       mergeField(key)
     }
   }
+  // 合并字段（key）=> 根据不同的字段采取不同的处理方式，灵活处理 => 值得学习
   function mergeField (key) {
     const strat = strats[key] || defaultStrat
     options[key] = strat(parent[key], child[key], vm, key)
