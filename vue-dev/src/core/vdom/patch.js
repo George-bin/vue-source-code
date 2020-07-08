@@ -268,8 +268,8 @@ export function createPatchFunction (backend) {
 
   /**
    * 初始化组件
-   * @params vnode:
-   * @params insertedVnodeQueue:
+   * @params vnode: 组件Vnode
+   * @params insertedVnodeQueue: 用于收集被插入组件的数组
    */
   function initComponent (vnode, insertedVnodeQueue) {
     if (isDef(vnode.data.pendingInsert)) {

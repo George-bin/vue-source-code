@@ -234,7 +234,7 @@ export function createComponent (
 /**
  * 使用Vnode创建一个组件实例
  * @params vnode: 组件vnode
- * @params parent: 当前vm实例 
+ * @params parent: 当前vm实例 => 父实例
  */
 export function createComponentInstanceForVnode (
   vnode: any, // we know it's MountedComponentVNode but flow doesn't
