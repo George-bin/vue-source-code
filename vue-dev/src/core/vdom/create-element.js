@@ -137,7 +137,7 @@ export function _createElement (
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component（组件相关  ）
+      // component
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // 不认识的节点 
@@ -149,8 +149,8 @@ export function _createElement (
         undefined, undefined, context
       )
     }
-  } else { // 组件
-    // direct component options / constructor（创建组件Vnode）
+  } else { // 组件（渲染的是一个组件）
+    // direct component options / constructor（创建组件Vnode占位符）
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {

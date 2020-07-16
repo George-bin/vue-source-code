@@ -452,6 +452,10 @@ export function mergeOptions (
  * Resolve an asset.
  * This function is used because child instances need access
  * to assets defined in its ancestor chain.
+ * @params options: 组件$options
+ * @params type: 类型
+ * @params id: key值
+ * @params warnMissing: 类型
  */
 export function resolveAsset (
   options: Object,

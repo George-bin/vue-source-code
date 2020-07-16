@@ -69,6 +69,7 @@ export function initState (vm: Component) {
 }
 
 /**
+ * 初始化props
  * @params vm: 当前实例对象
  * @params propsOptions: 用户传入的props字段
  */

@@ -131,6 +131,8 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 
 /**
  * Define a reactive property on an Object.（定义了对象上的响应属性）
+ * @obj: vm._props
+ * @key: 枚举的key
  */
 export function defineReactive (
   obj: Object,

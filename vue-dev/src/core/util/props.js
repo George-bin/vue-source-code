@@ -18,6 +18,13 @@ type PropOptions = {
   validator: ?Function
 };
 
+/**
+ * 校验prop
+ * @params key: 当前prop的key
+ * @propOptions propOptions: 用户传入的props
+ * @propOptions propsData: vm.$options.propsData
+ * @propOptions vm: 当前实例对象
+ */
 export function validateProp (
   key: string,
   propOptions: Object,
@@ -25,7 +32,7 @@ export function validateProp (
   vm?: Component
 ): any {
   const prop = propOptions[key]
-  const absent = !hasOwn(propsData, key)
+  const absent = !hasOwn(propsData, key) // 是否存在相同的key
   let value = propsData[key]
   // boolean casting
   const booleanIndex = getTypeIndex(Boolean, prop.type)

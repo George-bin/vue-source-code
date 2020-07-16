@@ -80,8 +80,8 @@ export function initMixin (Vue: Class<Component>) {
 
 /**
  * 初始化内部组件（合并Options）
- * @params vm: 当前组件实例
- * @params options: 组件相关参数
+ * @params vm: 当前实例对象（子组件）
+ * @params options: 组件相关参数（_isComponent, _parentVnode, parent）
  */
 export function  initInternalComponent (vm: Component, options: InternalComponentOptions) {
   const opts = vm.$options = Object.create(vm.constructor.options)
