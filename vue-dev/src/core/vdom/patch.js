@@ -278,6 +278,7 @@ export function createPatchFunction (backend) {
     }
     vnode.elm = vnode.componentInstance.$el
     if (isPatchable(vnode)) {
+      // 调用create钩子
       invokeCreateHooks(vnode, insertedVnodeQueue)
       setScope(vnode)
     } else {

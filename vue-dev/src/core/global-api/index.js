@@ -19,7 +19,8 @@ import {
 } from '../util/index'
 
 export function initGlobalAPI (Vue: GlobalAPI) {
-  // config（不要更换Vue的配置对象）
+  // config
+  // 不能更改Vue.config
   const configDef = {}
   configDef.get = () => config
   if (process.env.NODE_ENV !== 'production') {

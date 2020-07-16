@@ -356,6 +356,9 @@ export function stateMixin (Vue: Class<Component>) {
       warn(`$props is readonly.`, this)
     }
   }
+  // 设置访问器属性：
+  // 1、避免$data、$set被替换；
+  // 2、做了一层代理，当访问$data、$props时，实际访问的是this._data、this._props。
   Object.defineProperty(Vue.prototype, '$data', dataDef)
   Object.defineProperty(Vue.prototype, '$props', propsDef)
 
