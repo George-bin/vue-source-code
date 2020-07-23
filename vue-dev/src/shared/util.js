@@ -176,6 +176,7 @@ export const capitalize = cached((str: string): string => {
 
 /**
  * Hyphenate a camelCase string.
+ * 用连字符连接 => useType => use-types
  */
 const hyphenateRE = /\B([A-Z])/g
 export const hyphenate = cached((str: string): string => {
