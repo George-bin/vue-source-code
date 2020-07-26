@@ -136,7 +136,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 }
 
 /**
- * Define a reactive property on an Object.（定义了对象上的响应属性）
+ * Define a reactive property on an Object.数据劫持（定义了对象上的响应属性）
  * @params obj: 被观察的对象
  * @params key: 当前的key
  * @params val: 当前的值
@@ -171,7 +171,7 @@ export function defineReactive (
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
-        dep.depend() // 添加观察者
+        dep.depend() // 添加订阅者
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
