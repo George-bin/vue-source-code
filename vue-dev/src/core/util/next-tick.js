@@ -5,11 +5,14 @@ import { noop } from 'shared/util'
 import { handleError } from './error'
 import { isIE, isIOS, isNative } from './env'
 
+// 是否采用微任务
 export let isUsingMicroTask = false
 
+// 回调任务数组
 const callbacks = []
 let pending = false
 
+// 重置回调函数数组（执行所有的回调函数）
 function flushCallbacks () {
   pending = false
   const copies = callbacks.slice(0)
@@ -86,8 +89,8 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 /**
  * 下一个任务
- * @params cb:
- * @params ctx:
+ * @params cb: 回调函数
+ * @params ctx: 
  */
 export function nextTick (cb?: Function, ctx?: Object) {
   let _resolve

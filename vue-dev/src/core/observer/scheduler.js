@@ -66,7 +66,7 @@ if (inBrowser && !isIE) {
 }
 
 /**
- * Flush both queues and run the watchers.
+ * Flush both queues and run the watchers.（刷新队列并运行监听函数）
  */
 function flushSchedulerQueue () {
   currentFlushTimestamp = getNow()
