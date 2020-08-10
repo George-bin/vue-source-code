@@ -10,6 +10,7 @@ export let isUsingMicroTask = false
 const callbacks = []
 let pending = false
 
+// 刷新回调函数
 function flushCallbacks () {
   pending = false
   const copies = callbacks.slice(0)
@@ -84,6 +85,11 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   }
 }
 
+/**
+ * 下一个任务
+ * @params cb: 回调函数
+ * @params ctx: 
+ */
 export function nextTick (cb?: Function, ctx?: Object) {
   let _resolve
   callbacks.push(() => {

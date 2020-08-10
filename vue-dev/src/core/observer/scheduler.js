@@ -14,7 +14,7 @@ import {
 
 export const MAX_UPDATE_COUNT = 100
 
-const queue: Array<Watcher> = []
+const queue: Array<Watcher> = [] // Wacther队列
 const activatedChildren: Array<Component> = []
 let has: { [key: number]: ?true } = {}
 let circular: { [key: number]: number } = {}
@@ -23,7 +23,7 @@ let flushing = false
 let index = 0
 
 /**
- * Reset the scheduler's state.
+ * Reset the scheduler's state.（重置调度中心的状态）
  */
 function resetSchedulerState () {
   index = queue.length = activatedChildren.length = 0
@@ -66,21 +66,21 @@ if (inBrowser && !isIE) {
 }
 
 /**
- * Flush both queues and run the watchers.
+ * Flush both queues and run the watchers（刷新两个队列并运行监视程序）.
  */
 function flushSchedulerQueue () {
   currentFlushTimestamp = getNow()
   flushing = true
   let watcher, id
 
-  // Sort queue before flush.
+  // Sort queue before flush. => 刷新前对队列进行排序
   // This ensures that:
   // 1. Components are updated from parent to child. (because parent is always
-  //    created before the child)
+  //    created before the child) => 组件从父组件更新到子组件（因为父元素总是在子元素之前创建）
   // 2. A component's user watchers are run before its render watcher (because
-  //    user watchers are created before the render watcher)
+  //    user watchers are created before the render watcher) => 组件的用户监视程序在呈现监视程序之前运行(因为用户监视程序在呈现监视程序之前创建)
   // 3. If a component is destroyed during a parent component's watcher run,
-  //    its watchers can be skipped.
+  //    its watchers can be skipped. => 如果组件在父组件的监视程序运行期间被销毁，则可以跳过其监视程序。
   queue.sort((a, b) => a.id - b.id)
 
   // do not cache length because more watchers might be pushed
@@ -88,7 +88,7 @@ function flushSchedulerQueue () {
   for (index = 0; index < queue.length; index++) {
     watcher = queue[index]
     if (watcher.before) {
-      watcher.before()
+      watcher.before() // 执行beforeUpdate钩子函数
     }
     id = watcher.id
     has[id] = null
@@ -116,7 +116,7 @@ function flushSchedulerQueue () {
 
   resetSchedulerState()
 
-  // call component updated and activated hooks
+  // call component updated and activated hooks（调用组件更新和激活的钩子）
   callActivatedHooks(activatedQueue)
   callUpdatedHooks(updatedQueue)
 
@@ -160,12 +160,14 @@ function callActivatedHooks (queue) {
  * Push a watcher into the watcher queue.
  * Jobs with duplicate IDs will be skipped unless it's
  * pushed when the queue is being flushed.
+ * 将一个Watcher推入Watcher队列
  */
 export function queueWatcher (watcher: Watcher) {
   const id = watcher.id
   if (has[id] == null) {
     has[id] = true
     if (!flushing) {
+      // 将Watcher推入Watcher队列
       queue.push(watcher)
     } else {
       // if already flushing, splice the watcher based on its id
