@@ -33,6 +33,7 @@ export function toggleObserving (value: boolean) {
  * object. Once attached, the observer converts the target
  * object's property keys into getter/setters that
  * collect dependencies and dispatch updates.
+ * @params value: 被观察的对象
  */
 export class Observer {
   value: any;
@@ -60,6 +61,8 @@ export class Observer {
    * Walk through all properties and convert them into
    * getter/setters. This method should only be called when
    * value type is Object.
+   * 遍历obj，定义响应式属性（访问器属性）
+   * @params obj：对象
    */
   walk (obj: Object) {
     const keys = Object.keys(obj)
@@ -106,6 +109,9 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * Attempt to create an observer instance for a value,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
+ * 尝试创建一个观察者对象
+ * @params value: 被观察的值
+ * @params asRootData: 被观察的值
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
@@ -130,7 +136,12 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 }
 
 /**
- * Define a reactive property on an Object.（定义了对象上的响应属性）
+ * Define a reactive property on an Object.数据劫持（定义了对象上的响应属性）
+ * @params obj: 被观察的对象
+ * @params key: 当前的key
+ * @params val: 当前的值
+ * @params customSetter: fn
+ * @params shallow: 
  */
 export function defineReactive (
   obj: Object,
@@ -160,7 +171,7 @@ export function defineReactive (
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
-        dep.depend()
+        dep.depend() // 添加订阅者
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
@@ -188,7 +199,7 @@ export function defineReactive (
         val = newVal
       }
       childOb = !shallow && observe(newVal)
-      dep.notify()
+      dep.notify() // 触发更新
     }
   })
 }

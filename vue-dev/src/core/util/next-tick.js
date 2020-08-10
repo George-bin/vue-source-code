@@ -5,8 +5,10 @@ import { noop } from 'shared/util'
 import { handleError } from './error'
 import { isIE, isIOS, isNative } from './env'
 
+// 是否采用微任务
 export let isUsingMicroTask = false
 
+// 回调任务数组
 const callbacks = []
 let pending = false
 

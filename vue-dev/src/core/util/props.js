@@ -18,6 +18,13 @@ type PropOptions = {
   validator: ?Function
 };
 
+/**
+ * 校验prop
+ * @params key: 当前prop的key
+ * @params propOptions: 用户传入的props
+ * @params propsData: 父组件传参 => vm.$options.propsData
+ * @params vm: 当前实例对象
+ */
 export function validateProp (
   key: string,
   propOptions: Object,
@@ -25,9 +32,9 @@ export function validateProp (
   vm?: Component
 ): any {
   const prop = propOptions[key]
-  const absent = !hasOwn(propsData, key)
+  const absent = !hasOwn(propsData, key) // 是否存在相同的key
   let value = propsData[key]
-  // boolean casting
+  // boolean casting（父组件传入的props）
   const booleanIndex = getTypeIndex(Boolean, prop.type)
   if (booleanIndex > -1) {
     if (absent && !hasOwn(prop, 'default')) {
@@ -41,7 +48,7 @@ export function validateProp (
       }
     }
   }
-  // check default value
+  // check default value（获取用户指定的默认值）
   if (value === undefined) {
     value = getPropDefaultValue(vm, prop, key)
     // since the default value is a fresh copy,
@@ -62,7 +69,10 @@ export function validateProp (
 }
 
 /**
- * Get the default value of a prop.
+ * Get the default value of a prop.（获取prop的默认值）
+ * @params vm：当前组件实例
+ * @params prop：prop默认值
+ * @params key：当前prop的key
  */
 function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): any {
   // no default, return undefined
@@ -71,6 +81,7 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
   }
   const def = prop.default
   // warn against non-factory defaults for Object & Array
+  // 如果默认值是一个引用类型，必须通过函数返回一个引用类型，保证组件在多个地方被引用时，不会导致数据错乱
   if (process.env.NODE_ENV !== 'production' && isObject(def)) {
     warn(
       'Invalid default value for prop "' + key + '": ' +
@@ -96,6 +107,11 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
 
 /**
  * Assert whether a prop is valid.
+ * @params prop：当前prop参数
+ * @params name：当前prop的key
+ * @params value：当前prop的值
+ * @params vm：当前实例对象
+ * @params absent：
  */
 function assertProp (
   prop: PropOptions,

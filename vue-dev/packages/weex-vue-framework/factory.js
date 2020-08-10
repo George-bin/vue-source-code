@@ -967,6 +967,7 @@ function copyAugment (target, src, keys) {
  * Attempt to create an observer instance for a value,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
+ * 创建一个观察者对象
  */
 function observe (value, asRootData) {
   if (!isObject(value) || value instanceof VNode) {

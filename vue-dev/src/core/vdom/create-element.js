@@ -29,7 +29,7 @@ const ALWAYS_NORMALIZE = 2 // 手写render函数
  * 创建vnode（包装函数）
  * @params context: 当前vm实例（上下文环境）
  * @params tag: 标签名 | 对象(组件)
- * @params data: 跟vnode相关的数据 => 用户传参
+ * @params data: VNodeData类型 => 用户传参
  * @params children: 子节点（tree）
  * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
  * @params alwaysNormalize:  是否深层规划化（递归子节点）=> 手写render函数：true；编译生成render函数：false
@@ -58,7 +58,7 @@ export function createElement (
  * 创建Vnode
  * @params context: 当前vm实例（当前上下文环境）
  * @params tag: 字符串（标签名） | 组件 | 函数 | 对象；
- * @params data: 表示vnode的相关数据，是一个VNodeData类型； => 用户传参
+ * @params data: VNodeData类型 => 用户传参
  * @params chilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组；
  * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
  */
@@ -137,7 +137,7 @@ export function _createElement (
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component（组件相关  ）
+      // component
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // 不认识的节点 
@@ -149,8 +149,8 @@ export function _createElement (
         undefined, undefined, context
       )
     }
-  } else { // 组件
-    // direct component options / constructor（创建组件Vnode）
+  } else { // 组件（渲染的是一个组件）
+    // direct component options / constructor（创建组件Vnode占位符）
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {
