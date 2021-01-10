@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>观察者模式</title>
+	<meta charset="utf-8">
+	<!-- <script type="text/javascript" src="./utils/vue.js"></script> -->
+</head>
+<body>
+	<script type="text/javascript">
+		let styles1 = `
+			padding: 5px 10px;
+			border: 1px solid #d9ecff;
+			color: #409EFF;
+			background: #ecf5ff;
+		`
+		let styles2 = `
+			padding: 5px 10px;
+			border: 1px solid #fbc4c4;
+			color: #F56C6C;
+		    background: #fef0f0;
+		`
+		let styles3 = `
+			padding: 5px 10px;
+			border: 1px solid #c2e7b0;
+			color: #67C23A;
+		    background: #f0f9eb;
+		`
+		console.log('%c欢迎来到观察者模式！', styles1);
+		// 被观察者
+
+		// 定义发布者（观察者）
+		function Observer() {
+			// 消息容器
+			this.message = {}
+		}
+		Observer.prototype.add = function(type, watcher) {
+			if (!this.message[type]) {
+				this.message[type] = [watcher];
+			} else {
+				let index = this.message[type].findIndex(item => item === watcher);
+				// 避免重复订阅
+				if (index > -1) {
+					console.log(`%cWatcher${watcher.id}重复订阅了《${type}》!`, styles3)
+					return;
+				}
+				this.message[type].push(watcher);
+			}
+			console.log(`%cWatcher${watcher.id}订阅了《${type}》!`, styles3)
+		}
+		Observer.prototype.del = function(type, watcher) {
+			if (!this.message[type]) return;
+			let index = this.message[type].findIndex(item => item === watcher);
+			if (index > -1) {
+				console.log(`%cWatcher${watcher.id}取消订阅《${type}》!`, styles3)
+				this.message[type].splice(index, 1);
+			}
+		}
+		Observer.prototype.notity = function(type, value) {
+			if (this.message[type]) {
+				for (let i = 0, len = this.message[type].length; i < len; i++) {
+					// 通知订阅者，执行各自的业务逻辑
+					this.message[type][i].run(type, value);
+				}
+			}
+		}
+
+		// 定义订阅者
+		let id = 0;
+		function Watcher(fn) {
+			this.id = ++id; 
+			this.cb = fn ? fn : (type, value) => {
+				console.log(`%cWatcher${this.id}收到【${type}】通知: ${value}`, styles2);
+			};
+		}
+		// 执行具体业务的回调函数
+		Watcher.prototype.run = function(type, value) {
+			this.cb(type, value);
+		}
+
+		let observer = new Observer();
+		let watcher1 = new Watcher();
+		let watcher2 = new Watcher();
+		observer.add('人民日报', watcher1);
+		observer.add('参考消息', watcher1);
+		observer.add('参考消息', watcher2);
+		observer.notity('人民日报', '隔壁老王家的儿子要结婚了！');
+		observer.notity('参考消息', '恭喜发财!');
+		observer.del('参考消息', watcher1);
+		observer.notity('参考消息', 'Hello, World!');
+
+
+		// 学生类
+		function Student(result) {
+			this.id = ++id;
+			this.result = result;
+		}
+		// 订阅问题
+		Student.prototype.answer = function(question) {
+			observer.add(question, this)
+		}
+		Student.prototype.run = function(type) {
+			console.log(`%c${this.result}`, styles3);
+		}
+
+		// 老师类
+		function Teacher() {}
+		// 提问题
+		Teacher.prototype.ask = function(question) {
+			console.log(`%c老师的问题是：${question}`, styles2)
+			observer.notity(question);
+		}
+
+		// let student1 = new Student('学生1的回答');
+		// let student2 = new Student('学生2的回答');
+		// let student3 = new Student('学生3的回答');
+		// let teacher = new Teacher();
+		// student1.answer('什么是设计模式？');
+		// student2.answer('什么是设计模式？');
+		// teacher.ask('什么是设计模式？');
+	</script>
+</body>
+</html>
