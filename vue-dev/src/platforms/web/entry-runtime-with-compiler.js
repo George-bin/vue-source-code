@@ -13,7 +13,6 @@ const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
-
 // 缓存Vue.prototype.$mount => 这里对应runtime/index.js中的$mount方法
 const mount = Vue.prototype.$mount
 /**
@@ -109,7 +108,5 @@ function getOuterHTML (el: Element): string {
     return container.innerHTML
   }
 }
-
 Vue.compile = compileToFunctions
-
 export default Vue

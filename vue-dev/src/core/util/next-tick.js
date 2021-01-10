@@ -12,7 +12,7 @@ export let isUsingMicroTask = false
 const callbacks = []
 let pending = false
 
-// 重置回调函数数组（执行所有的回调函数）
+// 刷新回调函数
 function flushCallbacks () {
   pending = false
   const copies = callbacks.slice(0)

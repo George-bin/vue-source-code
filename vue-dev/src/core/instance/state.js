@@ -53,7 +53,7 @@ export function proxy (target: Object, sourceKey: string, key: string) {
  * @params vm: 当前实例对象
  */
 export function initState (vm: Component) {
-  vm._watchers = [] // 监听器
+  vm._watchers = [] // 监听器数组
   const opts = vm.$options
   if (opts.props) initProps(vm, opts.props)
   if (opts.methods) initMethods(vm, opts.methods)
@@ -189,6 +189,11 @@ export function getData (data: Function, vm: Component): any {
 
 const computedWatcherOptions = { lazy: true }
 
+/**
+ * 初始化computed
+ * @params vm: 当前实例对象
+ * @params computed: 用户手写的computed对象
+ */
 function initComputed (vm: Component, computed: Object) {
   // $flow-disable-line
   const watchers = vm._computedWatchers = Object.create(null)
@@ -207,6 +212,7 @@ function initComputed (vm: Component, computed: Object) {
 
     if (!isSSR) {
       // create internal watcher for the computed property.
+      // 创建一个computed Watcher
       watchers[key] = new Watcher(
         vm,
         getter || noop,
@@ -230,11 +236,18 @@ function initComputed (vm: Component, computed: Object) {
   }
 }
 
+/**
+ * 计算属性数据劫持
+ * @params target: 当前实例对象
+ * @params key: 计算属性的key
+ * @params userDef: 实际执行函数（生成最终值）
+ */
 export function defineComputed (
   target: any,
   key: string,
   userDef: Object | Function
 ) {
+  // 判断是否为服务端渲染进行值缓存（懒计算）
   const shouldCache = !isServerRendering()
   if (typeof userDef === 'function') {
     sharedPropertyDefinition.get = shouldCache
@@ -261,6 +274,10 @@ export function defineComputed (
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 
+/**
+ * 创建一个computed Getter函数
+ * @params key: 计算属性的key
+ */
 function createComputedGetter (key) {
   return function computedGetter () {
     const watcher = this._computedWatchers && this._computedWatchers[key]
@@ -310,6 +327,11 @@ function initMethods (vm: Component, methods: Object) {
   }
 }
 
+/**
+ * 初始化Watch
+ * @params vm: 当前实例对象
+ * @params watch: 用户手写的watch对象
+ */
 function initWatch (vm: Component, watch: Object) {
   for (const key in watch) {
     const handler = watch[key]
@@ -323,6 +345,13 @@ function initWatch (vm: Component, watch: Object) {
   }
 }
 
+/**
+ * 创建一个watch Watcher
+ * @params vm: 当前实例对象
+ * @params expOrFn: key
+ * @params handler: 实际执行函数
+ * @params options: 参数
+ */
 function createWatcher (
   vm: Component,
   expOrFn: string | Function,
@@ -368,6 +397,12 @@ export function stateMixin (Vue: Class<Component>) {
   Vue.prototype.$set = set
   Vue.prototype.$delete = del
 
+  /**
+   * watch Watcher
+   * @params expOrFn: key
+   * @params cb: 执行函数
+   * @params options: 
+   */
   Vue.prototype.$watch = function (
     expOrFn: string | Function,
     cb: any,

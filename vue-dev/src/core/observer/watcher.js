@@ -142,7 +142,8 @@ export default class Watcher {
   }
 
   /**
-   * Add a dependency to this directive.
+   * Add a dependency to this directive.（添加依赖项）
+   * @params dep: 依赖项 => 某一调度中心
    */
   addDep (dep: Dep) {
     const id = dep.id
@@ -156,7 +157,7 @@ export default class Watcher {
   }
 
   /**
-   * Clean up for dependency collection.
+   * Clean up for dependency collection.（清理依赖项 => 优化项）
    */
   cleanupDeps () {
     let i = this.deps.length
@@ -224,9 +225,8 @@ export default class Watcher {
   }
 
   /**
-   * Evaluate the value of the watcher.
-   * This only gets called for lazy watchers.
-   * (针对computed => 懒惰计算)
+   * Evaluate the value of the watcher（计算观察者的值）.
+   * This only gets called for lazy watchers（只有懒惰的观察者才会这么做）.
    */
   evaluate () {
     this.value = this.get()
@@ -234,7 +234,7 @@ export default class Watcher {
   }
 
   /**
-   * Depend on all deps collected by this watcher.
+   * Depend on all deps collected by this watcher（观察者所有依赖的数据）.
    */
   depend () {
     let i = this.deps.length

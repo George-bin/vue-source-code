@@ -149,7 +149,7 @@ export function hasOwn (obj: Object | Array<*>, key: string): boolean {
 }
 
 /**
- * Create a cached version of a pure function.
+ * Create a cached version of a pure function.（创建一个纯函数的缓存版本）
  */
 export function cached<F: Function> (fn: F): F {
   const cache = Object.create(null)
@@ -176,7 +176,7 @@ export const capitalize = cached((str: string): string => {
 
 /**
  * Hyphenate a camelCase string.
- * 用连字符连接 => useType => use-types
+ * 规格化props key：typeStringWord => type-string-word
  */
 const hyphenateRE = /\B([A-Z])/g
 export const hyphenate = cached((str: string): string => {
