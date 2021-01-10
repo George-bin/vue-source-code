@@ -57,7 +57,7 @@ Dep.target = null
 const targetStack = []
 
 export function pushTarget (target: ?Watcher) {
-  targetStack.push(target)
+  vm.$createElement.push(target)
   Dep.target = target
 }
 

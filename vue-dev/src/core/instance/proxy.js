@@ -55,6 +55,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 
   const hasHandler = {
+    // 用于拦截hasProperty操作
     has (target, key) {
       const has = key in target
       const isAllowed = allowedGlobals(key) ||

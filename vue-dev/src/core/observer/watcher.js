@@ -33,8 +33,8 @@ let uid = 0
  */
 export default class Watcher {
   vm: Component;
-  expression: string;
-  cb: Function;
+  expression: string; // 每一个DOM attr对应的string
+  cb: Function; // update的时候的回调函数
   id: number;
   deep: boolean;
   user: boolean;
@@ -84,6 +84,7 @@ export default class Watcher {
       ? expOrFn.toString()
       : ''
     // parse expression for getter
+    /*把表达式expOrFn解析成getter*/
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
@@ -105,11 +106,21 @@ export default class Watcher {
 
   /**
    * Evaluate the getter, and re-collect dependencies.
+   * 获得getter的值并且重新进行依赖收集
    */
   get () {
+    /*将自身watcher观察者实例设置给Dep.target，用以依赖收集。*/
     pushTarget(this)
     let value
     const vm = this.vm
+    /*
+      执行了getter操作，看似执行了渲染操作，其实是执行了依赖收集。
+      在将Dep.target设置为自身观察者实例以后，执行getter操作。
+      譬如说现在的的data中可能有a、b、c三个数据，getter渲染需要依赖a跟c，
+      那么在执行getter的时候就会触发a跟c两个数据的getter函数，
+      在getter函数中即可判断Dep.target是否存在然后完成依赖收集，
+      将该观察者对象放入闭包中的Dep的subs中去。
+    */
     try {
       value = this.getter.call(vm, vm)
     } catch (e) {
@@ -176,6 +187,7 @@ export default class Watcher {
     } else if (this.sync) {
       this.run()
     } else {
+      console.log(123)
       queueWatcher(this)
     }
   }

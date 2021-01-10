@@ -204,6 +204,11 @@ function isSameType (a, b) {
   return getType(a) === getType(b)
 }
 
+/**
+ * 
+ * @param {*} type 
+ * @param {*} expectedTypes 
+ */
 function getTypeIndex (type, expectedTypes): number {
   if (!Array.isArray(expectedTypes)) {
     return isSameType(expectedTypes, type) ? 0 : -1

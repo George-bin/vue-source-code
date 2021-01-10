@@ -25,7 +25,7 @@ const weexFactoryPlugin = {
   }
 }
 
-// 根据别名配置和用户输入匹配到正确路径（最终路径）
+// 根据别名和关键词匹配到正确路径（绝对路径）
 const aliases = require('./alias')
 const resolve = p => {
   const base = p.split('/')[0]

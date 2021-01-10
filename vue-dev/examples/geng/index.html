@@ -7,16 +7,50 @@
     <script src="../../dist/vue.js"></script>
 </head>
 <body>
-    <div id="app">{{message}}</div>
+    <div id="app">
+        <!-- <p>{{message}}123</p> -->
+        <!-- <p>{{useType}}</p> -->
+        <!-- <button @click="handleChangeMessage">change</button> -->
+    </div> 
     <script>
-        let app = new Vue({
-            // el: '#app',
-            // template: '#app',
-            data: {
-                message: 'Hello Word'
-            },
-            render: h => h(App)
+        // 打开性能监控
+        Vue.config.performance = true;
+        var mixin = {
+           created: function () { console.log(1) }
+        }
+        var Profile = Vue.extend({
+            template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
+            data: function () {
+                return {
+                    firstName: 'Walter',
+                    lastName: 'White',
+                    alias: 'Heisenberg'
+                }
+            }
         })
+        // let app = new Vue({
+        //     el: '#app',
+        //     props: {
+        //         // useType: {
+        //         //     type: String,
+        //         //     default: 'add'
+        //         // }
+        //     },
+        //     mixins: [mixin],
+        //     data: {
+        //         message: 'hello, vue!',
+        //         // userinfo: {
+        //         //     username: 'George',
+        //         //     email: 'bin770021714@126.com'
+        //         // }
+        //     },
+        //     methods: {
+        //         handleChangeMessage () {
+        //             this.message = '我改变了！'
+        //         }
+        //     }
+        //     // template: '<div>{{msg}}</div>'
+        // })
     </script>
 </body>
 </html>

@@ -7,7 +7,7 @@
  * @params text: 文本 => 表明这是一个文本Vnode
  * @params elm: 真实DOM节点
  * @params context: 当前实例对象
- * @params componentOptions: 
+ * @params componentOptions: 组件参数Ctor、propsData、listeners、on、tag、children
  * @params asyncFactory: 
  */
 export default class VNode {
