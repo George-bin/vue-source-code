@@ -12,6 +12,7 @@ export function initAssetRegisters (Vue: GlobalAPI) {
       id: string,
       definition: Function | Object
     ): Function | Object | void {
+      debugger
       if (!definition) {
         return this.options[type + 's'][id]
       } else {

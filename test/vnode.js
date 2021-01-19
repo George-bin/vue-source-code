@@ -3,11 +3,11 @@ export default {
 	data: {
 		attrs: {},
 		pendingInsert: [],
-		
+		inlineTemplate: undefined
 	}, // 
 	children: [], // 子Vnode
 	text: '',
-	elm: '', // 挂载点
+	elm: '', // 挂载到的DOM元素
 	ns: '',
 	context: undefined, // 上下文环境 => 最上层的Vue实例（new Vue）
 	fnContext: undefined,
@@ -21,7 +21,7 @@ export default {
 		propsData: undefined,
 		tag: undefined
 	},
-	componentInstance: undefined, // 组件实例
+	componentInstance: undefined, // 组件实例 => Sub => 只有组件Vnode有该属性
 	parent: undefined, // 父Vnode
 	raw: false,
 	isStatic: false,

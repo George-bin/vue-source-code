@@ -33,9 +33,12 @@ export function initMixin (Vue: Class<Component>) {
     vm._isVue = true
     // merge options（合并配置）
     if (options && options._isComponent) { // 是一个组件
-      // optimize internal component instantiation（优化内部组件实例）
-      // since dynamic options merging is pretty slow, and none of the（因为动态选项合并是相当慢的，而且没有）
-      // internal component options needs special treatment.（内部组件选项需要特殊处理）
+      // optimize internal component instantiation
+      // since dynamic options merging is pretty slow, and none of the
+      // internal component options needs special treatment.
+      /**
+       * 优化内部组件的实例，因为动态选项合并非常缓慢，而且没有一个内部组件的options需要特殊处理。
+       */
       initInternalComponent(vm, options)
     } else { // 不是组件
       // 合并参数
@@ -112,7 +115,7 @@ export function resolveConstructorOptions (Ctor: Class<Component>) {
   if (Ctor.super) { // Vue
     const superOptions = resolveConstructorOptions(Ctor.super) // 递归调用
     const cachedSuperOptions = Ctor.superOptions
-    if (superOptions !== cachedSuperOptions) { // Vue配置参数发生改变
+    if (superOptions !== cachedSuperOptions) { // Vue的基础配置参数发生改变
       // super option changed,
       // need to resolve new options.
       Ctor.superOptions = superOptions

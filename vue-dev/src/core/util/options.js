@@ -284,13 +284,14 @@ function checkComponents (options: Object) {
 
 // 校验组件name
 export function validateComponentName (name: string) {
+  // 满足h5命名规范
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeRegExp.source}]*$`).test(name)) {
     warn(
       'Invalid component name: "' + name + '". Component names ' +
       'should conform to valid custom element name in html5 specification.'
     )
   }
-  // 与内置html标签冲突
+  // 与内置组件名称或原生html标签冲突
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
     warn(
       'Do not use built-in or reserved HTML elements as component ' +
@@ -392,7 +393,7 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
 /**
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
- * 将两个对象合并成一个新的对象（将child合并到parent上）
+ * 将两个对象合并成一个新的对象（在实例化和继承中使用的核心实用程序）
  * @params parent: 类的相关静态属性
  * @params child: 用户手动传入的参数
  * @params vm: 当前实例
@@ -462,6 +463,7 @@ export function mergeOptions (
  * @params id: key值
  * @params warnMissing: 类型
  */
+// 之所以使用这个函数，是因为子实例需要访问其父元素原型链中要定义的方法
 export function resolveAsset (
   options: Object,
   type: string,

@@ -56,11 +56,11 @@ export function createElement (
 
 /**
  * 创建Vnode
- * @params context: 当前vm实例（当前上下文环境）
- * @params tag: 字符串（标签名） | 组件 | 函数 | 对象；
- * @params data: VNodeData类型 => 用户传参
- * @params chilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组；
- * @params normalizationType: 表示子节点规范使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
+ * @params context: 当前vm实例（Vnode上下文环境），它是Component类型
+ * @params tag: 字符串（标签名） | 组件 | 函数 | 对象
+ * @params data: Vnode的数据（VNodeData） => 用户传参
+ * @params chilren: 当前Vnode的子节点，它是任意类型的，它接下来需要被规范为标准的 VNode 数组
+ * @params normalizationType: 表示规范子节点时使用哪个函数，它主要参考render函数是编译生成的还是用户手写的
  */
 export function _createElement (
   context: Component,
@@ -114,8 +114,11 @@ export function _createElement (
   // 对children做normaliza（转换为一维数组）
   if (normalizationType === ALWAYS_NORMALIZE) {
     // 递归打平
+    // 1.render函数是用户手写的，当children只有一个节点的时候，Vue从接口层面允许用户把children写成基础类型用来创建单个简单的文本节点
+    // 2.当编译slot、v-for的时候会产生嵌套数组的情况
     children = normalizeChildren(children)
   } else if (normalizationType === SIMPLE_NORMALIZE) {
+    // render函数是编译生成的
     children = simpleNormalizeChildren(children)
   }
   let vnode, ns
@@ -137,7 +140,7 @@ export function _createElement (
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
+      // 实例化组件
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // 不认识的节点 

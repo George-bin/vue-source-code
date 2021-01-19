@@ -23,7 +23,7 @@ let flushing = false
 let index = 0
 
 /**
- * Reset the scheduler's state.（重置调度中心的状态）
+ * Reset the scheduler's state.（状态恢复）
  */
 function resetSchedulerState () {
   index = queue.length = activatedChildren.length = 0

@@ -168,6 +168,7 @@ export function createComponent (
 
   // resolve constructor options in case global mixins are applied after
   // component constructor creation
+  // 解析构造函数选项，以防止在组件构造函数创建后应用全局混入
   // 重新计算options，避免被全局的Mixin影响
   resolveConstructorOptions(Ctor)
 

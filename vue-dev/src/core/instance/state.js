@@ -91,7 +91,7 @@ function initProps (vm: Component, propsOptions: Object) {
     if (process.env.NODE_ENV !== 'production') {
       // useType => use-type
       const hyphenatedKey = hyphenate(key)
-      // 是否为保留属性is、key、ref、slot、slot-scope
+      // 是否为保留属性is、key、ref、slot、slot-scope等
       if (isReservedAttribute(hyphenatedKey) ||
           config.isReservedAttr(hyphenatedKey)) {
         warn(

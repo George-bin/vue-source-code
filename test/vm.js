@@ -3,16 +3,13 @@ export default {
 		el: '#app', // 用户手动传入的el（元素选择器）
 		parent: vm, // 父实例
 		abstract: false, // 抽象的
-		_parentVnode: null, // 父节点的vnode数据
-		_parentListeners: {}, // 父节点的监听事件
 		inject: {}, // 注入
 		props: {},
 		methods: {},
 		data: fn, // 用户传入的data数据（如果传入data不是一个函数，会自动转换为一个函数并返回一个对象）
 		computed: {},
 		watch: {},
-		propsData: {},
-		_propsKeys: [], // 缓存_propsData的键，以后props更新时可以使用数组迭代，而不是动态枚举对象的键
+		_propsKeys: [], // _props => 缓存_propsData的键，以后props更新时可以使用数组迭代，而不是动态枚举对象的键
 		render: fn, // 渲染函数
 		staticRenderFns： fns,
 		_base: Ctor, // 基础构造器 => Vue大类
@@ -25,8 +22,11 @@ export default {
 		staticRenderFns: [], // 静态渲染函数
 		functional: undefined, // 函数组件
 		_isComponent: true,
-		_componentTag: undefined,
-		_renderChildren: undefined,
+		_componentTag: undefined, // parentVnode.componentOptions.tag
+		_renderChildren: undefined, // parentVnode.componentOptions.children
+		propsData: {}, // parentVnode.componentOptions.propsData
+		_parentVnode: null, // 父实例的vnode数据
+		_parentListeners: {}, // 父实例的监听事件 => parentVnode.componentOptions.listeners
 
 	}, // 配置项：components、props、methods、data、computed、watch
 	_renderProxy: {}, // 代理对象
@@ -56,13 +56,13 @@ export default {
 	// initRender
 	_vnode: null, // 实例本身的vnode数据
 	_staticTrees: null, // 缓存的树 => v-once
-	$vnode: {}, // 父节点的vnode数据
+	$vnode: {}, // 父实例的vnode数据
 	$slots: null,
 	$scopedSlots: null,
 	_c: fn, // 供由模板编译生成的render方法使用
 	_$createElement: fn, // 供由手写的render方法使用
-	$attrs: {}, // 
-	$listeners: {} // 父节点的监听事件
+	$attrs: {}, // 父实例的Vnode.data.attrs
+	$listeners: {} // 父实例的监听事件vm.$options._parentListeners
 
 	// initState
 	_watchers: [], // 订阅者数组
@@ -80,7 +80,21 @@ export default {
 	$mount: fn, // 执行挂载
 }
 
-Vue.options = {}
-Sub.options = {
-
+// 基础配置参数
+Vue.options = {
+	components: {},
+	directives: {},
+	filters: {},
+	_base: Vue, // initGlobalAPI
 }
+let Sub = {
+	options: {
+		_isComponent: true,
+		_parentVnode: vnode,
+		parent: parent
+	},
+	extendOptions: {
+		_Cotr: {} // 缓存子类（子组件）构造器
+	}
+}
+Sub.super = Vue; // 指向其父类

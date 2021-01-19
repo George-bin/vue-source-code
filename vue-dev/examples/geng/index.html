@@ -8,49 +8,70 @@
 </head>
 <body>
     <div id="app">
-        <!-- <p>{{message}}123</p> -->
-        <!-- <p>{{useType}}</p> -->
-        <!-- <button @click="handleChangeMessage">change</button> -->
+        <p>{{message}}</p>
+        <p>{{useType}}</p>
+        <my-component></my-component>
+        <button @click="handleChangeMessage">change</button>
     </div> 
     <script>
         // 打开性能监控
-        Vue.config.performance = true;
+        // Vue.config.performance = true;
         var mixin = {
            created: function () { console.log(1) }
         }
-        var Profile = Vue.extend({
-            template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
-            data: function () {
-                return {
-                    firstName: 'Walter',
-                    lastName: 'White',
-                    alias: 'Heisenberg'
-                }
-            }
-        })
-        // let app = new Vue({
-        //     el: '#app',
-        //     props: {
-        //         // useType: {
-        //         //     type: String,
-        //         //     default: 'add'
-        //         // }
-        //     },
-        //     mixins: [mixin],
-        //     data: {
-        //         message: 'hello, vue!',
-        //         // userinfo: {
-        //         //     username: 'George',
-        //         //     email: 'bin770021714@126.com'
-        //         // }
-        //     },
-        //     methods: {
-        //         handleChangeMessage () {
-        //             this.message = '我改变了！'
+        // var Profile = Vue.extend({
+        //     template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
+        //     data: function () {
+        //         return {
+        //             firstName: 'Walter',
+        //             lastName: 'White',
+        //             alias: 'Heisenberg'
         //         }
         //     }
-        //     // template: '<div>{{msg}}</div>'
         // })
+        let childComp = {
+            template: '<div>{{msg}}</div>',
+            created() {
+                console.log('child created')
+            },
+            mounted() {
+                console.log('child mounted')
+            },
+            data() {
+                return {
+                    msg: '你好，世界！'
+                }
+            }
+        }
+        Vue.component('my-component', childComp)
+        // let app = new Vue({
+        //     el: '#app',
+        //     render: h => h(childComp)
+        // })
+
+        let app = new Vue({
+            el: '#app',
+            props: {
+                useType: {
+                    type: String,
+                    default: 'add'
+                }
+            },
+            mixins: [mixin],
+            data: {
+                message: 'hello, vue!',
+                // userinfo: {
+                //     username: 'George',
+                //     email: 'bin770021714@126.com'
+                // }
+            },
+            methods: {
+                handleChangeMessage () {
+                    this.message = Math.random()
+                }
+            }
+            // template: '<div>{{msg}}</div>'
+        })
     </script>
 </body>
 </html>

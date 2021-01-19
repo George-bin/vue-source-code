@@ -132,10 +132,13 @@ export default class Watcher {
     } finally {
       // "touch" every property so they are all tracked as
       // dependencies for deep watching
+      // 递归访问value，触发它所有子项的getter
       if (this.deep) {
         traverse(value)
       }
+      // 把Dep.target恢复成上一个状态，因为当前vm的数据依赖收集已经完成
       popTarget()
+      // 清空依赖
       this.cleanupDeps()
     }
     return value
@@ -161,6 +164,7 @@ export default class Watcher {
    */
   cleanupDeps () {
     let i = this.deps.length
+    // 从对应的data依赖收集器中移除Watcher（取消订阅的数据）
     while (i--) {
       const dep = this.deps[i]
       if (!this.newDepIds.has(dep.id)) {

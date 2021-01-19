@@ -40,6 +40,7 @@ export function createAsyncPlaceholder (
   return node
 }
 
+// 获取异步组件
 export function resolveAsyncComponent (
   factory: Function,
   baseCtor: Class<Component>
