@@ -22,7 +22,7 @@ function flushCallbacks () {
   }
 }
 
-// Here we have async deferring wrappers using microtasks.
+// Here we have async deferring wrappers using microtasks(微任务 => 异步延迟包装器).
 // In 2.5 we used (macro) tasks (in combination with microtasks).
 // However, it has subtle problems when state is changed right before repaint
 // (e.g. #6813, out-in transitions).
@@ -42,6 +42,7 @@ let timerFunc
 // completely stops working after triggering a few times... so, if native
 // Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
+// MutationObserver在ios>=9.3.3的UIWebView中存在严重bug，推荐使用promise
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
   const p = Promise.resolve()
   timerFunc = () => {
@@ -51,6 +52,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     // microtask queue but the queue isn't being flushed, until the browser
     // needs to do some other work, e.g. handle a timer. Therefore we can
     // "force" the microtask queue to be flushed by adding an empty timer.
+    // 对于promise在有问题的UIWebViews中，通过一个空计时器来强制刷新微任务队列
     if (isIOS) setTimeout(noop)
   }
   isUsingMicroTask = true
@@ -110,6 +112,7 @@ export function nextTick (cb?: Function, ctx?: Object) {
     timerFunc()
   }
   // $flow-disable-line
+  // 当不传递cb这个参数时，提供一个Promise化的调用。
   if (!cb && typeof Promise !== 'undefined') {
     return new Promise(resolve => {
       _resolve = resolve
