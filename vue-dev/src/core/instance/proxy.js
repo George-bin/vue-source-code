@@ -6,6 +6,7 @@ import { warn, makeMap, isNative } from '../util/index'
 let initProxy
 
 if (process.env.NODE_ENV !== 'production') {
+  // 用于判断key(键)是否为Webpack/Browserify的key冲突
   const allowedGlobals = makeMap(
     'Infinity,undefined,NaN,isFinite,isNaN,' +
     'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +

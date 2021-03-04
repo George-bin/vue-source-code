@@ -172,7 +172,7 @@ export function enter (vnode: VNodeWithData, toggleDisplay: ?() => void) {
     cb()
   }
 }
-
+// dom元素删除前的动画
 export function leave (vnode: VNodeWithData, rm: Function) {
   const el: any = vnode.elm
 

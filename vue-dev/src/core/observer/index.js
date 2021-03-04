@@ -33,6 +33,7 @@ export function toggleObserving (value: boolean) {
  * object. Once attached, the observer converts the target
  * object's property keys into getter/setters that
  * collect dependencies and dispatch updates.
+ * 附加到每个被观察对象的观察者类。一旦附加上，观察者就会把目标对象的属性转换成getter/setter来收集依赖项和派发更新。
  * @params value: 被观察的对象
  */
 export class Observer {
@@ -109,7 +110,7 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * Attempt to create an observer instance for a value,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
- * 尝试创建一个观察者对象
+ * 尝试为一个对象创建一个观察者实例，如果成功观察到，则返回新的观察者；如果这个对象已经有一个观察者，则返回现有的观察者
  * @params value: 被观察的值
  * @params asRootData: 被观察的值
  */
@@ -141,8 +142,8 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
  * @params obj: 被观察的对象
  * @params key: 当前的key
  * @params val: 当前的值
- * @params customSetter: fn
- * @params shallow: 
+ * @params customSetter: fn => 自定义setter
+ * @params shallow: 深/浅监听
  */
 export function defineReactive (
   obj: Object,

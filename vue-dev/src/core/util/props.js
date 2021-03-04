@@ -25,6 +25,11 @@ type PropOptions = {
  * @params propsData: 父组件传参 => vm.$options.propsData
  * @params vm: 当前实例对象
  */
+/**
+ * 1.判断用户是否正常传递该参数，没有则获取默认参数；
+ * 2.如果默认参数是一个对象，还会进行响应式设置；
+ * 3.对prop进行进行类型断言，抛出警告信息。
+ */
 export function validateProp (
   key: string,
   propOptions: Object,
@@ -32,16 +37,17 @@ export function validateProp (
   vm?: Component
 ): any {
   const prop = propOptions[key]
-  const absent = !hasOwn(propsData, key) // 是否存在相同的key
+  const absent = !hasOwn(propsData, key) // 是否存在相同的key => 缺席判断（父组件没有传递该参数）
   let value = propsData[key]
-  // boolean casting（父组件传入的props）
+  // boolean casting（父组件传入的props）=> 判断prop是否是Boolean类型的数据
   const booleanIndex = getTypeIndex(Boolean, prop.type)
   if (booleanIndex > -1) {
-    if (absent && !hasOwn(prop, 'default')) {
+    if (absent && !hasOwn(prop, 'default')) { // 缺席且子组件没有声明default默认值
       value = false
     } else if (value === '' || value === hyphenate(key)) {
       // only cast empty string / same name to boolean if
       // boolean has higher priority
+      // 如果布尔值具有更高的优先级，则将空字符/相同名称转为布尔值
       const stringIndex = getTypeIndex(String, prop.type)
       if (stringIndex < 0 || booleanIndex < stringIndex) {
         value = true
@@ -55,7 +61,7 @@ export function validateProp (
     // make sure to observe it.
     const prevShouldObserve = shouldObserve
     toggleObserving(true)
-    observe(value)
+    observe(value) // 数据响应式
     toggleObserving(prevShouldObserve)
   }
   if (
@@ -69,7 +75,7 @@ export function validateProp (
 }
 
 /**
- * Get the default value of a prop.（获取prop的默认值）
+ * Get the default value of a prop.（获取prop的默认值 => 当父组件没有传参时，直接使用默认参数）
  * @params vm：当前组件实例
  * @params prop：prop默认值
  * @params key：当前prop的key
@@ -81,7 +87,7 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
   }
   const def = prop.default
   // warn against non-factory defaults for Object & Array
-  // 如果默认值是一个引用类型，必须通过函数返回一个引用类型，保证组件在多个地方被引用时，不会导致数据错乱
+  // 如果默认值是一个引用类型，必须通过函数去返回一个引用类型，保证组件在多个地方被引用时，不会导致数据错乱
   if (process.env.NODE_ENV !== 'production' && isObject(def)) {
     warn(
       'Invalid default value for prop "' + key + '": ' +
@@ -92,6 +98,7 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
   }
   // the raw prop value was also undefined from previous render,
   // return previous default value to avoid unnecessary watcher trigger
+  // prop的值在之前的渲染中也是未定义的，返回之前的默认值以避免不必要的观察者触发
   if (vm && vm.$options.propsData &&
     vm.$options.propsData[key] === undefined &&
     vm._props[key] !== undefined
@@ -100,18 +107,19 @@ function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): a
   }
   // call factory function for non-Function types
   // a value is Function if its prototype is function even across different execution context
+  // 返回默认参数
   return typeof def === 'function' && getType(prop.type) !== 'Function'
     ? def.call(vm)
     : def
 }
 
 /**
- * Assert whether a prop is valid.
+ * Assert whether a prop is valid. => 断言一个prop是否有效
  * @params prop：当前prop参数
  * @params name：当前prop的key
  * @params value：当前prop的值
  * @params vm：当前实例对象
- * @params absent：
+ * @params absent：用户是否传递该参数
  */
 function assertProp (
   prop: PropOptions,
@@ -120,6 +128,7 @@ function assertProp (
   vm: ?Component,
   absent: boolean
 ) {
+  // 必需传递的参数，父组件没有正常传递抛出警告信息
   if (prop.required && absent) {
     warn(
       'Missing required prop: "' + name + '"',
@@ -131,12 +140,13 @@ function assertProp (
     return
   }
   let type = prop.type
-  let valid = !type || type === true
+  let valid = !type || type === true // 是否设置了类型，只有限定了类型才需要断言嘛
   const expectedTypes = []
   if (type) {
     if (!Array.isArray(type)) {
       type = [type]
     }
+    // 判断prop的类型是否满足断言的其中一种类型
     for (let i = 0; i < type.length && !valid; i++) {
       const assertedType = assertType(value, type[i])
       expectedTypes.push(assertedType.expectedType || '')
@@ -164,6 +174,11 @@ function assertProp (
 
 const simpleCheckRE = /^(String|Number|Boolean|Function|Symbol)$/
 
+/**
+ * 类型断言
+ * @param {*} value 值
+ * @param {*} type 类型
+ */
 function assertType (value: any, type: Function): {
   valid: boolean;
   expectedType: string;

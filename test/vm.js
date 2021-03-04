@@ -1,4 +1,5 @@
 export default {
+	// 合并后的配置项
 	$options: {
 		el: '#app', // 用户手动传入的el（元素选择器）
 		parent: vm, // 父实例
@@ -24,7 +25,7 @@ export default {
 		_isComponent: true,
 		_componentTag: undefined, // parentVnode.componentOptions.tag
 		_renderChildren: undefined, // parentVnode.componentOptions.children
-		propsData: {}, // parentVnode.componentOptions.propsData
+		propsData: {}, // parentVnode.componentOptions.propsData => 父组件给子组件传递的数据
 		_parentVnode: null, // 父实例的vnode数据
 		_parentListeners: {}, // 父实例的监听事件 => parentVnode.componentOptions.listeners
 
@@ -80,7 +81,7 @@ export default {
 	$mount: fn, // 执行挂载
 }
 
-// 基础配置参数
+// 基础配置项
 Vue.options = {
 	components: {},
 	directives: {},
@@ -98,3 +99,56 @@ let Sub = {
 	}
 }
 Sub.super = Vue; // 指向其父类
+(function anonymous(
+) {
+	with(this){
+		return _c('div',
+			{attrs:{"id":"app"}},
+			[
+				_c('p',
+					{
+						on:{"click":handleChangeMessage}
+					},
+					[
+						_v(_s(message))
+					]
+				),
+				_v(" "),
+				_c('p',
+					[
+						_v(_s(useType))
+					]
+				)
+			]
+		)
+	}
+})
+(function anonymous(
+) {
+	with(this){
+		return _c('div',
+			{
+				attrs:{"id":"app"}
+			},
+			[
+				_c('transition',
+					{
+						attrs:{"name":"fade"}
+					},
+					[
+						(show) ? _c('p',[_v(_s(useType))]):_e()
+					]
+				),
+				_v(" "),
+				_c('button',
+					{
+						on:{"click":handleChange}
+					},
+					[
+						_v("change")
+					]
+				)
+			],
+		1)
+	}
+})

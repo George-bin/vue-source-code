@@ -78,6 +78,7 @@ function initProps (vm: Component, propsOptions: Object) {
   const props = vm._props = {}
   // cache prop keys so that future props updates can iterate using Array
   // instead of dynamic object key enumeration.
+  // 缓存prop的键，以后prop更新可以使用数组来迭代，而不是动态对对象的键进行枚举
   const keys = vm.$options._propKeys = []
   const isRoot = !vm.$parent
   // root instance props should be converted
@@ -89,9 +90,9 @@ function initProps (vm: Component, propsOptions: Object) {
     const value = validateProp(key, propsOptions, propsData, vm)
     /* istanbul ignore else */
     if (process.env.NODE_ENV !== 'production') {
-      // useType => use-type
+      // 将驼峰字符串改为连字符，如：useType => use-type，用于判断是否为保留属性
       const hyphenatedKey = hyphenate(key)
-      // 是否为保留属性is、key、ref、slot、slot-scope等
+      // 是否为保留属性is、key、ref、slot、slot-scope等或class、style
       if (isReservedAttribute(hyphenatedKey) ||
           config.isReservedAttr(hyphenatedKey)) {
         warn(

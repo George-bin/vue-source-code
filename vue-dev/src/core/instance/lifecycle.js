@@ -38,28 +38,30 @@ export function setActiveInstance(vm: Component) {
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
-  // locate first non-abstract parent（定位到第一个非抽象父节点）
-  // options.parent = activeInstance
+  // locate first non-abstract parent
+  // 如果当前组件不是抽象组件并且存在父级，尝试向上定位到最近一层“非抽象”的父组件
   let parent = options.parent
   if (parent && !options.abstract) {
+    // 通过while向上循环，如果当前组件的父级是抽象组件并存在父级，就继续向上查找当前组件父级的父级，知道定位到最近一个非抽象组件的父级组件
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
     }
-    parent.$children.push(vm)
+    parent.$children.push(vm) // 将当前vm实例push到“非抽象”组件的$children数组中
   }
 
   vm.$parent = parent
+  // 如果当前实例存在父级，那么当前实例的根实例$root就是父实例的$root属性；否则当前实例的$root就是它自己
   vm.$root = parent ? parent.$root : vm
 
   vm.$children = []
-  vm.$refs = {}
+  vm.$refs = {} // 一个对象，持有已注册过ref的所有子组件
 
   vm._watcher = null
-  vm._inactive = null
-  vm._directInactive = false
+  vm._inactive = null // 表示keep-alive中组件状态的属性
+  vm._directInactive = false // 表示keep-alive中组件状态的属性
   vm._isMounted = false
   vm._isDestroyed = false
-  vm._isBeingDestroyed = false
+  vm._isBeingDestroyed = false // 当前实例是否正在销毁还没有销毁完成（介于beforeDestroy和destroyed钩子之间）
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {

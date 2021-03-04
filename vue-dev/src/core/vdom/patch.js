@@ -158,6 +158,7 @@ export function createPatchFunction (backend) {
       // potential patch errors down the road when it's used as an insertion
       // reference node. Instead, we clone the node on-demand before creating
       // associated DOM element for it.
+      // 这个vnode在以前的渲染中使用过!现在它被用作一个新节点，当它被用作插入引用节点时，覆盖它的elm将会导致潜在的补丁错误。相反，在为其创建关联的DOM元素之前，我们按需克隆该节点。
       vnode = ownerArray[index] = cloneVNode(vnode)
     }
 
@@ -447,7 +448,7 @@ export function createPatchFunction (backend) {
   /**
    * 移除DOM元素并调用remove钩子
    * @params vnode: 将被移除的Vnode
-   * @params rm:
+   * @params rm: 
    */
   function removeAndInvokeRemoveHook (vnode, rm) {
     if (isDef(rm) || isDef(vnode.data)) {
@@ -456,6 +457,7 @@ export function createPatchFunction (backend) {
       if (isDef(rm)) {
         // we have a recursively passed down rm callback
         // increase the listeners count
+        // 我们有一个递归向下传递的rm回调（增加监听器计数）
         rm.listeners += listeners
       } else {
         // directly removing
@@ -892,6 +894,7 @@ export function createPatchFunction (backend) {
         }
 
         // destroy old node（删除旧的节点）
+        debugger
         if (isDef(parentElm)) {
           removeVnodes([oldVnode], 0, 0)
         } else if (isDef(oldVnode.tag)) {

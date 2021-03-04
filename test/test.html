@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>观察者模式</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<script type="text/javascript">
+		function camelize(str) {
+			let reg = /-(\w)/g; 
+			return str.replace(reg, (all, s) => {
+				return s.toUpperCase()
+			})
+		}
+		console.log(camelize('use-type'))
+	</script>
+</body>

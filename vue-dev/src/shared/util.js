@@ -161,6 +161,7 @@ export function cached<F: Function> (fn: F): F {
 
 /**
  * Camelize a hyphen-delimited string.
+ * 连字符转驼峰
  */
 const camelizeRE = /-(\w)/g
 export const camelize = cached((str: string): string => {
@@ -175,7 +176,7 @@ export const capitalize = cached((str: string): string => {
 })
 
 /**
- * Hyphenate a camelCase string.
+ * Hyphenate a camelCase string.(驼峰字符串改为连字符)
  * 规格化props key：typeStringWord => type-string-word
  */
 const hyphenateRE = /\B([A-Z])/g
@@ -229,6 +230,7 @@ export function toArray (list: any, start?: number): Array<any> {
 
 /**
  * Mix properties into target object.
+ * 将属性混合到目标对象中
  */
 export function extend (to: Object, _from: ?Object): Object {
   for (const key in _from) {

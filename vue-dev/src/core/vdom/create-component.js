@@ -168,8 +168,7 @@ export function createComponent (
 
   // resolve constructor options in case global mixins are applied after
   // component constructor creation
-  // 解析构造函数选项，以防止在组件构造函数创建后应用全局混入
-  // 重新计算options，避免被全局的Mixin影响
+  // 解析构造函数选项，以防止在组件构造函数创建后应用全局混入（重新计算options，避免被全局的Mixin影响）
   resolveConstructorOptions(Ctor)
 
   // transform component v-model data into props & events（v-model相关）
@@ -188,9 +187,11 @@ export function createComponent (
   // 自定义事件相关
   // extract listeners, since these needs to be treated as
   // child component listeners instead of DOM listeners
+  // 提取监听器，因为这些监听器需要作为子组件监听器处理，而不是DOM监听器
   const listeners = data.on
   // replace with listeners with .native modifier
   // so it gets processed during parent component patch.
+  // 用.native修饰符替换监听器，这样他就会在父组件patch期间被处理
   data.on = data.nativeOn
 
   // 抽象组件

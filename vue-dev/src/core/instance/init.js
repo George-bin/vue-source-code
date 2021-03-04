@@ -107,7 +107,7 @@ export function  initInternalComponent (vm: Component, options: InternalComponen
 }
 
 /**
- * 重新计算options，避免被全局的Mixin影响
+ * 解析构造器的options，保障Ctor.superOptions === Vue.options(避免全局mixin之后，options发生变化)
  * @params Ctor: 子类构造函数
  */
 export function resolveConstructorOptions (Ctor: Class<Component>) {
@@ -118,10 +118,12 @@ export function resolveConstructorOptions (Ctor: Class<Component>) {
     if (superOptions !== cachedSuperOptions) { // Vue的基础配置参数发生改变
       // super option changed,
       // need to resolve new options.
+      // 父类的options已经改变，需要解析新的options
       Ctor.superOptions = superOptions
       // check if there are any late-modified/attached options (#4976)
+      // 解析是否有任何后期修改/附加选项
       const modifiedOptions = resolveModifiedOptions(Ctor)
-      // update base extend options
+      // update base extend options（更新基础扩展选项）
       if (modifiedOptions) {
         extend(Ctor.extendOptions, modifiedOptions)
       }
@@ -134,6 +136,7 @@ export function resolveConstructorOptions (Ctor: Class<Component>) {
   return options
 }
 
+// 解析后期Options的修改项
 function resolveModifiedOptions (Ctor: Class<Component>): ?Object {
   let modified
   const latest = Ctor.options

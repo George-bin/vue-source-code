@@ -167,7 +167,7 @@ function callActivatedHooks (queue) {
 }
 
 /**
- * Push a watcher into the watcher queue.（将观察者push到观察者队列中）
+ * Push a watcher into the watcher queue.（将订阅者push到订阅者队列中）
  * Jobs with duplicate IDs will be skipped unless it's
  * pushed when the queue is being flushed.
  * 将一个Watcher推入Watcher队列

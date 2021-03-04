@@ -23,6 +23,7 @@ export function extractPropsFromVNodeData (
   // we are only extracting raw values here.
   // validation and default values are handled in the child
   // component itself.
+  // 这里我们只提取原始值。验证和默认值在子组件中处理
   const propOptions = Ctor.options.props
   if (isUndef(propOptions)) {
     return
@@ -55,6 +56,7 @@ export function extractPropsFromVNodeData (
   return res
 }
 
+// 检查prop和attrs，并对其进行缓存
 function checkProp (
   res: Object,
   hash: ?Object,

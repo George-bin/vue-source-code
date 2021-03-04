@@ -5,20 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="../../dist/vue.js"></script>
+    <style>
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity .5s;
+        }
+        .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
-        <p>{{message}}</p>
-        <p>{{useType}}</p>
+        <!-- <p @click="handleChangeMessage">{{message}}</p> -->
+        <!-- <transition name="fade">
+            <p v-if="show">{{useType}}</p>
+        </transition> -->
+        <button @click="handleChange">change</button>
         <my-component></my-component>
-        <button @click="handleChangeMessage">change</button>
     </div> 
     <script>
         // 打开性能监控
         // Vue.config.performance = true;
-        var mixin = {
-           created: function () { console.log(1) }
-        }
+        // var mixin = {
+        //    created: function () { console.log(1) }
+        // }
         // var Profile = Vue.extend({
         //     template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
         //     data: function () {
@@ -43,7 +53,7 @@
                 }
             }
         }
-        Vue.component('my-component', childComp)
+        // Vue.component('my-component', childComp)
         // let app = new Vue({
         //     el: '#app',
         //     render: h => h(childComp)
@@ -52,14 +62,15 @@
         let app = new Vue({
             el: '#app',
             props: {
-                useType: {
+                'use-type': {
                     type: String,
                     default: 'add'
                 }
             },
-            mixins: [mixin],
+            // mixins: [mixin],
             data: {
                 message: 'hello, vue!',
+                show: true
                 // userinfo: {
                 //     username: 'George',
                 //     email: 'bin770021714@126.com'
@@ -68,6 +79,9 @@
             methods: {
                 handleChangeMessage () {
                     this.message = Math.random()
+                },
+                handleChange () {
+                    this.show = !this.show
                 }
             }
             // template: '<div>{{msg}}</div>'

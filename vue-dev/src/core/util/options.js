@@ -45,6 +45,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 /**
  * Helper that recursively merges two data objects together.
+ * 递归合并两个数据对象
  */
 function mergeData (to: Object, from: ?Object): Object {
   if (!from) return to
@@ -74,6 +75,7 @@ function mergeData (to: Object, from: ?Object): Object {
 }
 
 /**
+ * 合并data或fn
  * Data
  */
 export function mergeDataOrFn (
@@ -304,6 +306,7 @@ export function validateComponentName (name: string) {
  * Ensure all props option syntax are normalized into the
  * Object-based format.
  */
+// 确保所有props选项的语法都规范化为基于对象的格式。
 function normalizeProps (options: Object, vm: ?Component) {
   const props = options.props
   if (!props) return
@@ -323,7 +326,7 @@ function normalizeProps (options: Object, vm: ?Component) {
   } else if (isPlainObject(props)) {
     for (const key in props) {
       val = props[key]
-      name = camelize(key)
+      name = camelize(key) // 转为驼峰命名
       res[name] = isPlainObject(val)
         ? val
         : { type: val }
@@ -394,7 +397,7 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
  * 将两个对象合并成一个新的对象（在实例化和继承中使用的核心实用程序）
- * @params parent: 类的相关静态属性
+ * @params parent: 基础Ctor的options静态属性
  * @params child: 用户手动传入的参数
  * @params vm: 当前实例
  */
@@ -404,6 +407,7 @@ export function mergeOptions (
   vm?: Component
 ): Object {
   if (process.env.NODE_ENV !== 'production') {
+    // 内部组件
     checkComponents(child)
   }
 
@@ -412,7 +416,7 @@ export function mergeOptions (
   }
 
   // 对用户传入的字段进行规范化处理
-  normalizeProps(child, vm)
+  normalizeProps(child, vm) // 将props选项的语法规范化为对象的语法
   normalizeInject(child, vm)
   normalizeDirectives(child)
 
@@ -475,13 +479,13 @@ export function resolveAsset (
     return
   }
   const assets = options[type]
-  // check local registration variations first
+  // check local registration variations first(首先检查本地注册)
   if (hasOwn(assets, id)) return assets[id]
   const camelizedId = camelize(id)
   if (hasOwn(assets, camelizedId)) return assets[camelizedId]
   const PascalCaseId = capitalize(camelizedId)
   if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]
-  // fallback to prototype chain
+  // fallback to prototype chain（返回原型链中的方法）
   const res = assets[id] || assets[camelizedId] || assets[PascalCaseId]
   if (process.env.NODE_ENV !== 'production' && warnMissing && !res) {
     warn(
