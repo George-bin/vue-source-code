@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>VUE源码深入分析</title>
+</head>
+<body>
+	<h1>VUE源码深入分析</h1>
+	<script type="module">
+		import Observer from './utils/Observer.js'
+		let person = {
+			name: 'George',
+			age: 25
+		}
+		new Observer(person)
+		person.name
+		person.name = 'XiaoHong'
+	</script>
+</body>
+</html>
