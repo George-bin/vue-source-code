@@ -10,11 +10,16 @@
 		import Observer from './utils/Observer.js'
 		let person = {
 			name: 'George',
-			age: 25
+			age: 25,
+			other: {
+				intro: 'Hi,my name is George!'
+			}
 		}
 		new Observer(person)
 		person.name
 		person.name = 'XiaoHong'
+		person.other.intro = 'Hi, Blob!'
+		console.log(person.other.intro)
 	</script>
 </body>
 </html>

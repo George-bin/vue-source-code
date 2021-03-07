@@ -1,3 +1,5 @@
+import Dep from './Dep.js'
+
 export default class Observer {
 	constructor (value) {
 		this.value = value
@@ -21,12 +23,17 @@ function defineReactive(obj, key, val) {
 	if (arguments.length === 2) {
 		val = obj[key]
 	}
+	if (typeof val === 'object') {
+		new Observer(val)
+	}
+	const dep = new Dep()
 	Object.defineProperty(obj, key, {
 		enumerable: true,
 		configurable: true,
 		get () {
 			console.log(`${key}属性被读取了！`)
-			return val;
+			dep.depend()
+			return val
 		},
 		set (newVal) {
 			if (val === newVal) {
@@ -34,6 +41,7 @@ function defineReactive(obj, key, val) {
 			}
 			console.log(`${key}属性被修改了！`)
 			val = newVal
+			dep.notify()
 		}
 	})
 }
