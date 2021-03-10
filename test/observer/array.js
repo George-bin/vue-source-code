@@ -19,6 +19,9 @@ methodsToPatch.forEach(function (method) {
 		writable: true,
 		value: function mutator(...args) {
 			const result = original.apply(this, args)
+			const ob = this.__ob__
+			// notify change
+			ob.dep.notify()
 			return result
 		}
 	})

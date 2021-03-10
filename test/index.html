@@ -7,7 +7,7 @@
 <body>
 	<h1>VUE源码深入分析</h1>
 	<script type="module">
-		import Observer from './utils/Observer.js'
+		import {observe} from './observer/index.js'
 		let person = {
 			name: 'George',
 			age: 25,
@@ -16,11 +16,8 @@
 			},
 			arr: ['1', '2', '3']
 		}
-		new Observer(person)
-		person.name
-		person.name = 'XiaoHong'
-		person.other.intro = 'Hi, Blob!'
-		console.log(person.other.intro)
+		debugger
+		let o = observe(person)
 	</script>
 </body>
 </html>
