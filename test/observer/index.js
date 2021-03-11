@@ -15,14 +15,17 @@ const hasProto = '__proto__' in {}
 export default class Observer {
 	constructor (value) {
 		this.value = value
+		this.dep = new Dep() // 实例化一个依赖管理器，用于收集数组依赖
 		// __ob__属性用于标记对象已经是可观测对象（响应式对象），避免重复监测
 		def(value, '__ob__', this)
 
 		if (Array.isArray(value)) {
+			// 方法拦截器
 			const augment = hasProto
 				? protoAugment
 				: copyAugment
-			augment(value, arguments, arrayKeys)
+			augment(value, arrayMethods, arrayKeys)
+			this.observeArray(value) // 将数组中的所有元素都转化为可侦测的对象
 		} else {
 			this.walk(value)
 		}
@@ -63,9 +66,6 @@ export function observe (value, asRootData) {
 function defineReactive(obj, key, val) {
 	if (arguments.length === 2) {
 		val = obj[key]
-	}
-	if (typeof val === 'object') {
-		new Observer(val)
 	}
 
 	// 依赖收集器

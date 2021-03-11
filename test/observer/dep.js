@@ -27,6 +27,7 @@ export default class Dep {
 		}
 	}
 }
+Dep.target = null
 
 export function remove (arr, item) {
 	if (arr.length) {

@@ -7,7 +7,9 @@
 <body>
 	<h1>VUE源码深入分析</h1>
 	<script type="module">
+		import Vue from './instance/index.js'
 		import {observe} from './observer/index.js'
+		import Watcher from './observer/watcher.js'
 		let person = {
 			name: 'George',
 			age: 25,
@@ -16,8 +18,14 @@
 			},
 			arr: ['1', '2', '3']
 		}
-		debugger
+		// 组件实例
+		let vm = new Vue()
+		// 观察者
 		let o = observe(person)
+		// 订阅者
+		let w = new Watcher(o, 'value.name', () => {console.log('更新啦！')})
+		person.name = 123
+		person.arr.splice(1, 1)
 	</script>
 </body>
 </html>
