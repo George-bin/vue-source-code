@@ -19,13 +19,18 @@
 			arr: ['1', '2', '3']
 		}
 		// 组件实例
-		let vm = new Vue()
+		// let vm = new Vue()
 		// 观察者
 		let o = observe(person)
 		// 订阅者
-		let w = new Watcher(o, 'value.name', () => {console.log('更新啦！')})
-		person.name = 123
+		let w = new Watcher(person, 'arr', function(value) {
+			console.log('更新啦！')
+			console.log(value)
+		})
+		// person.name = 123
 		person.arr.splice(1, 1)
+		person.arr.push(123)
+		console.log(person)
 	</script>
 </body>
 </html>

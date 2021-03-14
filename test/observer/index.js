@@ -77,7 +77,7 @@ function defineReactive(obj, key, val) {
 		enumerable: true,
 		configurable: true,
 		get () {
-			console.log(`${key}属性被读取了！`)
+			// console.log(`${key}属性被读取了！`)
 			// 依赖收集
 			dep.depend()
 			if (childOb) {

@@ -14,7 +14,8 @@ export default class Dep {
 
 	// 添加一个依赖
 	depend () {
-		if (Dep.target) {
+		if (Dep.target && this.subs.indexOf(Dep.target) === -1) {
+			console.log('添加了依赖！')
 			this.addSub(Dep.target)
 		}
 	}
