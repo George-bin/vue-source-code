@@ -57,6 +57,13 @@ let platformMustUseProp
 let platformGetTagNamespace
 let maybeComponent
 
+/**
+ * 创建AST元素
+ * @param {*} tag 标签名
+ * @param {*} attrs 标签属性
+ * @param {*} parent 
+ * @returns 
+ */
 export function createASTElement (
   tag: string,
   attrs: Array<ASTAttr>,
@@ -210,6 +217,14 @@ export function parse (
     shouldDecodeNewlinesForHref: options.shouldDecodeNewlinesForHref,
     shouldKeepComment: options.comments,
     outputSourceRange: options.outputSourceRange,
+    /**
+     * 当解析到开始标签时，调用该函数
+     * @param {*} tag 标签名
+     * @param {*} attrs 标签属性
+     * @param {*} unary 标签是否自闭合
+     * @param {*} start 
+     * @param {*} end 
+     */
     start (tag, attrs, unary, start, end) {
       // check namespace.
       // inherit parent ns if there is one
@@ -297,6 +312,7 @@ export function parse (
       }
     },
 
+    // 当解析到结束标签时，调用该函数
     end (tag, start, end) {
       const element = stack[stack.length - 1]
       // pop stack
@@ -308,6 +324,7 @@ export function parse (
       closeElement(element)
     },
 
+    // 当解析到文本时，调用该函数
     chars (text: string, start: number, end: number) {
       if (!currentParent) {
         if (process.env.NODE_ENV !== 'production') {
@@ -379,6 +396,8 @@ export function parse (
         }
       }
     },
+
+    // 当解析道注释时，调用该函数
     comment (text: string, start, end) {
       // adding anyting as a sibling to the root node is forbidden
       // comments should still be allowed, but ignored
