@@ -16,6 +16,7 @@ import { unicodeRegExp } from 'core/util/lang'
 // Regular Expressions for parsing tags and attributes
 const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
 const dynamicArgAttribute = /^\s*((?:v-[\w-]+:|@|:|#)\[[^=]+\][^\s"'<>\/=]*)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
+// 开始标签
 const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z${unicodeRegExp.source}]*`
 const qnameCapture = `((?:${ncname}\\:)?${ncname})`
 const startTagOpen = new RegExp(`^<${qnameCapture}`)
@@ -61,27 +62,35 @@ export function parseHTML (html, options) {
   while (html) {
     last = html
     // Make sure we're not in a plaintext content element like script/style
+    // 确保我们不是在纯文本内容元素，如script/style
     if (!lastTag || !isPlainTextElement(lastTag)) {
       let textEnd = html.indexOf('<')
       if (textEnd === 0) {
-        // Comment:
+        // Comment: HTML注释
         if (comment.test(html)) {
+          // 若存在 '-->',继续判断options中是否保留注释
           const commentEnd = html.indexOf('-->')
 
           if (commentEnd >= 0) {
             if (options.shouldKeepComment) {
+              // 若保留注释，则把注释截取出来传给options.comment，创建注释类型的AST节点
               options.comment(html.substring(4, commentEnd), index, index + commentEnd + 3)
             }
+            // 若不保留注释，则将游标移动到'-->'之后，继续向后解析
             advance(commentEnd + 3)
             continue
           }
         }
 
         // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
+        // 条件注释
         if (conditionalComment.test(html)) {
+          // 若为条件注释，则继续查找是否存在']>'
           const conditionalEnd = html.indexOf(']>')
 
           if (conditionalEnd >= 0) {
+            // 若存在 ']>',则从原本的html字符串中把条件注释截掉，
+            // 把剩下的内容重新赋给html，继续向后匹配
             advance(conditionalEnd + 2)
             continue
           }
@@ -179,11 +188,13 @@ export function parseHTML (html, options) {
   // Clean up any remaining tags
   parseEndTag()
 
+  // 移动解析游标，解析完一部分就会把游标向后移动一部分，确保不会重复解析
   function advance (n) {
     index += n
     html = html.substring(n)
   }
 
+  // 解析开始标签
   function parseStartTag () {
     const start = html.match(startTagOpen)
     if (start) {
