@@ -77,7 +77,6 @@ export function parseHTML (html, options) {
        * 注释:<!-- 我是注释 -->
        * 条件注释:<!-- [if !IE] --> <!-- [endif] -->
        * DOCTYPE:<!DOCTYPE html>
-       * 需要一一去匹配尝试
        */
       if (textEnd === 0) {
         // Comment: HTML注释
