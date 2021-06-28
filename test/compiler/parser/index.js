@@ -1,14 +1,14 @@
-import { template } from '../template.js'
+// import { template } from '../template.js'
 import { parseHTML } from './html-parse.js'
-import { parseText } from '../text-parse.js'
+import { parseText } from './text-parse.js'
 
 let currentParent
 function baseWarn (msg) {
   console.error(`[Vue compiler]: ${msg}`)
 }
 
-let text = 'hello {{name}}，I am {{age}}'
-console.log(parseText(text))
+// let text = 'hello {{name}}，I am {{age}}'
+// console.log(parseText(text))
 
 /**
  * 将HTML字符串解析成AST
@@ -17,12 +17,15 @@ console.log(parseText(text))
  * start、end、comment、chars用于将提取出来的内容，转换成对应的AST
  */
 export function parse (template, options) {
+  let root
+
   parseHTML(template, {
     warn: baseWarn,
     shouldKeepComment: true,
     // 开始标签
     start (tag, attrs, unary, start, end) {
       let element = createASTElement(tag, attrs, currentParent)
+      debugger
     },
     // 结束标签
     end (tag, start, end) {},
@@ -59,6 +62,8 @@ export function parse (template, options) {
       currentParent.children.push(child)
     }
   })
+
+  return root
 }
 
 /**

@@ -8,6 +8,15 @@
 </head>
 <body>
   <h1>模板编译</h1>
-  <script src="./index.js" type="module"></script>
+  <!-- <script src="./parser/index.js" type="module"></script> -->
+  <script type="module">
+    import { parse } from './parser/index.js'
+    let template = `
+      <div>123</div>
+    `
+    parse(template, {
+      outputSourceRange: true
+    })
+  </script>
 </body>
 </html>

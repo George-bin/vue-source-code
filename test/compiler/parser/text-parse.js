@@ -1,4 +1,4 @@
-import { cached } from '../shared/util.js'
+import { cached } from '../../shared/util.js'
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g
 const regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g
 
@@ -16,7 +16,7 @@ const buildRegex = cached(delimiters => {
  * @param {*} delimiters 包裹变量的符号
  */
 export function parseText(text, delimiters) {
-  debugger
+  // debugger
   // 检查文本中是否包含变量
   const tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE
 

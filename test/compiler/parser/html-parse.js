@@ -15,7 +15,7 @@ const dynamicArgAttribute = /^\s*((?:v-[\w-]+:|@|:|#)\[[^=]+\][^\s"'<>\/=]*)(?:\
 // 结束标签
 const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`)
 
-function isPlainTextElement (lastTag) {
+function isPlainTextElement(lastTag) {
 	let map = {
 		script: true,
 		style: true,
@@ -36,9 +36,9 @@ function isPlainTextElement (lastTag) {
 // comment：解析到(注释时调用comment函数生成注释类型的AST节点。
 export function parseHTML(html, options) {
 	const stack = []
-	let index = 0	// 游标 
-	let last	// 存储剩余还未解析的模板字符串
-  let lastTag  // 存储着位于 stack 栈顶的元素
+	let index = 0 // 游标 
+	let last // 存储剩余还未解析的模板字符串
+	let lastTag // 存储着位于 stack 栈顶的元素
 
 	html = html.replace(/[\n]/g, '')
 	// 循环遍历解析html，直至解析完毕
@@ -50,10 +50,10 @@ export function parseHTML(html, options) {
 			/**
 			 * '<'出现在第一个位置，为其他五种类型
 			 * 1.开始标签: <div>
-       * 2.结束标签: </div>
-       * 3.注释: <!-- 我是注释 -->
-       * 4.条件注释: <!-- [if !IE] --> <!-- [endif] -->
-       * 5.DOCTYPE: <!DOCTYPE html>
+			 * 2.结束标签: </div>
+			 * 3.注释: <!-- 我是注释 -->
+			 * 4.条件注释: <!-- [if !IE] --> <!-- [endif] -->
+			 * 5.DOCTYPE: <!DOCTYPE html>
 			 */
 			if (textEnd === 0) {
 				// 注释
@@ -63,7 +63,7 @@ export function parseHTML(html, options) {
 					if (comment >= 0) {
 						// 是否保留注释
 						if (options.shouldKeepComment) {
-							debugger
+							// debugger
 							// 创建注释类型的AST节点
 							options.comment(html.substring(4, comment))
 						}
@@ -121,7 +121,7 @@ export function parseHTML(html, options) {
 				 */
 				rest = html.slice(textEnd)
 				// 循环过滤出文本中所有的'<'，如：1<2 and 2 < 3</div> 
-				while(
+				while (
 					!endTag.test(rest) &&
 					!startTagOpen.test(rest) &&
 					!comment.test(rest) &&
@@ -144,14 +144,14 @@ export function parseHTML(html, options) {
 			}
 
 			// 存在文本内容，移动游标
-      if (text) {
-        advance(text.length)
-      }
+			if (text) {
+				advance(text.length)
+			}
 
 			// 将text转化成textAST
-      if (options.chars && text) {
-        options.chars(text, index - text.length, index)
-      }
+			if (options.chars && text) {
+				options.chars(text, index - text.length, index)
+			}
 		} else {
 			// parse 的内容是在纯文本标签内（script、style、textarea）
 		}
@@ -166,19 +166,20 @@ export function parseHTML(html, options) {
 		}
 	}
 	// Clean up any remaining tags
-  parseEndTag()
-	
+	parseEndTag()
+
 
 	// 移动解析游标，确保内容不会被重复解析
-	function advance (n) {
+	function advance(n) {
 		index += n
 		html = html.substring(n)
 	}
 
 	// 解析开始标签
-	function parseStartTag () {
-		// /^<((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)/
+	function parseStartTag() {
+		// startTagOpen => /^<((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)/
 		const start = html.match(startTagOpen)
+		debugger
 		if (start) {
 			const match = {
 				tagName: start[1],
@@ -186,11 +187,11 @@ export function parseHTML(html, options) {
 				start: index
 			}
 			advance(start[0].length) // 移动游标
-			
+
 			let attr, end
 			// 循环遍历解析出所有属性，并匹配是否满足结束标签来退出循环
 			/**
-			 * reg = /^\s*(\/?)>/
+			 * startTagClose = /^\s*(\/?)>/
 			 * 1. 自闭合标签 => end[1] === "/"
 			 * 2. 非自闭合标签 => end[1] === ""
 			 */
@@ -201,6 +202,11 @@ export function parseHTML(html, options) {
 				match.attr.push(attr)
 			}
 
+			/**
+			 * 这里判断了是否是自闭合标签：
+			 * 自闭合标签：
+			 * 非自闭合标签：
+			 */
 			if (end) {
 				match.unarySlash = end[1]
 				advance(end[0].length)
@@ -211,7 +217,7 @@ export function parseHTML(html, options) {
 	}
 
 	// 对parseStartTag的结果进行下一步处理
-	function handleStartTag (match) {
+	function handleStartTag(match) {
 		const tagName = match.tagName
 		const unarySlash = match.unarySlash // 是否为自闭合标签，自闭合为“”，非自闭合为“/”
 		const unary = !!unarySlash // 布尔值，是否为自闭和标签
@@ -231,7 +237,13 @@ export function parseHTML(html, options) {
 
 		// 非闭合标签，则将标签推入栈中
 		if (!unary) {
-			stack.puch({ tag: tagName, lowerCasedTag: tagName.toLowerCase(), attrs: attrs, start: match.start, end: match.end })
+			stack.push({
+				tag: tagName,
+				lowerCasedTag: tagName.toLowerCase(),
+				attrs: attrs,
+				start: match.start,
+				end: match.end
+			})
 			lastTag = tagName
 		}
 
@@ -247,17 +259,17 @@ export function parseHTML(html, options) {
 	 * start：结束标签在html字符串中的起始位置
 	 * end：结束标签在html字符串中的结束位置
 	 */
-	function parseEndTag (tagName, start, end) {
+	function parseEndTag(tagName, start, end) {
 		let pos, lowerCasedTagName
-    // if (start == null) start = index
-    // if (end == null) end = index
+		// if (start == null) start = index
+		// if (end == null) end = index
 
 		// 如果tagName存在，在stack从后往前匹配，在栈中寻找与tagName相同的标签并记录其位置pos
 		if (tagName) {
 			lowerCasedTagName = tagName.lowerCasedTag
 			for (pos = stack.length - 1; pos >= 0; pos--) {
 				if (stack[pos].lowerCasedTag === lowerCasedTagName) {
-					break 
+					break
 				}
 			}
 		} else {
@@ -281,20 +293,19 @@ export function parseHTML(html, options) {
 			 * 2.将lastTag赋值为新的栈顶
 			 */
 			stack.length = pos
-      lastTag = pos && stack[pos - 1].tag
+			lastTag = pos && stack[pos - 1].tag
 		} else if (lowerCasedTagName === 'br') {
 			// 浏览器会自动把</br>标签解析为正常的 <br>标签，而对于</p>浏览器则自动将其补全为<p></p>，所以Vue为了与浏览器对这两个标签的行为保持一致，故对这两个便签单独判断处理
 			if (options.start) {
-				options.start(tagName, [], true, start, end)  // 创建<br>AST节点
+				options.start(tagName, [], true, start, end) // 创建<br>AST节点
 			}
 		} else if (lowerCasedTagName === 'p') {
 			if (options.start) {
-        options.start(tagName, [], false, start, end)
-      }
-      if (options.end) {
-        options.end(tagName, start, end)
-      }
+				options.start(tagName, [], false, start, end)
+			}
+			if (options.end) {
+				options.end(tagName, start, end)
+			}
 		}
 	}
 }
-
