@@ -43,6 +43,7 @@ export function parseHTML(html, options) {
 	html = html.replace(/[\n]/g, '')
 	// 循环遍历解析html，直至解析完毕
 	while (html) {
+		debugger
 		last = html
 		let textEnd = html.indexOf('<')
 		// 确保即将 parse 的内容不在纯文本标签内（script、style、textarea）
@@ -179,7 +180,7 @@ export function parseHTML(html, options) {
 	function parseStartTag() {
 		// startTagOpen => /^<((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)/
 		const start = html.match(startTagOpen)
-		debugger
+		// debugger
 		if (start) {
 			const match = {
 				tagName: start[1],
@@ -199,13 +200,16 @@ export function parseHTML(html, options) {
 				attr.start = index
 				advance(attr[0].length)
 				attr.end = index
-				match.attr.push(attr)
+				match.attrs.push(attr)
 			}
 
 			/**
 			 * 这里判断了是否是自闭合标签：
-			 * 自闭合标签：
-			 * 非自闭合标签：
+			 * 自闭合标签：<input type='text' />
+			 * 非自闭合标签：<div></div>
+			 * '></div>'.match(startTagClose) => [">", "", index: 0, input: "></div>", groups: undefined]
+       * '/><div></div>'.match(startTagClose) => ["/>", "/", index: 0, input: "/><div></div>", groups: undefined]
+       * 因此，我们可以通过end[1]是否是"/"来判断该标签是否是自闭合标签
 			 */
 			if (end) {
 				match.unarySlash = end[1]
@@ -266,7 +270,7 @@ export function parseHTML(html, options) {
 
 		// 如果tagName存在，在stack从后往前匹配，在栈中寻找与tagName相同的标签并记录其位置pos
 		if (tagName) {
-			lowerCasedTagName = tagName.lowerCasedTag
+			lowerCasedTagName = tagName.toLowerCase()
 			for (pos = stack.length - 1; pos >= 0; pos--) {
 				if (stack[pos].lowerCasedTag === lowerCasedTagName) {
 					break

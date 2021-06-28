@@ -17,6 +17,32 @@ function baseWarn (msg) {
  * start、end、comment、chars用于将提取出来的内容，转换成对应的AST
  */
 export function parse (template, options) {
+  const stack = []
+
+  function closeElement(element) {
+    if (element.pre) {
+      inVPre = false
+    }
+
+    if (platformIsPreTag(element.tag)) {
+      inPre = false
+    }
+    
+    // apply post-transforms
+    for (let i = 0; i < postTransforms.length; i++) {
+      postTransforms[i](element, options)
+    }
+  }
+
+  function isForbiddenTag (el) {
+    return (
+      el.tag === 'style' ||
+      (el.tag === 'script' && (
+        !el.attrsMap.type ||
+        el.attrsMap.type === 'text/javascript'
+      ))
+    )
+  }
   let root
 
   parseHTML(template, {
@@ -25,10 +51,29 @@ export function parse (template, options) {
     // 开始标签
     start (tag, attrs, unary, start, end) {
       let element = createASTElement(tag, attrs, currentParent)
-      debugger
+
+      if (isForbiddenTag(element)) {
+        element.forbidden = true
+      }
+
+      if (!unary) {
+        currentParent = element
+        stack.push(element)
+      } else {
+        closeElement(element)
+      }
+
     },
     // 结束标签
-    end (tag, start, end) {},
+    end (tag, start, end) {
+      const element = stack[stack.length - 1]
+      stack.length -= 1
+      currentParent = stack[stack.length - 1]
+      if (options.outputSourceRange) {
+        element.end = end
+      }
+      closeElement(element)
+    },
     // 文本
     chars (text, start, end) {
       let res
@@ -87,10 +132,7 @@ export function createASTElement (tag, attrs, parent) {
 function makeAttrsMap (attrs) {
   const map = {}
   for (let i = 0, l = attrs.length; i < l; i++) {
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      map[attrs[i].name] && !isIE && !isEdge
-    ) {
+    if (map[attrs[i].name]) {
       warn('duplicate attribute: ' + attrs[i].name, attrs[i])
     }
     map[attrs[i].name] = attrs[i].value
