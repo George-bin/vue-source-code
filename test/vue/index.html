@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模板编译</title>
+</head>
+<body>
+  <h1>模板编译</h1>
+  <!-- <script src="./parser/index.js" type="module"></script> -->
+  <script type="module">
+    import options from './compiler/options.js'
+    import { parse } from './compiler/parser/index.js'
+    import { optimizer } from './optimizer.js'
+    import { generate } from './codegen/index.js'
+    let template = `
+      <div class="box" asd>
+        <ul>
+          <li>我是文本信息</li>
+          <li>我是文本信息</li>
+        </ul>
+        <p class="name">My name is {{username}}!</p>
+      </div>
+    `
+    template = `<div class="box" asd></div>`
+    let ast = parse(template, options)
+    optimizer(ast, options)
+    // console.log(JSON.stringify(ast))
+    const code = generate(ast, options)
+    console.log(code)
+  </script>
+</body>
+</html>

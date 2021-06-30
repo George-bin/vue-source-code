@@ -1,17 +1,8 @@
-/* @flow */
+import { createCompilerCreator } from './create-compiler.js'
+import { parse } from './parser/index.js'
+import { generate } from './codegen/index.js'
 
-import { parse } from './parser/index'
-import { optimize } from './optimizer'
-import { generate } from './codegen/index'
-import { createCompilerCreator } from './create-compiler'
-
-// `createCompilerCreator` allows creating compilers that use alternative
-// parser/optimizer/codegen, e.g the SSR optimizing compiler.
-// Here we just export a default compiler using the default parts.
-export const createCompiler = createCompilerCreator(function baseCompile (
-  template: string,
-  options: CompilerOptions
-): CompiledResult {
+export const createCompiler = createCompilerCreator(function baseCompile (template, options) {
   // 模板解析阶段：用正则等方式解析template模板中的指令、class、style等数据，形成AST
   const ast = parse(template.trim(), options)
   if (options.optimize !== false) {
@@ -26,3 +17,5 @@ export const createCompiler = createCompilerCreator(function baseCompile (
     staticRenderFns: code.staticRenderFns // 静态渲染函数
   }
 })
+
+const { compile, compileToFunctions } = createCompiler(baseOptions)

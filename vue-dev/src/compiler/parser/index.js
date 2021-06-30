@@ -417,6 +417,7 @@ export function parse (
       }
     }
   })
+  
   return root
 }
 
@@ -451,6 +452,7 @@ export function processElement (
   element: ASTElement,
   options: CompilerOptions
 ) {
+  debugger
   processKey(element)
 
   // determine whether this is a plain element after
