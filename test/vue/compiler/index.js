@@ -17,5 +17,3 @@ export const createCompiler = createCompilerCreator(function baseCompile (templa
     staticRenderFns: code.staticRenderFns // 静态渲染函数
   }
 })
-
-const { compile, compileToFunctions } = createCompiler(baseOptions)

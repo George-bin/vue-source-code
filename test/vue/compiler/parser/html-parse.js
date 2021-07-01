@@ -237,6 +237,11 @@ export function parseHTML(html, options) {
         name: args[1],
         value: value
       }
+      // 输出源位置信息
+      if (options.outputSourceRange) {
+        attrs[i].start = args.start + args[0].match(/^\s*/).length
+        attrs[i].end = args.end
+      }
     }
 
     // 非闭合标签，则将标签推入栈中

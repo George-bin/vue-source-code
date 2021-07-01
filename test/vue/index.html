@@ -10,10 +10,10 @@
   <h1>模板编译</h1>
   <!-- <script src="./parser/index.js" type="module"></script> -->
   <script type="module">
-    import options from './compiler/options.js'
+    import { baseOptions as options } from './compiler/options.js'
     import { parse } from './compiler/parser/index.js'
-    import { optimizer } from './optimizer.js'
-    import { generate } from './codegen/index.js'
+    import { optimizer } from './compiler/optimizer.js'
+    import { generate } from './compiler/codegen/index.js'
     let template = `
       <div class="box" asd>
         <ul>
@@ -23,10 +23,10 @@
         <p class="name">My name is {{username}}!</p>
       </div>
     `
-    template = `<div class="box" asd></div>`
+    template = `<div :class="{{name}}" asd></div>`
     let ast = parse(template, options)
     optimizer(ast, options)
-    // console.log(JSON.stringify(ast))
+    console.log(ast)
     const code = generate(ast, options)
     console.log(code)
   </script>

@@ -12,11 +12,10 @@ const buildRegex = cached(delimiters => {
 
 /**
  * 解析文本内容
- * @param {*} text 待解析的文本内容
- * @param {*} delimiters 包裹变量的符号
+ * @param {String} text 待解析的文本内容
+ * @param {[String, String]} delimiters 包裹变量的符号
  */
 export function parseText(text, delimiters) {
-  // debugger
   // 检查文本中是否包含变量
   const tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE
 

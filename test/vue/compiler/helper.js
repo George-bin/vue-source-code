@@ -8,6 +8,13 @@ export function baseWarn (msg, range) {
   console.error(`[Vue compiler]: ${msg}`)
 }
 
+/**
+ * 获取动态绑定的值（以及删除该属性）
+ * @param {*} el 
+ * @param {*} name 
+ * @param {*} removeFromMap 
+ * @returns 
+ */
 export function getAndRemoveAttr (el, name, removeFromMap) {
   let val
   if ((val = el.attrsMap[name]) != null) {
@@ -25,7 +32,13 @@ export function getAndRemoveAttr (el, name, removeFromMap) {
   return val
 }
 
-// 获取v-bind的属性，如：key
+/**
+ * 获取v-bind的属性，如：class、key
+ * @param {ASTElement} el 
+ * @param {String} name 属性名
+ * @param {Boolean} getStatic 
+ * @returns 
+ */
 export function getBindingAttr (el, name, getStatic) {
   const dynamicValue = 
     getAndRemoveAttr(el, ':'+name) ||

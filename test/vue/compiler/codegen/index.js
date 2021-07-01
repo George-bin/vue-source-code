@@ -72,9 +72,7 @@ function genElement (el, state) {
 export function genChildren (el, state) {
   const children = el.children
   if (children.length) {
-    return `[${children.map(c => genNode(c, state)).join(',')}]${
-      normalizationType ? `,${normalizationType}` : ''
-    }`
+    return `[${children.map(c => genNode(c, state)).join(',')}]`
   }
 }
 
@@ -127,6 +125,24 @@ export function genData (el, state) {
 
   data = data.replace(/,$/, '') + '}'
   return data
+}
+
+function genStatic (el, state) {
+
+  el.staticProcessed = true
+  const originalPreState = state.pre
+  
+  if (el.pre) {
+    state.pre = el.pre
+  }
+
+  state.staticRenderFns.push(`with(this){return ${genElement(el, state)}}`)
+  state.pre = originalPreState
+  return `_m(${
+    state.staticRenderFns.length - 1
+  }${
+    el.staticInFor ? ',true' : ''
+  })`
 }
 
 // 生成元素属性
