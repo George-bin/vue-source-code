@@ -6,16 +6,15 @@ import { extend, no } from '../../shared/util.js'
  */
 export class CodegenState {
   constructor (options) {
-    debugger
     this.options = options
     this.warn = options.warn || baseWarn
     this.transforms = pluckModuleFunction(options.modules, 'transformCode')
     this.dataGenFns = pluckModuleFunction(options.modules, 'genData')
     // this.directives = extend(extend({}, baseDirectives), options.directives)
     const isReservedTag = options.isReservedTag || no
-    this.maybeComponent = (el) => !!el.component || !isReservedTag(el.tag)
+    this.maybeComponent = (el) => !!el.component || !isReservedTag(el.tag) // 可能是组件
     this.onceId = 0
-    this.staticRenderFns = []
+    this.staticRenderFns = [] // 静态渲染函数
     this.pre = false
   }
 }
@@ -35,9 +34,8 @@ export function generate (ast, options) {
   }
 }
 
-// 根据AST元素节点属性的不同而执行不同的代码生成函数
+// 根据 AST 元素节点属性的不同而执行不同的代码生成函数
 function genElement (el, state) {
-  debugger
   if (el.staticRoot && !el.staticProcessed) {
     return genStatic(el, state)
   } else if (el.once && !el.onceProcessed) {
@@ -77,8 +75,8 @@ export function genChildren (el, state) {
 }
 
 /**
- * 
- * @param {*} node 
+ * 生成子节点
+ * @param {*} node 子节点
  * @param {*} state 
  * @returns 
  */
@@ -92,6 +90,11 @@ function genNode (node, state) {
   }
 }
 
+/**
+ * 生成纯文本字符串的函数表示
+ * @param {*} text 
+ * @returns 
+ */
 function genText (text) {
   return `_v(${text.type === 2
     ? text.expression // no need for () because already wrapped in _s()
@@ -106,7 +109,7 @@ function genComment (comment) {
 /**
  * 将元素属性提取出来，组成类似："{attrs:{\"asd\":\"\"}}"
  * @param {*} el => ASTElement
- * @param {*} state => CodegenState
+ * @param {*} state => CodegenStategenProps
  */
 export function genData (el, state) {
   let data = '{'
@@ -116,6 +119,10 @@ export function genData (el, state) {
   // key
   if (el.key) {
     data += `key:${el.key}`
+  }
+
+  for (var i = 0; i < state.dataGenFns.length; i++) {
+    data += state.dataGenFns[i](el)
   }
 
   // attributes
@@ -145,7 +152,11 @@ function genStatic (el, state) {
   })`
 }
 
-// 生成元素属性
+/**
+ * 生成元素属性的函数字符串表示
+ * @param {*} props 
+ * @returns 
+ */
 function genProps (props) {
   let staticProps = ``
   let dynamicProps = ``

@@ -10,6 +10,7 @@ type CompiledFunctionResult = {
 };
 
 function createFunction (code, errors) {
+  debugger
   try {
     return new Function(code)
   } catch (err) {

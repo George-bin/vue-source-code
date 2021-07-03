@@ -119,6 +119,7 @@ export function parse (
 
   function closeElement (element) {
     trimEndingWhitespace(element)
+    
     if (!inVPre && !element.processed) {
       element = processElement(element, options)
     }
@@ -452,7 +453,6 @@ export function processElement (
   element: ASTElement,
   options: CompilerOptions
 ) {
-  debugger
   processKey(element)
 
   // determine whether this is a plain element after

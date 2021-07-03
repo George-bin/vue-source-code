@@ -9,12 +9,11 @@ import {
 } from '../parser/text-parse.js'
 
 /**
- * 
+ * 处理
  * @param {ASTElement} el 
  * @param {CompilerOptions} options 
  */
 function transformNode (el, options) {
-  debugger
   const warn = options.warn || baseWarn
   const staticClass = getAndRemoveAttr(el, 'class')
 
@@ -32,21 +31,23 @@ function transformNode (el, options) {
     }
   }
 
+  // 静态class
   if (staticClass) {
     el.staticClass = JSON.stringify(staticClass)
   }
 
+  // 动态class
   const classBinding = getBindingAttr(el, 'class', false /* getStatic */)
   if (classBinding) {
     el.classBinding = classBinding
   }
 }
 
-// 获取class => 静态class和动态绑定的class
+// 输出 => class的函数字符串表示
 function genData (el) {
   let data = ''
   if (el.staticClass) {
-    data += `staticClass:${el.staticClass}`
+    data += `staticClass:${el.staticClass},`
   }
   if (el.classBinding) {
     data += `class:${el.classBinding},`

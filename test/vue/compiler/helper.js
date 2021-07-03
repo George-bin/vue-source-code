@@ -1,3 +1,7 @@
+import {
+  parseFilters
+} from './parser/filter-parse.js'
+
 export function pluckModuleFunction(modules, key) {
   return modules ?
     modules.map(m => m[key]).filter(_ => _) :
@@ -54,7 +58,14 @@ export function getBindingAttr (el, name, getStatic) {
   }
 }
 
-// 添加属性
+/**
+ * 添加属性
+ * @param {ASTElement} el 
+ * @param {String} name 属性名
+ * @param {String} value 属性值
+ * @param {*} range 范围
+ * @param {*} dynamic 是否是动态值
+ */
 export function addAttr (el, name, value, range, dynamic) {
   const attrs = dynamic
     ? (el.dynamicAttrs || (el.dynamicAttrs = []))

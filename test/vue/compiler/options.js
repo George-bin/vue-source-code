@@ -3,7 +3,7 @@ import {
   mustUseProp,
   isReservedTag,
   getTagNamespace
-} from '../utils/index.js'
+} from '../util/index.js'
 
 import modules from './modules/index.js'
 import { isUnaryTag, canBeLeftOpenTag } from './util.js'

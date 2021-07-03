@@ -1,4 +1,14 @@
-function createFunction (code, errors) {
+// import {
+//   baseWarn
+// } from './helper.js'
+/**
+ * 根据字符串创建函数
+ * @param {*} code 函数字符串
+ * @param {*} errors 
+ * @returns 
+ */
+export function createFunction (code, errors) {
+  // debugger
   try {
     return new Function(code)
   } catch (err) {
@@ -7,17 +17,23 @@ function createFunction (code, errors) {
   }
 }
 
+/**
+ * 生成 render 函数
+ * @param {*} compile 
+ * @returns 
+ */
 export function createCompileToFunctionFn (compile) {
   const cache = Object.create(null)
   return function compileToFunctions (template, options, vm) {
     options = extend({}, options)
-    const warn = options.warn || baseWarn
-    delete options.warn
+    // const warn = options.warn || baseWarn
+    // delete options.warn
 
     // check cache
     const key = options.delimiters
       ? String(options.delimiters) + template
       : template
+    
     if (cache[key]) {
       return cache[key]
     }

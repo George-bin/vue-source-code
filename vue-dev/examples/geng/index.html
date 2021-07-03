@@ -1,91 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="../../dist/vue.js"></script>
-    <style>
-        .fade-enter-active, .fade-leave-active {
-            transition: opacity .5s;
-        }
-        .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-            opacity: 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="../../dist/vue.js"></script>
+  <style>
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: opacity .5s;
+    }
+
+    .fade-enter,
+    .fade-leave-to
+
+    /* .fade-leave-active below version 2.1.8 */
+      {
+      opacity: 0;
+    }
+
+  </style>
 </head>
+
 <body>
-    <div id="app">
-        <!-- <p @click="handleChangeMessage">{{message}}</p> -->
-        <!-- <transition name="fade">
+  <div id="app">
+    <!-- <p @click="handleChangeMessage">{{message}}</p> -->
+    <!-- <transition name="fade">
             <p v-if="show">{{useType}}</p>
         </transition> -->
-        <button @click="handleChange">change</button>
-        <my-component></my-component>
-    </div>
-    <script>
-        // 打开性能监控
-        // Vue.config.performance = true;
-        // var mixin = {
-        //    created: function () { console.log(1) }
-        // }
-        // var Profile = Vue.extend({
-        //     template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
-        //     data: function () {
-        //         return {
-        //             firstName: 'Walter',
-        //             lastName: 'White',
-        //             alias: 'Heisenberg'
-        //         }
-        //     }
-        // })
-        let childComp = {
-            template: '<div>{{msg}}</div>',
-            created() {
-                console.log('child created')
-            },
-            mounted() {
-                console.log('child mounted')
-            },
-            data() {
-                return {
-                    msg: '你好，世界！'
-                }
-            }
+    <!-- <button @click="handleChange">change</button>
+    <my-component></my-component> -->
+  </div>
+  <script>
+    // 打开性能监控
+    // Vue.config.performance = true;
+    // var mixin = {
+    //    created: function () { console.log(1) }
+    // }
+    // var Profile = Vue.extend({
+    //     template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
+    //     data: function () {
+    //         return {
+    //             firstName: 'Walter',
+    //             lastName: 'White',
+    //             alias: 'Heisenberg'
+    //         }
+    //     }
+    // })
+    let childComp = {
+      template: '<div>{{msg}}</div>',
+      created() {
+        console.log('child created')
+      },
+      mounted() {
+        console.log('child mounted')
+      },
+      data() {
+        return {
+          msg: '你好，世界！'
         }
-        // Vue.component('my-component', childComp)
-        // let app = new Vue({
-        //     el: '#app',
-        //     render: h => h(childComp)
-        // })
+      }
+    }
+    // Vue.component('my-component', childComp)
+    // let app = new Vue({
+    //     el: '#app',
+    //     render: h => h(childComp)
+    // })
 
-        let app = new Vue({
-            el: '#app',
-            props: {
-                'use-type': {
-                    type: String,
-                    default: 'add'
-                }
-            },
-            // mixins: [mixin],
-            data: {
-                message: 'hello, vue!',
-                show: true
-                // userinfo: {
-                //     username: 'George',
-                //     email: 'bin770021714@126.com'
-                // }
-            },
-            methods: {
-                handleChangeMessage () {
-                    this.message = Math.random()
-                },
-                handleChange () {
-                    this.show = !this.show
-                }
-            },
-            template: '<div class="name" asd></div>'
-        })
-    </script>
+    let app = new Vue({
+      el: '#app',
+      props: {
+        'use-type': {
+          type: String,
+          default: 'add'
+        }
+      },
+      // mixins: [mixin],
+      data: {
+        message: 'hello, vue!',
+        name: 'george',
+        show: true
+        // userinfo: {
+        //     username: 'George',
+        //     email: 'bin770021714@126.com'
+        // }
+      },
+      methods: {
+        handleChangeMessage() {
+          this.message = Math.random()
+        },
+        handleChange() {
+          this.show = !this.show
+        }
+      },
+      // template: '<div class="name" asd>{{name | filterName | filterName2}}</div>',
+      template: '<div class="name" asd>{{/.*/.test(name)}}</div>',
+      filters: {
+        filterName: function (name) {
+          return name.toLowerCase()
+        },
+        filterName2: function (name) {
+          return name.toUpperCase()
+        }
+      }
+    })
+
+  </script>
 </body>
+
 </html>

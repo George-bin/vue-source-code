@@ -3,7 +3,8 @@ import { parseHTML } from './html-parse.js'
 import { parseText } from './text-parse.js'
 import {
   addAttr,
-  pluckModuleFunction
+  pluckModuleFunction,
+  getBindingAttr
 } from '../helper.js'
 
 export const onRE = /^@|^v-on:/
@@ -67,14 +68,17 @@ export function parse (template, options) {
   const stack = []
   let root
   let currentParent // 当前元素的父节点
-  let inVPre = false
-  let inPre = false
+  let inVPre = false // 在v-pre元素中
+  let inPre = false // 在pre元素
   let warned = false
   /**
    * 关闭元素节点
    * @param {*} element 
    */
   function closeElement(element) {
+    // #15c700 清除空白节点
+    trimEndingWhitespace(element)
+
     if (!inVPre && !element.processed) {
       element = processElement(element, options)
     }
@@ -93,9 +97,9 @@ export function parse (template, options) {
     }
     
     // apply post-transforms
-    for (let i = 0; i < postTransforms.length; i++) {
-      postTransforms[i](element, options)
-    }
+    // for (let i = 0; i < postTransforms.length; i++) {
+    //   postTransforms[i](element, options)
+    // }
   }
 
   /**
@@ -111,7 +115,26 @@ export function parse (template, options) {
         el.attrsMap.type === 'text/javascript'
       ))
     )
-  }  
+  }
+
+  /**
+   * 清除末尾空白节点
+   * @param {*} el 
+   */
+  function trimEndingWhitespace (el) {
+    if (!inPre) {
+      let lastNode
+      // 1.末尾子节点为纯文本内容
+      // 2.文本内容为空
+      while (
+        (lastNode = el.children[el.children.length - 1]) &&
+        lastNode.type === 3 &&
+        lastNode.text === ' '
+      ) {
+        el.children.pop()
+      }
+    }
+  }
 
   parseHTML(template, {
     warn: baseWarn,
@@ -139,6 +162,7 @@ export function parse (template, options) {
         element.forbidden = true
       }
 
+      // 将 vue 的语法转换为标准的 AST 语法树结构 => class、style
       for (let i = 0; i < preTransforms.length; i++) {
         element = preTransforms[i](element, options) || element
       }
@@ -147,6 +171,7 @@ export function parse (template, options) {
         root = element
       }
 
+      // 非自闭合标签
       if (!unary) {
         currentParent = element
         stack.push(element)
@@ -208,13 +233,27 @@ export function parse (template, options) {
 }
 
 /**
+ * 添加具备if条件的元素节点
+ * @param {*} el 
+ * @param {*} condition 
+ */
+export function addIfCondition (el, condition) {
+  if (!el.ifConditions) {
+    el.ifConditions = []
+  }
+  el.ifConditions.push(condition)
+}
+
+/**
  * 加工元素节点
  * @param {*} element 
  * @param {*} options 
  */
 export function processElement (element, options) {
+  processKey(element)
+
   // 用于判断元素节点本身包含任何属性
-  element.plain = !element.attrsList.length
+  element.plain = !element.key && !element.attrsList.length
 
   // class、style、model
   for (let i = 0; i < transforms.length; i++) {
@@ -227,7 +266,18 @@ export function processElement (element, options) {
 }
 
 /**
- * 处理attrs => normal => { name: '', value: '', dynamic: ''}
+ * 加工key
+ */
+function processKey (el) {
+  const exp = getBindingAttr(el, 'key')
+  // 判断：
+  // 1. key不能用在template元素上
+  // 2. 不要在<transition-group>子节点上使用v-for index作为键，这和不使用键是一样的。
+  el.key = exp
+}
+
+/**
+ * 处理attrs => normalize => { name: '', value: '', dynamic: ''}
  * @param {*} el 
  */
 function processAttrs (el) {
