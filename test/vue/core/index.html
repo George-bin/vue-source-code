@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据驱动视图</title>
+</head>
+
+<body>
+  <script type="module">
+    // import Vue from './index.js'
+    import { Observer } from './observer/index.js'
+    import Watcher from './observer/watcher.js'
+
+    let person = {
+      name: 'George',
+      age: 26
+    }
+    // 数据劫持+观察者模式
+    new Observer(person)
+    let cb = function (val, oldVal) {
+      console.log(`Value is：${val}`)
+      console.log(`OldVal is：${oldVal}`)
+    }
+
+    let watcher1 = new Watcher(person, 'name', cb)
+
+    person.name = '123'
+
+  </script>
+</body>
+
+</html>

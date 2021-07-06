@@ -36,7 +36,7 @@
     // template = `<div :class="name | filterName | filterName2" asd></div>`
     // template = `<div :class="/.*/.test(name)" asd></div>`
     // template = `<div :style="{color: color, font-size: fontSize + 'px'}"></div>`
-    template = `<div asd class="box"></div>`
+    // template = `<div asd class="box"></div>`
     let ast = parse(template, options)
     optimizer(ast, options)
     console.log(ast)
