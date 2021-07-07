@@ -24,7 +24,7 @@
     import { generate } from './compiler/codegen/index.js'
     import { createFunction } from './compiler/to-function.js'
     let template = `
-      <div class="box" asd>
+      <div class="box" v-on:click.enter.stop="handleClickBox">
         <ul>
           <li>我是文本信息</li>
           <li>我是文本信息</li>

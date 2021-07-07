@@ -4,11 +4,14 @@ import { parseText } from './text-parse.js'
 import {
   addAttr,
   pluckModuleFunction,
-  getBindingAttr
+  getBindingAttr,
+  addHandler
 } from '../helper.js'
 
 export const onRE = /^@|^v-on:/
 export const dirRE = /^v-|^@|^:|^\.|^#/
+
+const modifierRE = /\.[^.\]]+(?=[^\]]*$)/g
 
 function baseWarn (msg) {
   console.error(`[Vue compiler]: ${msg}`)
@@ -282,15 +285,39 @@ function processKey (el) {
  */
 function processAttrs (el) {
   const list = el.attrsList
-  let i, l, name, rawName, value
+  let i, l, name, rawName, value, modifiers
   for (i = 0, l = list.length; i < l; i++) {
     name = rawName = list[i].name
     value = list[i].value
     if (dirRE.test(name)) {
       // 标记为动态元素
       el.hasBindings = true
+      // 解析修饰符
+      modifiers = parseModifiers(name.replace(dirRE, ''))
+      if (modifiers) {
+        name = name.replace(modifierRE, '')
+      }
+
+      // 事件指令v-on
+      if (onRE.test(name)) {
+        name = name.replace(onRE, '')
+        addHandler(el, name, value, modifiers, false, () => {})
+      }
     } else {
       addAttr(el, name, JSON.stringify(value), list[i])
     }
+  }
+}
+
+/**
+ * 解析修饰符，如：.stop、.prevent、.capture、.self、.once、.passive
+ * @param {*} name 
+ */
+function parseModifiers (name) {
+  const match = name.match(modifierRE)
+  if (match) {
+    const ret = {}
+    match.forEach(m => { ret[m.slice(1)] = true })
+    return ret
   }
 }

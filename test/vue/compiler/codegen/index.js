@@ -1,4 +1,10 @@
-import { baseWarn, pluckModuleFunction } from '../helper.js'
+import {
+  baseWarn,
+  pluckModuleFunction
+} from '../helper.js'
+import {
+  genHandlers
+} from './events.js'
 import { extend, no } from '../../shared/util.js'
 
 /**
@@ -128,6 +134,11 @@ export function genData (el, state) {
   // attributes
   if (el.attrs) {
     data += `attrs:${genProps(el.attrs)},`
+  }
+
+  // event handlers
+  if (el.events) {
+    data += `${genHandlers(el.events, false)},`
   }
 
   data = data.replace(/,$/, '') + '}'

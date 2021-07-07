@@ -11,23 +11,28 @@
 <body>
   <script type="module">
     // import Vue from './index.js'
-    import { Observer } from './observer/index.js'
+    import { observe } from './observer/index.js'
     import Watcher from './observer/watcher.js'
 
     let person = {
       name: 'George',
-      age: 26
+      age: 26,
+      lesson: ['English', 'Maths', 'Language']
     }
     // 数据劫持+观察者模式
-    new Observer(person)
+    let ob = observe(person)
+    // console.log(ob)
+    console.log(person)
+    // person.lesson[0]
     let cb = function (val, oldVal) {
       console.log(`Value is：${val}`)
       console.log(`OldVal is：${oldVal}`)
     }
 
-    let watcher1 = new Watcher(person, 'name', cb)
-
-    person.name = '123'
+    let watcher1 = new Watcher(person, 'lesson', cb)
+    // console.log(person)
+    // debugger
+    person.lesson.push(123)
 
   </script>
 </body>

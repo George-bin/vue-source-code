@@ -4,6 +4,10 @@ export default class Watcher {
   constructor (vm, expOrFn, cb) {
     this.vm = vm
     this.cb = cb
+    this.deps = []
+    this.newDeps = []
+    this.depIds = new Set()
+    this.newDepIds = new Set()
     this.getter = parsePath(expOrFn)
     this.value = this.get()
   }
@@ -14,6 +18,18 @@ export default class Watcher {
     let value = this.getter.call(vm, vm)
     Dep.target = null
     return value
+  }
+
+  // 添加依赖项
+  addDep (dep) {
+    const id = dep.id
+    if (!this.newDepIds.has(id)) {
+      this.newDepIds.add(id)
+      this.newDeps.push(dep)
+      if (!this.depIds.has(id)) {
+        dep.addSub(this)
+      }
+    }
   }
 
   update () {
