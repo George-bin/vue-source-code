@@ -1,12 +1,15 @@
 import { initState } from './state.js'
-import {
-  mergeOptions
-} from '../util/index.js'
+import { initLifecycle } from './lifecycle.js'
+import { mergeOptions } from '../util/index.js'
+
+let uid = 0
 
 // 初始化Vue类
 export function initMixin (Vue) {
   Vue.prototype._init = function (options) {
     const vm = this
+
+    vm.uid = uid++
     vm.$options = mergeOptions(
       resolveConstructorOptions(vm.constructor), // vm.constructor.options => Vue.options
       options || {},

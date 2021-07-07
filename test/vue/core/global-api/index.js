@@ -11,6 +11,8 @@ export function initGlobalAPI (Vue) {
     Vue.options[type + 's'] = Object.create(null)
   })
 
+  Vue.options._base = Vue
+
   // 把一些内置组件扩展到Vue.options.components
-  extends()
+  // extends()
 }

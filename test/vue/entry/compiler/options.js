@@ -3,10 +3,10 @@ import {
   mustUseProp,
   isReservedTag,
   getTagNamespace
-} from '../util/index.js'
+} from '../../util/index.js'
 
-import modules from './modules/index.js'
-import { isUnaryTag, canBeLeftOpenTag } from './util.js'
+import modules from '../../compiler/modules/index.js'
+import { isUnaryTag, canBeLeftOpenTag } from '../../compiler/util.js'
 
 let div
 /**

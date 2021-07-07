@@ -1,3 +1,6 @@
+/**
+ * 初始化生命周期
+ */
 export function initLifecycle () {
   const options = vm.$options
 
@@ -21,4 +24,13 @@ export function initLifecycle () {
   vm._isMounted = false
   vm._isDestroyed = false
   vm._isBeingDestroyed = false
+}
+
+/**
+ * 执行具体挂载操作
+ * @param {*} vm 实例
+ * @param {*} el 
+ */
+export function mountComponent (vm, el) {
+  vm.$el = el
 }
