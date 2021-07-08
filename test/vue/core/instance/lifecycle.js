@@ -1,7 +1,7 @@
 /**
  * 初始化生命周期
  */
-export function initLifecycle () {
+export function initLifecycle (vm) {
   const options = vm.$options
 
   let parent = options.parent
@@ -12,7 +12,7 @@ export function initLifecycle () {
     parent.$children.push(vm)
   }
 
-  vm.$parent = parent // 不是抽象类型的父级
+  vm.$parent = parent // 父实例（非抽象类型的父级）
   vm.$root = parent ? parent.$root : vm // 当前实例的根实例
 
   vm.$children = []

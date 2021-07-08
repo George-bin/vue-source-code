@@ -1,3 +1,5 @@
+import { createCompileToFunctionFn } from './to-function.js'
+
 export function createCompilerCreator (baseCompile) {
   return function createCompiler (baseOptions) {
     function compile (template, options) {

@@ -16,7 +16,7 @@ const arrayKeys = Object.getOwnPropertyNames(arrayMethods)
  * 尝试创建一个观察者实例，如果创建成功，直接返回新创建的观察者实例，
  * 如果 Value 已经存在一个Observer实例，则直接返回它。
  * @param {*} value 
- * @param {*} asRootData 
+ * @param {*} asRootData 是否是根节点
  * @returns 
  */
 export function observe (value, asRootData) {
@@ -136,3 +136,5 @@ function copyAugment (target, src, keys) {
     def(target, key, src[key])
   }
 }
+
+export function set (target, key, value) {}

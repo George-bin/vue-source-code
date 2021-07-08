@@ -54,3 +54,20 @@ const hasOwnProperty = Object.prototype.hasOwnProperty
 export function hasOwn (obj, key) {
   return hasOwnProperty.call(obj, key)
 }
+
+/**
+ * 驼峰字符串改为连字符
+ * 规格化：typeStringWord => type-string-word
+ */
+const hyphenateRE = /\B([A-Z])/g
+export const hyphenate = cached((str) => {
+  return str.replace(hyphenateRE, '-$1').toLowerCase()
+})
+
+/**
+ * 判断是否是一个对象
+ */
+const _toString = Object.prototype.toString
+export function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
+}

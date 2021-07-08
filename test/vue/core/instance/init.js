@@ -20,12 +20,13 @@ export function initMixin (Vue) {
     initLifecycle(vm)                    // 初始化生命周期
     // initEvents(vm)                       // 初始化事件
     // initRender(vm)                       // 初始化渲染
-    callHook(vm, 'beforeCreate')         // 调用生命周期钩子函数
+    // callHook(vm, 'beforeCreate')         // 调用生命周期钩子函数
     // initInjections(vm)                   // 初始化injections
     initState(vm)                        // 初始化props,methods,data,computed,watch
     // initProvide(vm)                      // 初始化 provide
-    callHook(vm, 'created')              // 调用生命周期钩子函数
+    // callHook(vm, 'created')              // 调用生命周期钩子函数
 
+    debugger
     // 执行挂载
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)

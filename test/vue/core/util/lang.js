@@ -13,3 +13,13 @@ export function def(obj, key, val, enumerable) {
     configurable: true
   })
 }
+
+/**
+ * 判断是否为保留字符：$或_
+ * @param {*} str 
+ * @returns 
+ */
+export function isReserved (str) {
+  const c = (str + '').charCodeAt(0)
+  return c === 0x24 || c === 0x5F
+}

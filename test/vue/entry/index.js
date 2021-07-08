@@ -1,4 +1,4 @@
-import Vue from '../runtime/index.js'
+import Vue from './runtime/index.js'
 import { query } from './util/index.js'
 import { compileToFunctions } from './compiler/index.js'
 // 缓存$mount

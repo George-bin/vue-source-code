@@ -7,8 +7,19 @@
   <title>Vue源码分析</title>
 </head>
 <body>
+  <div id="box"></div>
   <script type="module">
     import Vue from './entry/index.js'
+
+    let vm = new Vue({
+      el: '#box',
+      data: {
+        message: 'Hello, George!'
+      },
+      template: '<div class="message">{{message}}</div>'
+    })
+    console.log(vm)
+    vm.$options.data()
   </script>
 </body>
 </html>

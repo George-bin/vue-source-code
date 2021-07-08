@@ -1,6 +1,8 @@
 // import {
 //   baseWarn
 // } from './helper.js'
+import { extend } from "../shared/util.js"
+
 /**
  * 根据字符串创建函数
  * @param {*} code 函数字符串
@@ -23,6 +25,7 @@ export function createFunction (code, errors) {
  * @returns 
  */
 export function createCompileToFunctionFn (compile) {
+  // 缓存render
   const cache = Object.create(null)
   return function compileToFunctions (template, options, vm) {
     options = extend({}, options)
