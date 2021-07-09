@@ -1,3 +1,5 @@
+import Watcher from '../observer/watcher.js'
+import { noop } from '../../shared/util.js'
 /**
  * 初始化生命周期
  */
@@ -33,4 +35,26 @@ export function initLifecycle (vm) {
  */
 export function mountComponent (vm, el) {
   vm.$el = el
+
+  let updateComponent = () => {
+    debugger
+    const vnode = vm._render()
+    // vm._update(vnode, hydrating)
+  }
+
+  // 渲染Watcher
+  new Watcher(vm, updateComponent, noop, {
+    before () {
+      if (vm._isMounted && vm._isDestroyed) {
+        // callHook(vm, 'beforeUpdate')
+      }
+    }
+  }, true /* isRenderWatcher */)
+
+  if (vm.$vnode === null) {
+    vm._isMounted = true
+    // callHook(vm, 'mounted')
+  }
+
+  return vm
 }

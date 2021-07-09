@@ -1,5 +1,7 @@
 export const emptyObject = Object.freeze({})
 
+export function noop (a, b, c) {}
+
 /**
  * 创建一个映射
  * @param {*} str 
@@ -70,4 +72,12 @@ export const hyphenate = cached((str) => {
 const _toString = Object.prototype.toString
 export function isPlainObject (obj) {
   return _toString.call(obj) === '[object Object]'
+}
+
+export function isUndef (v) {
+  return v === undefined || v === null
+}
+
+export function isDef (v) {
+  return v !== undefined && v !== null
 }

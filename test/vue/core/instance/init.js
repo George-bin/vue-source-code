@@ -1,6 +1,7 @@
 import { initState } from './state.js'
 import { initLifecycle } from './lifecycle.js'
 import { mergeOptions } from '../util/index.js'
+import { initRender } from './render.js'
 
 let uid = 0
 
@@ -15,11 +16,13 @@ export function initMixin (Vue) {
       options || {},
       vm
     )
+
+    vm._renderProxy = vm
     
     vm._self = vm
     initLifecycle(vm)                    // 初始化生命周期
     // initEvents(vm)                       // 初始化事件
-    // initRender(vm)                       // 初始化渲染
+    initRender(vm)                       // 初始化渲染函数
     // callHook(vm, 'beforeCreate')         // 调用生命周期钩子函数
     // initInjections(vm)                   // 初始化injections
     initState(vm)                        // 初始化props,methods,data,computed,watch

@@ -1,14 +1,21 @@
 import Dep from './dep.js'
 
 export default class Watcher {
-  constructor (vm, expOrFn, cb) {
+  constructor (vm, expOrFn, cb, options, isRenderWatcher) {
     this.vm = vm
     this.cb = cb
+
     this.deps = []
     this.newDeps = []
     this.depIds = new Set()
     this.newDepIds = new Set()
-    this.getter = parsePath(expOrFn)
+
+    if (typeof expOrFn === 'function') {
+      this.getter = expOrFn
+    } else {
+      this.getter = parsePath(expOrFn)
+    }
+    
     this.value = this.get()
   }
 

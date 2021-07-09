@@ -802,6 +802,7 @@ export function createPatchFunction (backend) {
       return
     }
 
+    // 是否是first patch
     let isInitialPatch = false
     // 收集插入的组件，用于调用insert钩子
     const insertedVnodeQueue = []
@@ -894,7 +895,6 @@ export function createPatchFunction (backend) {
         }
 
         // destroy old node（删除旧的节点）
-        debugger
         if (isDef(parentElm)) {
           removeVnodes([oldVnode], 0, 0)
         } else if (isDef(oldVnode.tag)) {
