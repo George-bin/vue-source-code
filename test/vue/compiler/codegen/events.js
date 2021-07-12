@@ -58,7 +58,7 @@ const keyNames = {
  * @param {*} isNative 
  */
 export function genHandlers (events, isNative) {
-  debugger
+  // debugger
   const prefix = isNative ? 'nativeOn:' : 'on:'
 
   let staticHandlers = ``

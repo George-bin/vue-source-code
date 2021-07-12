@@ -1,3 +1,4 @@
+export * from './class.js'
 // 获取DOM对象
 export function query (el) {
   if (typeof el === 'string') {

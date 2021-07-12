@@ -1,4 +1,25 @@
-import { isDef, isUndef } from '../util/index.js'
+import { isTrue, isDef, isUndef, isPrimitive } from '../util/index.js'
+import VNode from './vnode.js'
+
+export const emptyNode = new VNode('', {}, [])
+
+const hooks = ['create', 'activate', 'update', 'remove', 'destroy']
+
+/**
+ * 判断新旧 Vnode 是否指向同一节点，用于对比更新
+ * @param {*} a 
+ * @param {*} b 
+ * @returns 
+ */
+function sameVnode (a, b) {
+  return (
+    a.key === b.key && (
+      a.tag === b.tag &&
+      a.isComment === b.isComment &&
+      isDef(a.data) === isDef(b.data)
+    )
+  )
+}
 
 function createKeyToOldIdx () {
   let i, key
@@ -11,25 +32,70 @@ function createKeyToOldIdx () {
 }
 
 export function createPatchFunction (backed) {
-
+  let i,j
+  const cbs = {}
   const { modules, nodeOps } = backed
+
+  // 收集全局钩子
+  for (i = 0; i < hooks.length; ++i) {
+    cbs[hooks[i]] = []
+    for (j = 0; j < modules.length; ++j) {
+      if (isDef(modules[j][hooks[i]])) {
+        cbs[hooks[i]].push(modules[j][hooks[i]])
+      }
+    }
+  }
+
+  /**
+   * 根据真实 DOM 元素创建一个空的 VNode
+   * @param {*} elm 
+   * @returns 
+   */
+  function emptyNodeAt (elm) {
+    return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm)
+  }
+
+  /**
+   * 调用全局钩子
+   * @param {*} vnode 
+   */
+  function invokeCreateHooks (vnode) {
+    // 全局钩子
+    for (let i = 0; i < cbs.create.length; ++i) {
+      cbs.create[i](emptyNode, vnode)
+    }
+    // 自定义钩子
+    let hook = vnode.data.hook // Reuse variable
+    if (isDef(hook)) {
+      if (isDef(hook.create)) hook.create(emptyNode, vnode)
+    }
+  }
   
   /**
    * 根据 VNode 创建真实 DOM
    * @param {*} vnode 
    * @param {*} parentElm 父节点（真实DOM节点）
    * @param {*} refElm 下一个兄弟节点
+   * @param {*} nested 是否为嵌套节点
+   * @param {*} ownerArray 同一层级的子元素数组（包含当前Vnode）
+   * @param {*} index 同一层级中的位置坐标（index）
    */
-  function createElm (vnode, parentElm, refElm) {
+  function createElm (vnode, parentElm, refElm, nested, ownerArray, index) {
     const data = vnode.data
     const children = vnode.children
-    const tag = tag
+    const tag = vnode.tag
     if (isDef(tag)) {
       // 创建元素节点
-      vnode.elm = nodeOps.createElement(tag, node)
+      vnode.elm = nodeOps.createElement(tag, vnode)
+      // 创建子元素
       createChildren(vnode, children)
+      debugger
+      if (isDef(data)) {
+        invokeCreateHooks(vnode)
+      }
+      // 将元素插入到真实 DOM 节点中
       insert(parentElm, vnode.elm, refElm)
-    } else if (ifTrue(vnode.isComment)) {
+    } else if (isTrue(vnode.isComment)) {
       // 创建注释节点
       vnode.elm = nodeOps.createComment(vnode.text)
       insert(parentElm, vnode.elm, refElm)
@@ -78,19 +144,65 @@ export function createPatchFunction (backed) {
    * @param {*} startIdx 
    * @param {*} endIdx 
    */
-  function removeNodes(vnodes, startIdx, endIdx) {
+  function removeVnodes(vnodes, startIdx, endIdx) {
     for(; startIdx <= endIdx; ++startIdx) {
       const ch = vnodes[startIdx]
       if (isDef(ch)) {
         // 元素节点
         if (isDef(ch.tag)) {
-
+          removeAndInvokeRemoveHook(ch)
         }
         // 文本节点
         else {
           removeNode(ch.elm)
         }
       }
+    }
+  }
+
+  /**
+   * 移动 DOM 元素并调用 remove 钩子
+   * @param {*} vnode 
+   * @param {*} rm 
+   */
+  function removeAndInvokeRemoveHook (vnode, rm) {
+    removeNode(vnode.elm)
+  }
+
+  /**
+   * 将真实 DOM 元素插入到父节点中
+   * @param {*} parent 
+   * @param {*} elm 
+   * @param {*} ref 
+   */
+  function insert (parent, elm, ref) {
+    if (isDef(parent)) {
+      if (isDef(ref)) {
+        if (nodeOps.parentNode(ref) === parent) {
+          nodeOps.insertBefore(parent, elm, ref)
+        }
+      } else {
+        nodeOps.appendChild(parent, elm)
+      }
+    }
+  }
+
+  /**
+   * 创建 vnode 子元素
+   * @param {*} vnode 
+   * @param {*} children 
+   */
+  function createChildren (vnode, children) {
+    if (Array.isArray(children)) {
+      // 忽略：检查是否存在重复的key
+
+      for (let i = 0; i < children.length; ++i) {
+        createElm(children[i], vnode.elm, null, true, children, i)
+      }
+    }
+    // 原始类型：直接创建文本节点
+    else if (isPrimitive (vnode)) {
+      nodeOps.appendChild(vnode.elm, nodeOps.createTextNode(String(vnode.text)))
     }
   }
 
@@ -234,11 +346,46 @@ export function createPatchFunction (backed) {
     }
   }
 
-  return function patch (oldVnode, vnode) {
-    // 收集插入的组件，用于调用insert钩子
+  return function patch (oldVnode, vnode, removeOnly) {
+    // 是否是first patch
+    let isInitialPatch = false
 
+    // 收集插入的组件，用于调用insert钩子
+    // const insertedVnodeQueue = []
+
+    // 首次渲染，直接创建
     if (isUndef(oldVnode)) {
+      isInitialPatch = true
       createElm(vnode)
     }
+    // 对比更新渲染
+    else {
+      const isRealElement = isDef(oldVnode.nodeType)
+      // oldVnode 不是真实 DOM 节点
+      if (!isRealElement && sameVnode(oldVnode, vnode)) {
+        patchVnode(oldVnode, vnode, patchVnode)
+      } else {
+        // oldVnode 是真实 DOM 节点
+        if (isRealElement) {
+          oldVnode = emptyNodeAt(oldVnode)
+        }
+
+        const oldElm = oldVnode.elm // 旧的挂载元素
+        const parentElm = nodeOps.parentNode(oldElm) // 挂载元素的父级
+
+        createElm(
+          vnode,
+          parentElm,
+          nodeOps.nextSibling(oldElm)
+        )
+
+        // 删除旧的 DOM 节点
+        if (isDef(parentElm)) {
+          removeVnodes([oldVnode], 0, 0)
+        }
+      }
+    }
+
+    return vnode.elm
   }
 }

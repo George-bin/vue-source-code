@@ -1,4 +1,5 @@
 import { initState } from './state.js'
+import { initEvents } from './events.js'
 import { initLifecycle } from './lifecycle.js'
 import { mergeOptions } from '../util/index.js'
 import { initRender } from './render.js'
@@ -11,6 +12,9 @@ export function initMixin (Vue) {
     const vm = this
 
     vm.uid = uid++
+    vm._isVue = true
+
+    // 合并配置
     vm.$options = mergeOptions(
       resolveConstructorOptions(vm.constructor), // vm.constructor.options => Vue.options
       options || {},
@@ -20,8 +24,8 @@ export function initMixin (Vue) {
     vm._renderProxy = vm
     
     vm._self = vm
-    initLifecycle(vm)                    // 初始化生命周期
-    // initEvents(vm)                       // 初始化事件
+    initLifecycle(vm)                    // 初始化生命周期，建立父子组件关系
+    initEvents(vm)                       // 初始化事件系统
     initRender(vm)                       // 初始化渲染函数
     // callHook(vm, 'beforeCreate')         // 调用生命周期钩子函数
     // initInjections(vm)                   // 初始化injections

@@ -1,6 +1,6 @@
 /**
  * 初始化当前实例的事件系统
- * @param {*} vm 实例
+ * @param {*} vm 当前实例
  */
 export function initEvents (vm) {
   vm._events = Object.create(null)
@@ -13,6 +13,12 @@ export function initEvents (vm) {
 }
 
 let target
+/**
+ * 添加事件
+ * @param {*} event 
+ * @param {*} fn 
+ * @param {*} once 
+ */
 function add (event, fn, once) {
   if (once) {
     target.$once(event, fn)
@@ -21,6 +27,11 @@ function add (event, fn, once) {
   }
 }
 
+/**
+ * 移除事件
+ * @param {*} event 
+ * @param {*} fn 
+ */
 function remove (event, fn) {
   target.$off(event, fn)
 }

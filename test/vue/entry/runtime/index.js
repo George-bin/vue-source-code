@@ -5,7 +5,7 @@ import { patch } from './patch.js'
 
 Vue.prototype.__patch__ = patch
 
-
+// 执行挂载程序
 Vue.prototype.$mount = function (el) {
   el = el && query(el)
   return mountComponent(this, el)

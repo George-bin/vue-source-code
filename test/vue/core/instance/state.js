@@ -1,4 +1,4 @@
-import { isPlainObject } from '../../shared/util.js'
+import { isPlainObject, noop, bind } from '../../shared/util.js'
 import { observe } from '../observer/index.js'
 import { isReserved } from '../util/index.js'
 
@@ -32,7 +32,7 @@ export function initState (vm) {
 
   const opts = vm.$options
   // if (opts.props) initProps(vm, opts.props)
-  // if (opts.methods) initMethods(vm, opts.methods)
+  if (opts.methods) initMethods(vm, opts.methods)
   if (opts.data) {
     initData(vm)
   } else {
@@ -77,7 +77,7 @@ function initProps (vm, propsOptions) {
 }
 
 /**
- * 初始化Data
+ * 初始化Data（数据劫持）
  * @param {Component} vm 
  */
 function initData (vm) {
@@ -103,6 +103,18 @@ function initData (vm) {
   }
 
   observe(data, true)
+}
+
+/**
+ * 初始化事件
+ * @param {*} vm 
+ * @param {*} methods 
+ */
+function initMethods (vm, methods) {
+  for (const key in methods) {
+    // 忽略：与 props 键的冲突检查
+    vm[key] = typeof methods[key] !== 'function' ? noop : bind(methods[key], vm)
+  }
 }
 
 /**

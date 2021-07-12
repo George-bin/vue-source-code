@@ -70,12 +70,12 @@
 
     let app = new Vue({
       el: '#app',
-      props: {
-        'use-type': {
-          type: String,
-          default: 'add'
-        }
-      },
+      // props: {
+      //   'use-type': {
+      //     type: String,
+      //     default: 'add'
+      //   }
+      // },
       // mixins: [mixin],
       data: {
         message: 'hello, vue!',
@@ -95,15 +95,15 @@
         }
       },
       // template: '<div class="name" asd>{{name | filterName | filterName2}}</div>',
-      template: '<div class="name" asd>{{/.*/.test(name)}}</div>',
-      filters: {
-        filterName: function (name) {
-          return name.toLowerCase()
-        },
-        filterName2: function (name) {
-          return name.toUpperCase()
-        }
-      }
+      template: '<div class="name" @click="handleChange">{{message}}</div>',
+      // filters: {
+      //   filterName: function (name) {
+      //     return name.toLowerCase()
+      //   },
+      //   filterName2: function (name) {
+      //     return name.toUpperCase()
+      //   }
+      // }
     })
 
   </script>

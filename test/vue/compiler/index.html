@@ -18,11 +18,11 @@
   <h1>模板编译</h1>
   <!-- <script src="./parser/index.js" type="module"></script> -->
   <script type="module">
-    import { baseOptions as options } from './compiler/options.js'
-    import { parse } from './compiler/parser/index.js'
-    import { optimizer } from './compiler/optimizer.js'
-    import { generate } from './compiler/codegen/index.js'
-    import { createFunction } from './compiler/to-function.js'
+    import { baseOptions as options } from '../entry/compiler/options.js'
+    import { parse } from './parser/index.js'
+    import { optimizer } from './optimizer.js'
+    import { generate } from './codegen/index.js'
+    import { createFunction } from './to-function.js'
     let template = `
       <div class="box" v-on:click.enter.stop="handleClickBox">
         <ul>
@@ -36,7 +36,7 @@
     // template = `<div :class="name | filterName | filterName2" asd></div>`
     // template = `<div :class="/.*/.test(name)" asd></div>`
     // template = `<div :style="{color: color, font-size: fontSize + 'px'}"></div>`
-    // template = `<div asd class="box"></div>`
+    template = `<div class="box" @click="handleClick"></div>`
     let ast = parse(template, options)
     optimizer(ast, options)
     console.log(ast)

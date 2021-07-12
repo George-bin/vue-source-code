@@ -18,7 +18,6 @@ export function initExtend (Vue: GlobalAPI) {
    * @params extendOptions：组件选项（用户传参 ｜ 模板编译）
    */
   Vue.extend = function (extendOptions: Object): Function {
-    debugger
     extendOptions = extendOptions || {}
     // 注意：this实际指向Vue本身，因为它是作为Vue静态方法调用的 => Vue.extend
     const Super = this

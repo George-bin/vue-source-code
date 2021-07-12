@@ -2,6 +2,22 @@ export const emptyObject = Object.freeze({})
 
 export function noop (a, b, c) {}
 
+export function isUndef (v) {
+  return v === undefined || v === null
+}
+
+export function isDef (v) {
+  return v !== undefined && v !== null
+}
+
+export function isTrue (v) {
+  return v === true
+}
+
+export function isFalse (v) {
+  return v === false
+}
+
 /**
  * 创建一个映射
  * @param {*} str 
@@ -74,10 +90,26 @@ export function isPlainObject (obj) {
   return _toString.call(obj) === '[object Object]'
 }
 
-export function isUndef (v) {
-  return v === undefined || v === null
+export function toString (val) {
+  return val == null
+    ? ''
+    : Array.isArray(val) || (isPlainObject(val) && val.toString === _toString) 
+      ? JSON.stringify(val, null, 2)
+      : String(val)
 }
 
-export function isDef (v) {
-  return v !== undefined && v !== null
+/**
+ * 检查值是否是一个原始类型
+ * @param {*} value 
+ * @returns 
+ */
+export function isPrimitive (value) {
+  return (
+    typeof value === 'string' ||
+    typeof value === 'number'
+  )
+}
+
+export function bind (fn, ctx) {
+  return fn.bind(ctx)
 }

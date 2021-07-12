@@ -1,6 +1,13 @@
 import Dep from './dep.js'
 
 export default class Watcher {
+  /**
+   * @param {*} vm 
+   * @param {*} expOrFn 用于执行渲染函数
+   * @param {*} cb 
+   * @param {*} options 配置项
+   * @param {*} isRenderWatcher 是否为渲染 Watcher
+   */
   constructor (vm, expOrFn, cb, options, isRenderWatcher) {
     this.vm = vm
     this.cb = cb

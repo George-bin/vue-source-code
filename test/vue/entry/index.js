@@ -14,7 +14,8 @@ Vue.prototype.$mount = function (el) {
     let template = options.template
     if (typeof template) {
       const { render, staticRenderFns } = compileToFunctions(template, {
-        outputSourceRange: true
+        outputSourceRange: true,
+        shouldKeepComment: false
       }, this)
       options.render = render
       options.staticRenderFns = staticRenderFns

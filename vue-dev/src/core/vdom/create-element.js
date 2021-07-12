@@ -122,7 +122,6 @@ export function _createElement (
     children = simpleNormalizeChildren(children)
   }
   let vnode, ns
-  debugger
   // 开始创建vnode
   if (typeof tag === 'string') { // 普通dom节点
     let Ctor

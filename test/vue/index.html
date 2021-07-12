@@ -16,7 +16,12 @@
       data: {
         message: 'Hello, George!'
       },
-      template: '<div class="message">{{message}}</div>'
+      template: '<div class="message" @click="handleClick">{{message}}</div>',
+      methods: {
+        handleClick () {
+          this.message = Math.random()
+        }
+      }
     })
     console.log(vm)
     // vm.$options.data()
