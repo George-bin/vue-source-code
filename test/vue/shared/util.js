@@ -83,6 +83,14 @@ export const hyphenate = cached((str) => {
 })
 
 /**
+ * 连字符转驼峰
+ */
+const camelizeRE = /-(\w)/g
+export const camelize = cached((str) => {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+})
+
+/**
  * 判断是否是一个对象
  */
 const _toString = Object.prototype.toString

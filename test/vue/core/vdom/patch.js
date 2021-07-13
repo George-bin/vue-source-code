@@ -56,7 +56,7 @@ export function createPatchFunction (backed) {
   }
 
   /**
-   * 调用全局钩子
+   * 调用全局 create 钩子
    * @param {*} vnode 
    */
   function invokeCreateHooks (vnode) {
@@ -70,17 +70,65 @@ export function createPatchFunction (backed) {
       if (isDef(hook.create)) hook.create(emptyNode, vnode)
     }
   }
+
+  /**
+   * 尝试创建一个组件
+   * @param {*} vnode 
+   * @param {*} insertedVnodeQueue 
+   * @param {*} parentElm 
+   * @param {*} refElm 
+   */
+  function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
+    let i = vnode.data
+    if (i) {
+      if (isDef(i = i.hook) && isDef(i = i.init)) {
+        debugger
+        // 执行this.hook.init方法
+        i(vnode, false /* hydrating */)
+      }
+
+      if (isDef(vnode.componentInstance)) {
+        initComponent(vnode, insertedVnodeQueue)
+        insert(parentElm, vnode.elm, refElm)
+        return true
+      }
+    }
+  }
+
+  /**
+   * 初始化组件
+   * @param {*} vnode 
+   * @param {*} insertedVnodeQueue 
+   */
+  function initComponent (vnode, insertedVnodeQueue) {
+    debugger
+    if (isDef(vnode.data.pendingInsert)) {
+      insertedVnodeQueue.push.apply(insertedVnodeQueue, vnode.data.pendingInsert)
+      vnode.data.pendingInsert = null
+    }
+    vnode.elm = vnode.componentInstance.$el
+
+    invokeCreateHooks(vnode, insertedVnodeQueue)
+  }
   
   /**
    * 根据 VNode 创建真实 DOM
    * @param {*} vnode 
+   * @param {*} insertedVnodeQueue 用于子组件（统一调用 insert 钩子）
    * @param {*} parentElm 父节点（真实DOM节点）
    * @param {*} refElm 下一个兄弟节点
    * @param {*} nested 是否为嵌套节点
    * @param {*} ownerArray 同一层级的子元素数组（包含当前Vnode）
    * @param {*} index 同一层级中的位置坐标（index）
    */
-  function createElm (vnode, parentElm, refElm, nested, ownerArray, index) {
+  function createElm (vnode, insertedVnodeQueue, parentElm, refElm, nested, ownerArray, index) {
+    vnode.isRootInsert = !nested
+
+    // 尝试创建组件
+    if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
+      return
+    }
+
     const data = vnode.data
     const children = vnode.children
     const tag = vnode.tag
@@ -88,8 +136,8 @@ export function createPatchFunction (backed) {
       // 创建元素节点
       vnode.elm = nodeOps.createElement(tag, vnode)
       // 创建子元素
-      createChildren(vnode, children)
-      debugger
+      createChildren(vnode, children, insertedVnodeQueue)
+      // debugger
       if (isDef(data)) {
         invokeCreateHooks(vnode)
       }
@@ -134,7 +182,7 @@ export function createPatchFunction (backed) {
    */
   function addVnodes (parentElm, refElm, vnodes, startIdx, endIdx) {
     for (; startIdx <= endIdx; ++startIdx) {
-      createElm(vnodes[startIdx], )
+      createElm(vnodes[startIdx], insertedVnodeQueue)
     }
   }
 
@@ -192,12 +240,12 @@ export function createPatchFunction (backed) {
    * @param {*} vnode 
    * @param {*} children 
    */
-  function createChildren (vnode, children) {
+  function createChildren (vnode, children, insertedVnodeQueue) {
     if (Array.isArray(children)) {
       // 忽略：检查是否存在重复的key
 
       for (let i = 0; i < children.length; ++i) {
-        createElm(children[i], vnode.elm, null, true, children, i)
+        createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i)
       }
     }
     // 原始类型：直接创建文本节点
@@ -271,7 +319,7 @@ export function createPatchFunction (backed) {
           : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)
         
         if (isUndef(idxInOld)) {
-          createElm(newStartVnode, parentElm, refElm)
+          createElm(newStartVnode, insertedVnodeQueue, parentElm, refElm)
         } else {
           vnodeToMove = oldCh[idxInOld]
           if (sameVnode(vnodeToMove, newStartVnode)) {
@@ -279,7 +327,7 @@ export function createPatchFunction (backed) {
             oldCh[idxInOld] = undefined
             canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)
           } else {
-            createElm(newStartVnode, parentElm, )
+            createElm(newStartVnode, insertedVnodeQueue, parentElm)
           }
         }
         newStartVnode = newCh[++newStartIdx]
@@ -346,17 +394,33 @@ export function createPatchFunction (backed) {
     }
   }
 
+  /**
+   * 调用 insert 钩子
+   * @param {*} vnode 
+   * @param {*} queue 
+   * @param {*} initial 
+   */
+  function invokeInsertHook (vnode, queue, initial) {
+    if (isTrue(initial) && isDef(vnode.parent)) {
+      vnode.parent.data.pendingInsert = queue
+    } else {
+      for (let i = 0; i < queue.length; ++i) {
+        queue[i].data.hook.insert(queue[i])
+      }
+    }
+  }
+
   return function patch (oldVnode, vnode, removeOnly) {
     // 是否是first patch
     let isInitialPatch = false
 
     // 收集插入的组件，用于调用insert钩子
-    // const insertedVnodeQueue = []
+    const insertedVnodeQueue = []
 
     // 首次渲染，直接创建
     if (isUndef(oldVnode)) {
       isInitialPatch = true
-      createElm(vnode)
+      createElm(vnode, insertedVnodeQueue)
     }
     // 对比更新渲染
     else {
@@ -375,6 +439,7 @@ export function createPatchFunction (backed) {
 
         createElm(
           vnode,
+          insertedVnodeQueue,
           parentElm,
           nodeOps.nextSibling(oldElm)
         )
@@ -386,6 +451,7 @@ export function createPatchFunction (backed) {
       }
     }
 
+    invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)
     return vnode.elm
   }
 }

@@ -26,7 +26,7 @@ function remove (name, handler, capture, _target) {
  * @returns 
  */
 function updateDOMListeners (oldVnode, vnode) {
-  debugger
+  // debugger
   if (isUndef(oldVnode.data) && isUndef(vnode.data)) {
     return
   }

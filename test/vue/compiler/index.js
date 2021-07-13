@@ -12,6 +12,7 @@ export const createCompiler = createCompilerCreator(function baseCompile (templa
   }
   // 代码生成阶段：将AST转换成渲染函数
   const code = generate(ast, options)
+  console.log(code)
   return {
     ast, // ast语法树
     render: code.render, // 渲染函数

@@ -1,4 +1,7 @@
 import Dep from './dep.js'
+import { queueWatcher } from './scheduler.js'
+
+let uid = 0
 
 export default class Watcher {
   /**
@@ -10,12 +13,25 @@ export default class Watcher {
    */
   constructor (vm, expOrFn, cb, options, isRenderWatcher) {
     this.vm = vm
+
+    if (isRenderWatcher) {
+      vm._watcher = this
+    }
+    vm._watchers.push(this)
+
+    if (options) {
+      this.before = options.before
+    }
+
     this.cb = cb
+    this.id = ++uid
 
     this.deps = []
     this.newDeps = []
     this.depIds = new Set()
     this.newDepIds = new Set()
+
+    this.active = true // 是否是活跃的，如果已经卸载则不再触发更新
 
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
@@ -46,11 +62,17 @@ export default class Watcher {
     }
   }
 
+  // 推入到更新队列中
   update () {
-		const oldValue = this.value
-		this.value = this.get()
-		this.cb.call(this.vm, this.value, oldValue)
+    queueWatcher(this)
 	}
+
+  // 执行更新
+  run () {
+    const oldValue = this.value
+    this.value = this.get()
+    this.cb.call(this.vm, this.value, oldValue)
+  }
 }
 
 /**

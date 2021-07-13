@@ -1,0 +1,1 @@
+export const staticTemplate = '<div class="message" @click="handleClick"><p>{{person.message}}</p><div><p>静态节点1</p></div><div><p>静态节点2</p></div></div>'

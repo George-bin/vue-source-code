@@ -38,3 +38,15 @@ function remove (arr, item) {
     }
   }
 }
+
+// 使用栈来维护
+const targetStack = []
+export function pushTarget (target) {
+  targetStack.push(target)
+  Dep.target = target
+}
+
+export function popTarget () {
+  targetStack.pop()
+  Dep.target = targetStack[targetStack.length - 1]
+}

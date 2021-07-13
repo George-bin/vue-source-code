@@ -1,8 +1,10 @@
 import {
+  camelize,
   hasOwn,
   isPlainObject
 } from '../../shared/util.js'
 import { set } from '../observer/index.js'
+import { LIFECYCLE_HOOKS } from '../../shared/constants.js'
 
 import { hasSymbol } from './env.js'
 // 合并策略
@@ -11,6 +13,10 @@ const strats = {}
 strats.data = function (parentVal, childVal, vm) {
   return mergeDataOrFn(parentVal, childVal, vm)
 }
+
+LIFECYCLE_HOOKS.forEach(hook => {
+  strats[hook] = mergeHook
+})
 
 /**
  * 合并数据
@@ -114,4 +120,59 @@ const defaultStrat = function (parentVal, childVal) {
   return childVal === undefined
     ? parentVal
     : childVal
+}
+
+/**
+ * 合并hook
+ * @param {*} parentVal 
+ * @param {*} childVal 
+ * @returns 
+ */
+function mergeHook (parentVal, childVal) {
+  const res = childVal
+    ? parentVal
+      ? parentVal.concat(childVal)
+      : Array.isArray(childVal)
+        ? childVal
+        : [childVal]
+    : parentVal
+  return res
+    ? dedupeHooks(res)
+    : res
+}
+
+/**
+ * 做一层过滤处置
+ * @param {*} hooks 
+ * @returns 
+ */
+function dedupeHooks (hooks) {
+  const res = []
+  for (let i = 0; i < hooks.length; i++) {
+    if (res.indexOf(hooks[i]) === -1) {
+      res.push(hooks[i])
+    }
+  }
+  return res
+}
+
+/**
+ * 在对象上查找某一类型的资源
+ * @param {*} options 
+ * @param {*} type 
+ * @param {*} id 
+ * @returns 
+ */
+export function resolveAsset (options, type, id) {
+  if (typeof id !== 'string') {
+    return
+  }
+  const assets = options[type]
+  if (hasOwn(assets, id)) return assets[id]
+  const camelizedId = camelize(id)
+  if (hasOwn(assets, camelizedId)) return assets[camelizedId]
+  const PascalCaseId = capitalize(camelizedId)
+  if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]
+  const res = assets[id] || assets[camelizedId] || assets[PascalCaseId]
+  return res
 }

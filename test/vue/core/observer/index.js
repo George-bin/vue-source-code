@@ -104,7 +104,7 @@ function defineReactive (obj, key, val) {
       return val
     },
     set (newVal) {
-      debugger
+      // debugger
       if (val === newVal) {
         return
       }

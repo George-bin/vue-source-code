@@ -1,6 +1,6 @@
 import { initState } from './state.js'
 import { initEvents } from './events.js'
-import { initLifecycle } from './lifecycle.js'
+import { initLifecycle, callHook } from './lifecycle.js'
 import { mergeOptions } from '../util/index.js'
 import { initRender } from './render.js'
 
@@ -27,13 +27,13 @@ export function initMixin (Vue) {
     initLifecycle(vm)                    // 初始化生命周期，建立父子组件关系
     initEvents(vm)                       // 初始化事件系统
     initRender(vm)                       // 初始化渲染函数
-    // callHook(vm, 'beforeCreate')         // 调用生命周期钩子函数
+    callHook(vm, 'beforeCreate')         // 调用生命周期钩子函数
     // initInjections(vm)                   // 初始化injections
     initState(vm)                        // 初始化props,methods,data,computed,watch
     // initProvide(vm)                      // 初始化 provide
-    // callHook(vm, 'created')              // 调用生命周期钩子函数
+    callHook(vm, 'created')              // 调用生命周期钩子函数
 
-    debugger
+    // debugger
     // 执行挂载
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
@@ -48,5 +48,12 @@ export function initMixin (Vue) {
  */
 export function resolveConstructorOptions (Ctor) {
   let options = Ctor.options
+  if (Ctor.super) {
+    const superOptions = resolveConstructorOptions(Ctor.super)
+    const cachedSuperOptions = Ctor.superOptions
+    // Vue基础配置项发生变化
+    if (superOptions !== cachedSuperOptions) {
+    }
+  }
   return options
 }

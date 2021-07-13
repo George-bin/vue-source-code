@@ -1,4 +1,7 @@
 import { simpleNormalizeChildren, normalizeChildren } from "./helpers/normalize-chidlren.js"
+import { isDef, isPrimitive, resolveAsset } from '../util/index.js'
+import { createComponent } from "./create-component.js"
+import { isReservedTag } from "../../util/element.js"
 import VNode from "./vnode.js"
 const SIMPLE_NORMALIZE = 1 // 编译成render函数
 const ALWAYS_NORMALIZE = 2 // 手写render函数
@@ -14,7 +17,12 @@ const ALWAYS_NORMALIZE = 2 // 手写render函数
  * @returns 
  */
 export function createElement (context, tag, data, children, normalizationType, alwaysNormalize) {
-  // 忽略：参数差异化处理
+  // 参数重载（传参个数差异化处理）
+  if (Array.isArray(data) || isPrimitive(data)) {
+    normalizationType = children
+    children = data
+    data = undefined
+  }
 
   if (alwaysNormalize) {
     normalizationType = ALWAYS_NORMALIZE
@@ -39,10 +47,29 @@ export function _createElement(context, tag, data, children, normalizationType) 
   let vnode
   if (typeof tag === 'string') {
     let Ctor
-    vnode = new VNode(
-      tag, data, children,
-      undefined, undefined, context
-    )
+    // 平台保留标签
+    if (isReservedTag(tag)) {
+      vnode = new VNode(
+        tag, data, children,
+        undefined, undefined, context
+      )
+    }
+    // 组件
+    else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+      vnode = createComponent(Ctor, data, context, children, tag)
+    }
+    // 不认识的节点
+    else {
+      vnode = new VNode(
+        tag, data, children,
+        undefined, undefined, context
+      )
+    }
+    
+  }
+  // 组件（渲染的是一个组件）
+  else {
+    vnode = createComponent(tag, data, context, children)
   }
 
   return vnode
