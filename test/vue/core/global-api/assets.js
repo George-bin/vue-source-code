@@ -10,13 +10,13 @@ export function initAssetRegisters (Vue) {
       } else {
         // definition 是一个对象，用于全局组件注册
         if (type === 'component' && isPlainObject(definition)) {
-          debugger
           definition.name = definition.name || id
           definition = this.options._base.extend(definition)
         }
         if (type === 'directive' && typeof definition === 'function') {
           definition = { bind: definition, update: definition }
         }
+        // 注册全局component、directive、filter
         this.options[type + 's'][id] = definition
         return definition
       }

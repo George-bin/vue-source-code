@@ -62,49 +62,50 @@
         }
       }
     }
-    // Vue.component('my-component', childComp)
+    debugger
+    Vue.component('my-component', childComp)
     // let app = new Vue({
     //     el: '#app',
     //     render: h => h(childComp)
     // })
 
-    let app = new Vue({
-      el: '#app',
-      // props: {
-      //   'use-type': {
-      //     type: String,
-      //     default: 'add'
-      //   }
-      // },
-      // mixins: [mixin],
-      data: {
-        message: 'hello, vue!',
-        name: 'george',
-        show: true
-        // userinfo: {
-        //     username: 'George',
-        //     email: 'bin770021714@126.com'
-        // }
-      },
-      methods: {
-        handleChangeMessage() {
-          this.message = Math.random()
-        },
-        handleChange() {
-          this.show = !this.show
-        }
-      },
-      // template: '<div class="name" asd>{{name | filterName | filterName2}}</div>',
-      template: '<div class="name" @click="handleChange">{{message}}</div>',
-      // filters: {
-      //   filterName: function (name) {
-      //     return name.toLowerCase()
-      //   },
-      //   filterName2: function (name) {
-      //     return name.toUpperCase()
-      //   }
-      // }
-    })
+    // let app = new Vue({
+    //   el: '#app',
+    //   // props: {
+    //   //   'use-type': {
+    //   //     type: String,
+    //   //     default: 'add'
+    //   //   }
+    //   // },
+    //   // mixins: [mixin],
+    //   data: {
+    //     message: 'hello, vue!',
+    //     name: 'george',
+    //     show: true
+    //     // userinfo: {
+    //     //     username: 'George',
+    //     //     email: 'bin770021714@126.com'
+    //     // }
+    //   },
+    //   methods: {
+    //     handleChangeMessage() {
+    //       this.message = Math.random()
+    //     },
+    //     handleChange() {
+    //       this.show = !this.show
+    //     }
+    //   },
+    //   // template: '<div class="name" asd>{{name | filterName | filterName2}}</div>',
+    //   template: '<div class="name" @click="handleChange">{{message}}</div>',
+    //   // filters: {
+    //   //   filterName: function (name) {
+    //   //     return name.toLowerCase()
+    //   //   },
+    //   //   filterName2: function (name) {
+    //   //     return name.toUpperCase()
+    //   //   }
+    //   // }
+    // })
 
   </script>
 </body>

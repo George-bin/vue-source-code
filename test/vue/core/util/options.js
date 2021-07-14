@@ -1,10 +1,12 @@
 import {
   camelize,
+  capitalize,
+  extend,
   hasOwn,
   isPlainObject
 } from '../../shared/util.js'
 import { set } from '../observer/index.js'
-import { LIFECYCLE_HOOKS } from '../../shared/constants.js'
+import { ASSET_TYPES, LIFECYCLE_HOOKS } from '../../shared/constants.js'
 
 import { hasSymbol } from './env.js'
 // 合并策略
@@ -14,9 +16,23 @@ strats.data = function (parentVal, childVal, vm) {
   return mergeDataOrFn(parentVal, childVal, vm)
 }
 
+ASSET_TYPES.forEach(function (type) {
+  strats[type + 's'] = mergeAssets
+})
+
 LIFECYCLE_HOOKS.forEach(hook => {
   strats[hook] = mergeHook
 })
+
+function mergeAssets (parentVal, childVal, vm, key) {
+  const res = Object.create(parentVal || null)
+  if (childVal) {
+    return extend(res, childVal)
+  } else {
+    return res
+  }
+   
+}
 
 /**
  * 合并数据
@@ -167,10 +183,14 @@ export function resolveAsset (options, type, id) {
   if (typeof id !== 'string') {
     return
   }
+
   const assets = options[type]
+  // hello-world
   if (hasOwn(assets, id)) return assets[id]
+  // 连字符转驼峰hello-world => helloWorld
   const camelizedId = camelize(id)
   if (hasOwn(assets, camelizedId)) return assets[camelizedId]
+  // 首字母大写hello-world => HelloWorld
   const PascalCaseId = capitalize(camelizedId)
   if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]
   const res = assets[id] || assets[camelizedId] || assets[PascalCaseId]

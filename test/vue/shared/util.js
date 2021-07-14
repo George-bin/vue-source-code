@@ -91,6 +91,13 @@ export const camelize = cached((str) => {
 })
 
 /**
+ * 首字母大写
+ */
+export const capitalize = cached((str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+})
+
+/**
  * 判断是否是一个对象
  */
 const _toString = Object.prototype.toString

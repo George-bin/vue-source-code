@@ -84,7 +84,7 @@ export function mountComponent (vm, el) {
   callHook(vm, 'beforeMount')
 
   let updateComponent = () => {
-    // debugger
+    debugger
     // 使用 render 函数构建 VNode
     const vnode = vm._render()
     console.log(vnode)

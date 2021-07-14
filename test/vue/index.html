@@ -15,52 +15,63 @@
     Vue.component('my-component', {
       data () {
         return {
-          name: 'George'
+          name: '全局组件'
         }
       },
       template: '<p>{{name}}</p>'
     })
 
     // 实例化根实例
-    // let vm = new Vue({
-    //   el: '#box',
-    //   data: {
-    //     person: {
-    //       message: 'Hello, George!'
-    //     }
-    //   },
-    //   // 包含变量
-    //   // template: '<div class="message" @click="handleClick"><p>{{message}}</p></div>',
-    //   // 包含静态节点
-    //   // template: '<div class="message" @click="handleClick"><p>{{person.message}}</p><div><p>静态节点1</p></div><div><p>静态节点2</p></div></div>',
-    //   // 使用组件
-    //   template: '<div class="content"><p>{{person.message}}</p><my-component></my-component></div>',
-    //   methods: {
-    //     handleClick () {
-    //       this.person.message = Math.random()
-    //     }
-    //   },
-    //   beforeCreate () {
-    //     console.log('%cbeforeCreate：数据尚未装载', 'background: yellow')
-    //   },
-    //   created () {
-    //     console.log('%ccreated：数据已经装载完成，可以正常访问', 'background: yellow')
-    //     console.log(`this.person.message = ${this.person.message}`)
-    //   },
-    //   beforeMount () {
-    //     console.log('%cbeforeMount：render 函数已生成，尚未构造 VNode', 'background: yellow')
-    //   },
-    //   mounted () {
-    //     console.log('%cmounted：DOM 已经挂载完成，初始化渲染结束', 'background: yellow')
-    //   },
-    //   beforeUpdate () {
-    //     console.log('%cbeforeUpdate：视图更新之前，watcher 已经处于更新队列中，正在进行更新...', 'background: yellow')
-    //     this.person.message = '我在视图更新之前改变啦！'
-    //   },
-    //   updated () {
-    //     console.log('%cupdated：视图已经更新完成', 'background: yellow')
-    //   }
-    // })
+    let vm = new Vue({
+      el: '#box',
+      components: {
+        HelloWorld: {
+          name: 'hello-world',
+          data () {
+            return {
+              message: '局部组件'
+            }
+          },
+          template: '<p class="hello">{{message}}</p>'
+        }
+      },
+      data: {
+        person: {
+          message: 'Hello, George!'
+        }
+      },
+      // 包含变量
+      // template: '<div class="message" @click="handleClick"><p>{{message}}</p></div>',
+      // 包含静态节点
+      // template: '<div class="message" @click="handleClick"><p>{{person.message}}</p><div><p>静态节点1</p></div><div><p>静态节点2</p></div></div>',
+      // 使用组件
+      template: '<div class="content"><p>{{person.message}}</p><hello-world></hello-world><my-component></my-component></div>',
+      methods: {
+        handleClick () {
+          this.person.message = Math.random()
+        }
+      },
+      beforeCreate () {
+        console.log('%cbeforeCreate：数据尚未装载', 'background: yellow')
+      },
+      created () {
+        console.log('%ccreated：数据已经装载完成，可以正常访问', 'background: yellow')
+        console.log(`this.person.message = ${this.person.message}`)
+      },
+      beforeMount () {
+        console.log('%cbeforeMount：render 函数已生成，尚未构造 VNode', 'background: yellow')
+      },
+      mounted () {
+        console.log('%cmounted：DOM 已经挂载完成，初始化渲染结束', 'background: yellow')
+      },
+      beforeUpdate () {
+        console.log('%cbeforeUpdate：视图更新之前，watcher 已经处于更新队列中，正在进行更新...', 'background: yellow')
+        this.person.message = '我在视图更新之前改变啦！'
+      },
+      updated () {
+        console.log('%cupdated：视图已经更新完成', 'background: yellow')
+      }
+    })
   </script>
 </body>
 </html>

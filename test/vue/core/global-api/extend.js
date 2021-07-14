@@ -41,7 +41,7 @@ export function initExtend (Vue) {
       Sub[type] = Super[type]
     })
 
-    // 递归组件处理（用于组件内部自己调用自己）
+    // 递归组件处理（用于组件内部自己调用自己）=> Vue.options.components
     if (name) {
       Sub.options.components[name] = Sub
     }
