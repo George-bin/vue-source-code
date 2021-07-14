@@ -82,7 +82,6 @@ export function createPatchFunction (backed) {
     let i = vnode.data
     if (i) {
       if (isDef(i = i.hook) && isDef(i = i.init)) {
-        debugger
         // 执行this.hook.init方法
         i(vnode, false /* hydrating */)
       }
@@ -101,7 +100,6 @@ export function createPatchFunction (backed) {
    * @param {*} insertedVnodeQueue 
    */
   function initComponent (vnode, insertedVnodeQueue) {
-    debugger
     if (isDef(vnode.data.pendingInsert)) {
       insertedVnodeQueue.push.apply(insertedVnodeQueue, vnode.data.pendingInsert)
       vnode.data.pendingInsert = null

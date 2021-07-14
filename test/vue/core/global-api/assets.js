@@ -2,6 +2,7 @@ import { ASSET_TYPES } from "../../shared/constants.js"
 import { isPlainObject } from "../../shared/util.js"
 
 export function initAssetRegisters (Vue) {
+  // compoment、directive、filters
   ASSET_TYPES.forEach(type => {
     Vue[type] = function(id, definition) {
       if (!definition) {
@@ -9,6 +10,7 @@ export function initAssetRegisters (Vue) {
       } else {
         // definition 是一个对象，用于全局组件注册
         if (type === 'component' && isPlainObject(definition)) {
+          debugger
           definition.name = definition.name || id
           definition = this.options._base.extend(definition)
         }
