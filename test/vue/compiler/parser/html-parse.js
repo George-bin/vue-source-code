@@ -104,7 +104,7 @@ export function parseHTML(html, options) {
           continue
         }
 
-        // 解析start标签
+        // 解析开始标签
         // /^<((?:[a-zA-Z_][\w\-\.]*\:)?[a-zA-Z_][\w\-\.]*)/
         const startTagMatch = parseStartTag()
         if (startTagMatch) {
@@ -196,6 +196,7 @@ export function parseHTML(html, options) {
        * 1. 自闭合标签 => end[1] === "/"
        * 2. 非自闭合标签 => end[1] === ""
        */
+      //  attribute => /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/
       while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
         attr.start = index
         advance(attr[0].length)

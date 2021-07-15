@@ -14,12 +14,16 @@ export function initMixin (Vue) {
     vm.uid = uid++
     vm._isVue = true
 
-    // 合并配置
-    vm.$options = mergeOptions(
-      resolveConstructorOptions(vm.constructor), // vm.constructor.options => Vue.options
-      options || {},
-      vm
-    )
+    if (options && options._isComponent) {
+      initInternalComponent(vm, options)
+    } else {
+      // 合并配置
+      vm.$options = mergeOptions(
+        resolveConstructorOptions(vm.constructor), // vm.constructor.options => Vue.options
+        options || {},
+        vm
+      )
+    }
 
     vm._renderProxy = vm
     
@@ -38,6 +42,30 @@ export function initMixin (Vue) {
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
     }
+  }
+}
+
+/**
+ * 初始化组件 options
+ * @param {*} vm 当前组件实例
+ * @param {*} options 组件特有属性 
+ */
+function initInternalComponent (vm, options) {
+  const opts = vm.$options = Object.create(vm.constructor.options)
+
+  const parentVnode = options._parentVnode
+  opts.parent = options.parent
+  opts._parentVnode = parentVnode
+
+  const vnodeComponentOptions = parentVnode.vnodeComponentOptions
+  opts.propsData = vnodeComponentOptions.propsData
+  opts._parentListeners = vnodeComponentOptions.listeners
+  opts._renderChildren = vnodeComponentOptions.children
+  opts._componentTag = vnodeComponentOptions.tag
+
+  if (options.render) {
+    opts.render = options.render
+    opts.staticRenderFns = options.staticRenderFns
   }
 }
 

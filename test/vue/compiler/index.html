@@ -23,15 +23,7 @@
     import { optimizer } from './optimizer.js'
     import { generate } from './codegen/index.js'
     import { createFunction } from './to-function.js'
-    let template = `
-      <div class="box" v-on:click.enter.stop="handleClickBox">
-        <ul>
-          <li>我是文本信息</li>
-          <li>我是文本信息</li>
-        </ul>
-        <p class="name">My name is {{username}}!</p>
-      </div>
-    `
+    let template = '<div class="box" v-on:click.enter.stop="handleClickBox"><ul><li>我是文本信息</li><li>我是文本信息</li></ul><p class="message">{{message}}</p></div>'
     // template = `<div :key="'123'" class="name-box"><p class="name">{{name}}</p><p class="tip">Hello, World!</p></div>`
     // template = `<div :class="name | filterName | filterName2" asd></div>`
     // template = `<div :class="/.*/.test(name)" asd></div>`

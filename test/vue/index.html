@@ -45,7 +45,8 @@
       // 包含静态节点
       // template: '<div class="message" @click="handleClick"><p>{{person.message}}</p><div><p>静态节点1</p></div><div><p>静态节点2</p></div></div>',
       // 使用组件
-      template: '<div class="content"><p>{{person.message}}</p><hello-world></hello-world><my-component></my-component></div>',
+      // template: '<div class="content"><p>{{person.message}}</p><hello-world></hello-world><my-component></my-component></div>',
+      template: '<div class="content" @click="handleClick"><p>{{person.message}}</p></div>',
       methods: {
         handleClick () {
           this.person.message = Math.random()
@@ -66,7 +67,7 @@
       },
       beforeUpdate () {
         console.log('%cbeforeUpdate：视图更新之前，watcher 已经处于更新队列中，正在进行更新...', 'background: yellow')
-        this.person.message = '我在视图更新之前改变啦！'
+        // this.person.message = '我在视图更新之前改变啦！'
       },
       updated () {
         console.log('%cupdated：视图已经更新完成', 'background: yellow')
