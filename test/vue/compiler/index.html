@@ -7,16 +7,6 @@
   <title>模板编译</title>
 </head>
 <body>
-  <div class="box">
-    <!-- 我是注释 -->
-    <p class="name">{{name}}</p>
-    <ul>
-      <li :key="'1'">我是Item1</li>
-      <li :key="'2'">我是Item2</li>
-    </ul>
-  </div>
-  <h1>模板编译</h1>
-  <!-- <script src="./parser/index.js" type="module"></script> -->
   <script type="module">
     import { baseOptions as options } from '../entry/compiler/options.js'
     import { parse } from './parser/index.js'

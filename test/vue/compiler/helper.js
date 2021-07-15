@@ -16,7 +16,7 @@ export function baseWarn (msg, range) {
 }
 
 /**
- * 获取动态绑定的值（以及删除该属性）
+ * 获取动态绑定的值（并删除该属性 => 可选，如：v-if，v-for等自定义属性）
  * @param {*} el 
  * @param {*} name 
  * @param {*} removeFromMap 

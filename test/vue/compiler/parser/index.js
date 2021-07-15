@@ -11,6 +11,10 @@ import {
 export const onRE = /^@|^v-on:/
 export const dirRE = /^v-|^@|^:|^\.|^#/
 
+export const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/
+export const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/
+const stripParensRE = /^\(|\)$/g
+
 const modifierRE = /\.[^.\]]+(?=[^\]]*$)/g
 
 function baseWarn (msg) {
@@ -150,15 +154,7 @@ export function parse (template, options) {
     outputSourceRange: options.outputSourceRange,
     // 开始标签
     start (tag, attrs, unary, start, end) {
-      // #0021c4 命名空间 => svg和math，父级存在命名空间则继承
-      const ns = (currentParent && currentParent.ns) || platformGetTagNamespace(tag)
-
       let element = createASTElement(tag, attrs, currentParent)
-
-      // #0021c4
-      if (ns) {
-        element.ns = ns
-      }
 
       // 判断是否是禁用标签
       if (isForbiddenTag(element)) {
@@ -236,7 +232,7 @@ export function parse (template, options) {
 }
 
 /**
- * 添加具备if条件的元素节点
+ * 添加具备 if 条件的元素节点
  * @param {*} el 
  * @param {*} condition 
  */
@@ -320,4 +316,38 @@ function parseModifiers (name) {
     match.forEach(m => { ret[m.slice(1)] = true })
     return ret
   }
+}
+
+function processFor (el) {
+  let exp
+  if ((exp = getAndRemoveAttr(el, 'v-for'))) {
+    const res = parseFor(exp)
+    if (res) {
+      extend(el, res)
+    }
+  }
+}
+
+/**
+ * 解析 for
+ * @param {*} exp 
+ */
+export function parseFor (exp) {
+  const inMatch = exp.match(forAliasRE)
+  if (!inMatch) return
+
+  const res = {}
+  res.for = inMatch[2].trim()
+  const alias = inMatch[1].trim().replace(stripParensRE, '')
+  const iteratorMatch = alias.match(forIteratorRE)
+  if (iteratorMatch) {
+    res.alias = alias.replace(forIteratorRE, '').trim()
+    res.iterator1 = iteratorMatch[1].trim()
+    if (iteratorMatch[2]) {
+      res.iterator2 = iteratorMatch[2].trim()
+    }
+  } else {
+    res.alias = alias
+  }
+  return res
 }

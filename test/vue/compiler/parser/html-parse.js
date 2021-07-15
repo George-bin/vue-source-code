@@ -223,6 +223,7 @@ export function parseHTML(html, options) {
 
   // 对parseStartTag的结果进行下一步处理
   function handleStartTag(match) {
+    debugger
     const tagName = match.tagName
     const unarySlash = match.unarySlash // 是否为自闭合标签，自闭合为“”，非自闭合为“/”
     const unary = !!unarySlash // 布尔值，是否为自闭和标签
@@ -243,7 +244,7 @@ export function parseHTML(html, options) {
         attrs[i].start = args.start + args[0].match(/^\s*/).length
         attrs[i].end = args.end
       }
-    }
+    } 
 
     // 非闭合标签，则将标签推入栈中
     if (!unary) {
