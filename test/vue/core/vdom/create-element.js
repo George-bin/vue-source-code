@@ -56,7 +56,7 @@ export function _createElement(context, tag, data, children, normalizationType) 
     }
     // 组件
     else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      debugger
+      // debugger
       vnode = createComponent(Ctor, data, context, children, tag)
     }
     // 不认识的节点

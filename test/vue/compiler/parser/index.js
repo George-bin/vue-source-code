@@ -5,8 +5,12 @@ import {
   addAttr,
   pluckModuleFunction,
   getBindingAttr,
-  addHandler
+  addHandler,
+  getAndRemoveAttr 
 } from '../helper.js'
+import {
+  extend
+} from '../../shared/util.js'
 
 export const onRE = /^@|^v-on:/
 export const dirRE = /^v-|^@|^:|^\.|^#/
@@ -23,8 +27,7 @@ function baseWarn (msg) {
 
 // configurable state
 let transforms
-let platformIsPreTag // 是否是pre标签
-let postTransforms
+let platformIsPreTag // 是否是 pre 标签
 let preTransforms
 let platformGetTagNamespace // 命名空间 => svg和math
 
@@ -70,13 +73,12 @@ export function parse (template, options) {
   platformGetTagNamespace = options.getTagNamespace
   transforms = pluckModuleFunction(options.modules, 'transformNode')
   preTransforms = pluckModuleFunction(options.modules, 'preTransformNode')
-  postTransforms = pluckModuleFunction(options.modules, 'postTransformNode')
 
   const stack = []
   let root
   let currentParent // 当前元素的父节点
-  let inVPre = false // 在v-pre元素中
-  let inPre = false // 在pre元素
+  let inVPre = false // 在 v-pre 元素中
+  let inPre = false // 在 pre 元素
   let warned = false
   /**
    * 关闭元素节点
@@ -93,6 +95,7 @@ export function parse (template, options) {
     // 添加子节点
     if (currentParent) {
       currentParent.children.push(element)
+      element.parent = currentParent
     }
 
     if (element.pre) {
@@ -102,11 +105,6 @@ export function parse (template, options) {
     if (platformIsPreTag(element.tag)) {
       inPre = false
     }
-    
-    // apply post-transforms
-    // for (let i = 0; i < postTransforms.length; i++) {
-    //   postTransforms[i](element, options)
-    // }
   }
 
   /**
@@ -161,9 +159,30 @@ export function parse (template, options) {
         element.forbidden = true
       }
 
-      // 将 vue 的语法转换为标准的 AST 语法树结构 => class、style
+      // 将 vue 的相关语法转换为标准的 AST 语法树结构 => input 节点相关的解析
       for (let i = 0; i < preTransforms.length; i++) {
         element = preTransforms[i](element, options) || element
+      }
+
+      // 是否定义了 v-pre 属性
+      if (!inVPre) {
+        processPre(element)
+        if (element.pre) {
+          inVPre = true
+        }
+      }
+      // 是否在 pre 中
+      if (platformIsPreTag(element.tag)) {
+        inPre = true
+      }
+      if (inVPre) {
+        // 静态节点 attrs 处理
+        processRawAttrs(element)
+      } if (!element.processed) {
+        // 非 input 节点处理（directives相关）
+        processFor(element)
+        processIf(element)
+        processOnce(element)
       }
 
       if (!root) {
@@ -232,19 +251,17 @@ export function parse (template, options) {
 }
 
 /**
- * 添加具备 if 条件的元素节点
+ * 判断是否在 pre
  * @param {*} el 
- * @param {*} condition 
  */
-export function addIfCondition (el, condition) {
-  if (!el.ifConditions) {
-    el.ifConditions = []
+function processPre (el) {
+  if (getAndRemoveAttr(el, 'v-pre') != null) {
+    el.pre = true
   }
-  el.ifConditions.push(condition)
 }
 
 /**
- * 加工元素节点
+ * 加工 Element：key、class、style、attrs等
  * @param {*} element 
  * @param {*} options 
  */
@@ -254,7 +271,8 @@ export function processElement (element, options) {
   // 用于判断元素节点本身包含任何属性
   element.plain = !element.key && !element.attrsList.length
 
-  // class、style、model
+  processComponent(element)
+  // 处理class、style（静态及动态）
   for (let i = 0; i < transforms.length; i++) {
     element = transforms[i](element, options) || element
   }
@@ -262,6 +280,17 @@ export function processElement (element, options) {
   processAttrs(element)
 
   return element
+}
+
+/**
+ * 组件相关
+ * @param {*} el 
+ */
+function processComponent (el) {
+  let banding
+  if ((banding = getBindingAttr(el, 'is'))) {
+    el.component = binding
+  }
 }
 
 /**
@@ -276,7 +305,7 @@ function processKey (el) {
 }
 
 /**
- * 处理attrs => normalize => { name: '', value: '', dynamic: ''}
+ * 加工 attrs => normalize => { name: '', value: '', dynamic: ''}
  * @param {*} el 
  */
 function processAttrs (el) {
@@ -285,6 +314,7 @@ function processAttrs (el) {
   for (i = 0, l = list.length; i < l; i++) {
     name = rawName = list[i].name
     value = list[i].value
+    // /^v-|^@|^:|^\.|^#/
     if (dirRE.test(name)) {
       // 标记为动态元素
       el.hasBindings = true
@@ -318,7 +348,11 @@ function parseModifiers (name) {
   }
 }
 
-function processFor (el) {
+/**
+ * 加工 for语法糖
+ * @param {*} el 
+ */
+export function processFor (el) {
   let exp
   if ((exp = getAndRemoveAttr(el, 'v-for'))) {
     const res = parseFor(exp)
@@ -329,20 +363,22 @@ function processFor (el) {
 }
 
 /**
- * 解析 for
+ * 解析 for语法糖
  * @param {*} exp 
+ * 数组语法：(item, index) in items
+ * 对象语法：(value, key, index) in obj
  */
 export function parseFor (exp) {
-  const inMatch = exp.match(forAliasRE)
+  const inMatch = exp.match(forAliasRE) // ["(item, index) in arr", "(item, index)", "arr"]
   if (!inMatch) return
 
   const res = {}
-  res.for = inMatch[2].trim()
-  const alias = inMatch[1].trim().replace(stripParensRE, '')
-  const iteratorMatch = alias.match(forIteratorRE)
+  res.for = inMatch[2].trim() // "arr"
+  const alias = inMatch[1].trim().replace(stripParensRE, '') // "item, index"
+  const iteratorMatch = alias.match(forIteratorRE) // [", index", " index",]
   if (iteratorMatch) {
-    res.alias = alias.replace(forIteratorRE, '').trim()
-    res.iterator1 = iteratorMatch[1].trim()
+    res.alias = alias.replace(forIteratorRE, '').trim() // "item"
+    res.iterator1 = iteratorMatch[1].trim() // "index"
     if (iteratorMatch[2]) {
       res.iterator2 = iteratorMatch[2].trim()
     }
@@ -350,4 +386,74 @@ export function parseFor (exp) {
     res.alias = alias
   }
   return res
+}
+
+/**
+ * 添加 if 判断条件
+ * @param {*} el 
+ * @param {*} condition 
+ */
+export function addIfCondition (el, condition) {
+  if (!el.ifConditions) {
+    el.ifConditions = []
+  }
+  el.ifConditions.push(condition)
+}
+
+/**
+ * 加工原始属性，属于静态节点
+ * @param {*} el 
+ */
+function processRawAttrs (el) {
+  const list = el.attrsList
+  const len = list.length
+  if (len) {
+    const attrs = el.attrs = new Array(len)
+    for (let i = 0; i < len; i++) {
+      attrs[i] = {
+        name: list[i].name,
+        value: JSON.stringify(list[i].value)
+      }
+      if (list[i].start != null) {
+        attrs[i].start = list[i].start
+        attrs[i].end = list[i].end
+      }
+    }
+  } else if (!el.pre) {
+    el.plain = true
+  }
+}
+
+/**
+ * 加工 if 语法糖
+ * @param {*} el 
+ */
+function processIf (el) {
+  const exp = getAndRemoveAttr(el, 'v-if')
+  if (exp) {
+    el.if = exp
+    addIfCondition(el, {
+      exp,
+      block: el
+    })
+  } else {
+    if (getAndRemoveAttr(el, 'v-else') != null) {
+      el.else = true
+    }
+    const elseif = getAndRemoveAttr(el, 'v-else-if')
+    if (elseif) {
+      el.elseif = elseif
+    }
+  }
+}
+
+/**
+ * 加工 once 语法糖
+ * @param {*} el 
+ */
+function processOnce (el) {
+  const once = getAndRemoveAttr(el, 'v-once')
+  if (once != null) {
+    el.once = true
+  }
 }

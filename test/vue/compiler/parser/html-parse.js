@@ -223,7 +223,6 @@ export function parseHTML(html, options) {
 
   // 对parseStartTag的结果进行下一步处理
   function handleStartTag(match) {
-    debugger
     const tagName = match.tagName
     const unarySlash = match.unarySlash // 是否为自闭合标签，自闭合为“”，非自闭合为“/”
     const unary = !!unarySlash // 布尔值，是否为自闭和标签
@@ -260,6 +259,7 @@ export function parseHTML(html, options) {
 
     // 如果是自闭合标签，则调用start钩子函数创建AST节点
     if (options.start) {
+      // debugger
       options.start(tagName, attrs, unary, match.start, match.end)
     }
   }

@@ -16,10 +16,10 @@ export function baseWarn (msg, range) {
 }
 
 /**
- * 获取动态绑定的值（并删除该属性 => 可选，如：v-if，v-for等自定义属性）
+ * 获取动态绑定的值并删除该属性（attrsList）
  * @param {*} el 
  * @param {*} name 
- * @param {*} removeFromMap 
+ * @param {*} removeFromMap 是否从 attrsMap 中删除指定属性
  * @returns 
  */
 export function getAndRemoveAttr (el, name, removeFromMap) {
@@ -79,24 +79,6 @@ export function addAttr (el, name, value, range, dynamic) {
 }
 
 /**
- * 设置范围项
- * @param {*} item 
- * @param {*} range 
- */
-function rangeSetItem (item, range) {
-  if (range) {
-    if (range.start != null) {
-      item.start = range.start
-    }
-    if (range.end != null) {
-      item.end = range.end
-    }
-  }
-  return item
-}
-
-
-/**
  * 添加事件监听
  * @param {ASTElement} el 
  * @param {String} name 
@@ -148,4 +130,34 @@ export function addHandler (el, name, value, modifiers) {
   }
 
   el.plain = false
+}
+
+/**
+ * 添加一个属性
+ * @param {*} el 
+ * @param {*} name 
+ * @param {*} value 
+ * @param {*} range 
+ */
+export function addRawAttr (el, name, value, range) {
+  el.attrsMap[name] = value
+  el.attrsList.push(rangeSetItem({name, value}, range))
+}
+
+/**
+ * 设置范围，在源码中的开始位置和结束位置
+ * @param {*} item 
+ * @param {*} range 
+ * @returns 
+ */
+function rangeSetItem (item, range) {
+  if (range) {
+    if (range.start != null) {
+      item.start = range.start
+    }
+    if (range.end != null) {
+      item.end = range.end
+    }
+  }
+  return item
 }

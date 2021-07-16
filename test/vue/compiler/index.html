@@ -18,15 +18,17 @@
     // template = `<div :class="name | filterName | filterName2" asd></div>`
     // template = `<div :class="/.*/.test(name)" asd></div>`
     // template = `<div :style="{color: color, font-size: fontSize + 'px'}"></div>`
-    template = `<div class="box" @click="handleClick"></div>`
+    // template = `<div class="box" @click="handleClick"></div>`
+    // template = '<input v-if="showInput" v-for="(item, index) in arr" v-model="item.value" :type="inputType" />'
+    template = '<div><input v-for="(item, index) in arr" :key="index" v-if="item !== \'张三\'" v-model="checkArr" :type="inputType" :value="item" /></div>'
     let ast = parse(template, options)
-    optimizer(ast, options)
     console.log(ast)
-    const code = generate(ast, options)
-    console.log(code)
-    let errors = []
-    const render = createFunction(code.render, errors)
-    console.log(render)
+    // optimizer(ast, options)
+    // const code = generate(ast, options)
+    // console.log(code)
+    // let errors = []
+    // const render = createFunction(code.render, errors)
+    // console.log(render)
   </script>
 </body>
 </html>
