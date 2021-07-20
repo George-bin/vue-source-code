@@ -1,4 +1,6 @@
 import { cached } from '../../shared/util.js'
+import { parseFilters } from './filter-parse.js'
+
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g
 const regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g
 
@@ -39,7 +41,7 @@ export function parseText(text, delimiters) {
     }
 
     // 取出{{}}中间的变量
-    const exp = match[1].trim()
+    const exp = parseFilters(match[1].trim())
     // 把变量exp改成_s(exp)形式也放入tokens中
     tokens.push(`_s(${exp})`)
     rawTokens.push({ '@binding': exp })

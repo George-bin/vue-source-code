@@ -283,7 +283,7 @@ export function processElement (element, options) {
 }
 
 /**
- * 组件相关
+ * 加工组件
  * @param {*} el 
  */
 function processComponent (el) {
@@ -349,7 +349,7 @@ function parseModifiers (name) {
 }
 
 /**
- * 加工 for语法糖
+ * 加工 v-for 语法糖
  * @param {*} el 
  */
 export function processFor (el) {
@@ -363,7 +363,7 @@ export function processFor (el) {
 }
 
 /**
- * 解析 for语法糖
+ * 解析 v-for 语法糖
  * @param {*} exp 
  * 数组语法：(item, index) in items
  * 对象语法：(value, key, index) in obj
@@ -425,7 +425,7 @@ function processRawAttrs (el) {
 }
 
 /**
- * 加工 if 语法糖
+ * 加工 v-if 语法糖
  * @param {*} el 
  */
 function processIf (el) {
@@ -448,7 +448,7 @@ function processIf (el) {
 }
 
 /**
- * 加工 once 语法糖
+ * 加工 v-once 语法糖
  * @param {*} el 
  */
 function processOnce (el) {

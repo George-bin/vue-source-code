@@ -42,10 +42,15 @@ export function generate (ast, options) {
 
 // 根据 AST 元素节点属性的不同而执行不同的代码生成函数
 function genElement (el, state) {
-  if (el.staticRoot && !el.staticProcessed) {
+  debugger
+  if (el.staticRoot && !el.staticProcessed) {     // staticRoot
     return genStatic(el, state)
-  } else if (el.once && !el.onceProcessed) {
+  } else if (el.once && !el.onceProcessed) {      // v-once
     return genOnce(el, state)
+  } else if (el.for && !el.forProcessed) {        // v-for
+    return genFor(el, state)
+  } else if (el.if && !el.ifProcessed) {          // v-if
+    return genIf(el, state)
   } else {
     let code
     if (el.component) {
@@ -194,4 +199,87 @@ function transformSpecialNewlines (text) {
   return text
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029')
+}
+
+/**
+ * 生成 v-once 指令的函数的字符串表示
+ * @param {*} el 
+ * @param {*} state 
+ * @returns 
+ */
+export function genOnce (el, state) {
+  el.onceProcessed = true
+  if (el.if && !el.ifProcessed) {
+    return genIf(el, state)
+  } else if (el.staticInFor) {
+    let key = ''
+    let parent = el.parent
+    while (parent) {
+      if (parent.for) {
+        key = parent.key
+        break
+      }
+      parent = parent.parent
+    }
+    if (!key) {
+      console.error('v-once can only be used inside v-for that is keyed')
+    }
+    return `_o(${genElement(el, state)},${state.onceId++},${key})`
+  } else {
+    return genStatic(el, state)
+  }
+}
+
+/**
+ * 生成一个 v-for 指令的函数的字符串表示
+ * @param {*} el 
+ * @param {*} state 
+ * @returns 
+ */
+export function genFor (el, state) {
+  const exp = el.for
+  const alias = el.alias
+  const iterator1 = el.iterator1 ? `,${el.iterator1}` : ''
+  const iterator2 = el.iterator2 ? `,${el.iterator2}` : ''
+
+  // 警告：v-for 列表渲染必须使用key。
+  el.forProcessed = true
+  return `$'_l'((${exp}),`+
+    `function(${alias}${iterator1}${iterator2}){`+
+      `return ${genElement(el, state)}`+
+    `})`
+}
+
+/**
+ * 生成一个 v-if 指令的函数的字符串表示
+ * @param {*} el 
+ * @param {*} state 
+ * @returns 
+ */
+export function genIf (el, state) {
+  el.ifProcessed = true
+  return genIfConditions(el.ifConditions.slice(), state)
+}
+
+function genIfConditions (conditions, state) {
+  if (!conditions.length) {
+    return '_e()'
+  }
+  const condition = conditions.shift()
+  if (condition.exp) {
+    return `(${condition.exp})?${
+      genTernaryExp(condition.block)
+    }:${
+      genIfConditions(conditions, state)
+    }`
+  } else {
+    return `${genTernaryExp(condition.block)}`
+  }
+
+  // v-if 和 v-once 应该生成类似这样的代码 (a) ? _m(0) : _m(1)
+  function genTernaryExp (el) {
+    return el.once
+      ? genOnce(el, state)
+      : genElement(el, state)
+  }
 }

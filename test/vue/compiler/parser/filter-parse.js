@@ -8,10 +8,10 @@ const validDivisionCharRE = /[\w).+\-_$\]]/
  * @returns String
  */
 export function parseFilters (exp) {
-  let inSingle = false
-  let inDouble = false
-  let inTemplateString = false
-  let inRegex = false
+  let inSingle = false // 单引号
+  let inDouble = false // 双引号
+  let inTemplateString = false // 模板字符串
+  let inRegex = false // 正则表达式
   let curly = 0
   let square = 0
   let paren = 0

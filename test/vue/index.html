@@ -38,7 +38,8 @@
       data: {
         person: {
           message: 'Hello, George!'
-        }
+        },
+        message: 'Hello'
       },
       // 包含变量
       // template: '<div class="message" @click="handleClick"><p>{{message}}</p></div>',
@@ -46,7 +47,13 @@
       // template: '<div class="message" @click="handleClick"><p>{{person.message}}</p><div><p>静态节点1</p></div><div><p>静态节点2</p></div></div>',
       // 使用组件
       // template: '<div class="content"><p>{{person.message}}</p><hello-world></hello-world><my-component></my-component></div>',
-      template: '<div class="content" @click="handleClick"><p>{{person.message}}</p></div>',
+      // template: '<div class="content" @click="handleClick"><p>{{person.message}}</p></div>',
+      template: '<p>{{message | filterMessage}}</p>',
+      filters: {
+        filterMessage: function (value) {
+          return value.toUpperCase()
+        }
+      },
       methods: {
         handleClick () {
           this.person.message = Math.random()

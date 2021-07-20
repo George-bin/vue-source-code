@@ -15,17 +15,25 @@
     import { createFunction } from './to-function.js'
     let template = '<div class="box" v-on:click.enter.stop="handleClickBox"><ul><li>我是文本信息</li><li>我是文本信息</li></ul><p class="message">{{message}}</p></div>'
     // template = `<div :key="'123'" class="name-box"><p class="name">{{name}}</p><p class="tip">Hello, World!</p></div>`
+    // 过滤器相关
     // template = `<div :class="name | filterName | filterName2" asd></div>`
     // template = `<div :class="/.*/.test(name)" asd></div>`
+    // style相关
     // template = `<div :style="{color: color, font-size: fontSize + 'px'}"></div>`
-    // template = `<div class="box" @click="handleClick"></div>`
-    // template = '<input v-if="showInput" v-for="(item, index) in arr" v-model="item.value" :type="inputType" />'
-    template = '<div><input v-for="(item, index) in arr" :key="index" v-if="item !== \'张三\'" v-model="checkArr" :type="inputType" :value="item" /></div>'
+    // 事件相关
+    template = `<div class="box" :class="hehe" asd @click="handleClick"></div>`
+    // input元素
+    // template = '<div><input v-for="(item, index) in arr" :key="index" v-if="item !== \'张三\'" v-model="checkArr" :type="inputType" :value="item" /></div>'
+    // 组件
+    // template = '<div class="box"><my-component></my-component></div>'
+    // 过滤器
+    template = '<div :class="box | filterClass" class="box" asd v-once>This message is {{message | filterMessage | filterMessage2}}!</div>'
+    template = '<div v-once v-if="message && !name">{{message}}</div>'
     let ast = parse(template, options)
     console.log(ast)
     // optimizer(ast, options)
-    // const code = generate(ast, options)
-    // console.log(code)
+    const code = generate(ast, options)
+    console.log(code)
     // let errors = []
     // const render = createFunction(code.render, errors)
     // console.log(render)
