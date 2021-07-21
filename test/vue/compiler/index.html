@@ -28,7 +28,10 @@
     // template = '<div class="box"><my-component></my-component></div>'
     // 过滤器
     template = '<div :class="box | filterClass" class="box" asd v-once>This message is {{message | filterMessage | filterMessage2}}!</div>'
+    // v-once
     template = '<div v-once v-if="message && !name">{{message}}</div>'
+    // v-for
+    template = '<div v-for="(item, index) in arr">{{item.value}}</div>'
     let ast = parse(template, options)
     console.log(ast)
     // optimizer(ast, options)
