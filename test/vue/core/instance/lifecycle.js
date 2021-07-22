@@ -82,12 +82,14 @@ export function mountComponent (vm, el) {
   vm.$el = el
 
   callHook(vm, 'beforeMount')
+  console.log(vm)
 
   let updateComponent = () => {
-    // debugger
     // 使用 render 函数构建 VNode
+    debugger
     const vnode = vm._render()
     console.log(vnode)
+    
     // 对比更新，生成视图
     vm._update(vnode)
   }

@@ -114,7 +114,7 @@ export function toString (val) {
 }
 
 /**
- * 检查值是否是一个原始类型
+ * 检查值是否是一个原始类型 string、number、
  * @param {*} value 
  * @returns 
  */

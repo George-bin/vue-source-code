@@ -42,7 +42,6 @@ export function generate (ast, options) {
 
 // 根据 AST 元素节点属性的不同而执行不同的代码生成函数
 function genElement (el, state) {
-  debugger
   if (el.staticRoot && !el.staticProcessed) {     // staticRoot
     return genStatic(el, state)
   } else if (el.once && !el.onceProcessed) {      // v-once
@@ -242,9 +241,9 @@ export function genFor (el, state) {
   const iterator1 = el.iterator1 ? `,${el.iterator1}` : ''
   const iterator2 = el.iterator2 ? `,${el.iterator2}` : ''
 
-  // 警告：v-for 列表渲染必须使用key。
+  // 忽略警告：v-for 列表渲染必须使用key。
   el.forProcessed = true
-  return `$'_l'((${exp}),`+
+  return `_l((${exp}),`+
     `function(${alias}${iterator1}${iterator2}){`+
       `return ${genElement(el, state)}`+
     `})`

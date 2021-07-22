@@ -39,7 +39,8 @@
         person: {
           message: 'Hello, George!'
         },
-        message: 'Hello'
+        message: 'Hello',
+        arr: ['George', 'XiaoMing', 'XiaoHong']
       },
       // 包含变量
       // template: '<div class="message" @click="handleClick"><p>{{message}}</p></div>',
@@ -48,7 +49,8 @@
       // 使用组件
       // template: '<div class="content"><p>{{person.message}}</p><hello-world></hello-world><my-component></my-component></div>',
       // template: '<div class="content" @click="handleClick"><p>{{person.message}}</p></div>',
-      template: '<p>{{message | filterMessage}}</p>',
+      // template: '<p>{{message | filterMessage}}</p>',
+      template: '<div><p v-for="(item, index) in arr" :key="index">{{item}}</p></div>',
       filters: {
         filterMessage: function (value) {
           return value.toUpperCase()
