@@ -43,6 +43,7 @@ function markStatic (node) {
   }
 }
 
+// 标记静态根节点
 function markStaticRoots (node, isInFor) {
   if (node.type === 1) {
     // 已经是static节点或v-once指令的节点

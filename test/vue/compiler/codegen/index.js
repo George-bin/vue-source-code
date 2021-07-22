@@ -7,9 +7,6 @@ import {
 } from './events.js'
 import { extend, no } from '../../shared/util.js'
 
-/**
- * 
- */
 export class CodegenState {
   constructor (options) {
     this.options = options
@@ -33,6 +30,7 @@ export class CodegenState {
  */
 export function generate (ast, options) {
   const state = new CodegenState(options)
+  debugger
   const code = ast ? genElement(ast, state) : '_c("div")'
   return {
     render: `with(this){return ${code}}`,
@@ -76,13 +74,27 @@ function genElement (el, state) {
  * 获取子节点列表 => 遍历AST的children属性中的元素
  * @param {*} el 
  * @param {*} state 
+ * @param {*} checkSkip 
  */
-export function genChildren (el, state) {
+export function genChildren (el, state, checkSkip) {
   const children = el.children
   if (children.length) {
+    const el = children[0]
+    // v-for 处理
+    if (children.length === 1 &&
+      el.for &&
+      el.tag !== 'template' &&
+      el.tag !== 'slot'
+    ) {
+      const normalozationType = checkSkip
+        ? state.maybeComponent(el) ? `,1` : `,0`
+        : ``
+      return `${genElement(el, state)}${normalozationType}`
+    }
     return `[${children.map(c => genNode(c, state)).join(',')}]`
   }
 }
+
 
 /**
  * 生成子节点
@@ -101,7 +113,7 @@ function genNode (node, state) {
 }
 
 /**
- * 生成纯文本字符串的函数表示
+ * 生成纯文本的字符串的函数表示 => 用于组成render函数的一部分
  * @param {*} text 
  * @returns 
  */
@@ -112,6 +124,11 @@ function genText (text) {
   })`
 }
 
+/**
+ * 生成注释节点的字符串的函数表示 => 用于组成render函数的一部分
+ * @param {*} comment 
+ * @returns 
+ */
 function genComment (comment) {
   return `_e(${JSON.stringify(comment.text)})`
 }
@@ -149,6 +166,12 @@ export function genData (el, state) {
   return data
 }
 
+/**
+ * 生成静态节点的字符串的函数表示
+ * @param {*} el 
+ * @param {*} state 
+ * @returns 
+ */
 function genStatic (el, state) {
 
   el.staticProcessed = true
@@ -201,7 +224,7 @@ function transformSpecialNewlines (text) {
 }
 
 /**
- * 生成 v-once 指令的函数的字符串表示
+ * 生成 v-once 指令的函数的字符串表示 => 用于组成render函数的一部分
  * @param {*} el 
  * @param {*} state 
  * @returns 

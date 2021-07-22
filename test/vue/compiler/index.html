@@ -31,7 +31,7 @@
     // v-once
     template = '<div v-once v-if="message && !name">{{message}}</div>'
     // v-for
-    template = '<div v-for="(item, index) in arr">{{item.value}}</div>'
+    template = '<div><p v-for="(item, index) in arr" :key="index">{{item.value}}</p></div>'
     let ast = parse(template, options)
     console.log(ast)
     // optimizer(ast, options)

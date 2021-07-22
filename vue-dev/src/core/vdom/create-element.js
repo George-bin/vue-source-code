@@ -42,6 +42,7 @@ export function createElement (
   normalizationType: any,
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
+  debugger
   // 参数重载（传参个数差异化处理）
   if (Array.isArray(data) || isPrimitive(data)) {
     normalizationType = children
@@ -51,6 +52,7 @@ export function createElement (
   if (isTrue(alwaysNormalize)) {
     normalizationType = ALWAYS_NORMALIZE
   }
+  
   return _createElement(context, tag, data, children, normalizationType)
 }
 

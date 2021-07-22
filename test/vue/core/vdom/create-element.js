@@ -34,14 +34,12 @@ export function createElement (context, tag, data, children, normalizationType, 
 export function _createElement(context, tag, data, children, normalizationType) {
 
   // 将多维数组拍平 => 转为一维数组
-  if (Array.isArray(children) && typeof children[0] === 'function') {
-    if (normalizationType === ALWAYS_NORMALIZE) {
-      // 手写 render 函数
-      children = normalizeChildren(children)
-    } else if (normalizationType === SIMPLE_NORMALIZE) {
-      // 编译生成 render 函数
-      children = simpleNormalizeChildren(children)
-    }
+  if (normalizationType === ALWAYS_NORMALIZE) {
+    // 手写 render 函数
+    children = normalizeChildren(children)
+  } else if (normalizationType === SIMPLE_NORMALIZE) {
+    // 编译生成 render 函数
+    children = simpleNormalizeChildren(children)
   }
 
   let vnode

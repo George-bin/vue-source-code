@@ -1,5 +1,6 @@
 import { hasSymbol, isDef, isObject } from "../../util/index.js"
 
+// v-for 语法糖 => 通过render生成一个个VNode，返回一个VNode数组
 export function renderList (val, render) {
   let ret, i, l, keys, key
   if (Array.isArray(val) || typeof val === 'string') {

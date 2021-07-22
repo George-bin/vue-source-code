@@ -1,5 +1,5 @@
-import { isDef, isFalse, isPrimitive, isTrue, isUndef } from "../../util"
-import { createTextVNode } from "../vnode"
+import { isDef, isFalse, isPrimitive, isTrue, isUndef } from "../../util/index.js"
+import { createTextVNode } from "../vnode.js"
 
 // 将二维数组转为一维数组
 export function simpleNormalizeChildren (children) {
@@ -11,6 +11,7 @@ export function simpleNormalizeChildren (children) {
   return children
 }
 
+// 规格化children => 手写render函数
 export function normalizeChildren (children) {
   return children
 }

@@ -34,7 +34,7 @@ export function simpleNormalizeChildren (children: any) {
 // with hand-written render functions / JSX. In such cases a full normalization
 // is needed to cater to all possible types of children values.
 /**
- * 规范化children（转换成一维数组）
+ * 规范化children（转换成一维数组）=> 手写render函数
  * @params children: 子Vnode
  */
 export function normalizeChildren (children: any): ?Array<VNode> {
