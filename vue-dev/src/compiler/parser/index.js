@@ -827,8 +827,6 @@ function processAttrs (el) {
                 `update:${camelize(name)}`,
                 syncGen,
                 null,
-                false,
-                warn,
                 list[i]
               )
               if (hyphenate(name) !== camelize(name)) {
@@ -836,8 +834,6 @@ function processAttrs (el) {
                   el,
                   `update:${hyphenate(name)}`,
                   syncGen,
-                  null,
-                  false,
                   warn,
                   list[i]
                 )

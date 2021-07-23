@@ -62,30 +62,14 @@ export function getBindingAttr (el, name, getStatic) {
 }
 
 /**
- * 添加属性
- * @param {ASTElement} el 
- * @param {String} name 属性名
- * @param {String} value 属性值
- * @param {*} range 范围
- * @param {*} dynamic 是否是动态值
- */
-export function addAttr (el, name, value, range, dynamic) {
-  const attrs = dynamic
-    ? (el.dynamicAttrs || (el.dynamicAttrs = []))
-    : (el.attrs || (el.attrs = []))
-    
-  attrs.push(rangeSetItem({ name, value, dynamic }, range))
-  el.plain = false
-}
-
-/**
  * 添加事件监听
  * @param {ASTElement} el 
- * @param {String} name 
- * @param {String} value 
- * @param {ASTModifiers} modifiers 
+ * @param {String} name 事件名称
+ * @param {String} value 事件函数的字符串表示
+ * @param {ASTModifiers} modifiers 事件修饰符
+ * @param {Boolean} dynamic 动态的
  */
-export function addHandler (el, name, value, modifiers) {
+export function addHandler (el, name, value, modifiers, dynamic) {
   modifiers = modifiers || emptyObject
 
   // 判断是否有capture修饰符
@@ -141,23 +125,33 @@ export function addHandler (el, name, value, modifiers) {
  */
 export function addRawAttr (el, name, value, range) {
   el.attrsMap[name] = value
-  el.attrsList.push(rangeSetItem({name, value}, range))
+  el.attrsList.push({name, value})
 }
 
 /**
- * 设置范围，在源码中的开始位置和结束位置
- * @param {*} item 
- * @param {*} range 
- * @returns 
+ * 添加 DOM 属性
+ * @param {*} el 
+ * @param {*} name 
+ * @param {*} value 
+ * @param {*} dynamic 动态属性
  */
-function rangeSetItem (item, range) {
-  if (range) {
-    if (range.start != null) {
-      item.start = range.start
-    }
-    if (range.end != null) {
-      item.end = range.end
-    }
-  }
-  return item
+export function addProp (el, name, value, dynamic) {
+  (el.props || (el.props = [])).push({name, value, dynamic})
+  el.plain = false
+}
+
+/**
+ * 添加 HTML 属性
+ * @param {*} el 
+ * @param {*} name 
+ * @param {*} value 
+ * @param {*} dynamic 动态属性
+ */
+export function addAttr (el, name, value, dynamic) {
+  const attrs = dynamic
+    ? (el.dynamicAttrs || (el.dynamicAttrs = []))
+    : (el.attrs || (el.attrs = []))
+  
+  attrs.push({name, value, dynamic})
+  el.plain = false
 }

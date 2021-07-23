@@ -2,7 +2,7 @@ import {
   makeMap
 } from '../shared/util.js'
 /**
- * 元素节点必须具备的属性
+ * 表单元素节点必须具备的属性，包括：input,textarea,option,select,progress
  * @param {*} tag 
  * @param {*} type 
  * @param {*} attr 

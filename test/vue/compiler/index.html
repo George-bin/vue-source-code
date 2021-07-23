@@ -7,6 +7,7 @@
   <title>模板编译</title>
 </head>
 <body>
+  <input id="inp" type="text" value="Bob">
   <script type="module">
     import { baseOptions as options } from '../entry/compiler/options.js'
     import { parse } from './parser/index.js'
@@ -32,6 +33,12 @@
     template = '<div v-once v-if="message && !name">{{message}}</div>'
     // v-for
     template = '<div><p v-for="(item, index) in arr" :key="index">{{item.value}}</p></div>'
+    // v-if
+    template = '<div v-if="message && !name">{{message}}</div>'
+    // v-on
+    template = '<div v-on:click="handleClick"></div>'
+    // v-bind
+    template = '<div><my-component v-bind:username.sync="name"></my-component></div>'
     let ast = parse(template, options)
     console.log(ast)
     // optimizer(ast, options)

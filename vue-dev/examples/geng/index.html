@@ -96,7 +96,8 @@
       // template: '<div class="name" asd>{{name | filterName | filterName2}}</div>',
       // template: '<div><input v-model="checkArr" :type="inputType" value="input1" /><input v-model="checkArr" :type="inputType"  value="input2" /></div>',
       template: '<div><input v-model="checkArr" v-for="item in arr" :value="item" :type="inputType" /></div>',
-      template: '<div><p v-for="(item, index) in arr" :key="index">{{item}}</p></div>'
+      template: '<div><p v-for="(item, index) in arr" :key="index">{{item}}</p></div>',
+      template: '<div><my-component v-bind:name="name"></my-component></div>'
     })
 
   </script>

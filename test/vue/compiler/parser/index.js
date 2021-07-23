@@ -2,6 +2,7 @@
 import { parseHTML } from './html-parse.js'
 import { parseText } from './text-parse.js'
 import {
+  addProp,
   addAttr,
   pluckModuleFunction,
   getBindingAttr,
@@ -9,11 +10,18 @@ import {
   getAndRemoveAttr 
 } from '../helper.js'
 import {
-  extend
+  camelize,
+  extend,
+  hyphenate
 } from '../../shared/util.js'
+import { parseFilters } from './filter-parse.js'
+import { genAssignmentCode } from '../directives/model.js'
+
+const dynamicArgRE = /^\[.*\]$/
 
 export const onRE = /^@|^v-on:/
 export const dirRE = /^v-|^@|^:|^\.|^#/
+export const bindRE = /^:|^\.|^v-bind:/
 
 export const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/
 export const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/
@@ -28,6 +36,7 @@ function baseWarn (msg) {
 // configurable state
 let transforms
 let platformIsPreTag // 是否是 pre 标签
+let platformMustUseProp
 let preTransforms
 let platformGetTagNamespace // 命名空间 => svg和math
 
@@ -69,7 +78,8 @@ function makeAttrsMap (attrs) {
  */
 export function parse (template, options) {
   template = template.trim()
-  platformIsPreTag = options.isPreTag
+  platformIsPreTag = options.isPreTag                                   // 是否是 pre 元素
+  platformMustUseProp = options.mustUseProp                             // 是否包含表单元素上必须具备的属性
   platformGetTagNamespace = options.getTagNamespace
   transforms = pluckModuleFunction(options.modules, 'transformNode')
   preTransforms = pluckModuleFunction(options.modules, 'preTransformNode')
@@ -164,14 +174,14 @@ export function parse (template, options) {
         element = preTransforms[i](element, options) || element
       }
 
-      // 是否定义了 v-pre 属性
+      // 不位于 v-pre 元素的范围中，就需要判断该元素是否定义了 v-pre 指令
       if (!inVPre) {
         processPre(element)
         if (element.pre) {
           inVPre = true
         }
       }
-      // 是否在 pre 中
+      // 是否是 pre 元素
       if (platformIsPreTag(element.tag)) {
         inPre = true
       }
@@ -179,7 +189,7 @@ export function parse (template, options) {
         // 静态节点 attrs 处理
         processRawAttrs(element)
       } if (!element.processed) {
-        // 非 input 节点处理（directives相关）
+        // 节点指令解析（非 input 节点处理）
         processFor(element)
         processIf(element)
         processOnce(element)
@@ -251,7 +261,7 @@ export function parse (template, options) {
 }
 
 /**
- * 判断是否在 pre
+ * 加工 v-pre 语法糖
  * @param {*} el 
  */
 function processPre (el) {
@@ -305,16 +315,16 @@ function processKey (el) {
 }
 
 /**
- * 加工 attrs => normalize => { name: '', value: '', dynamic: ''}
+ * 加工节点属性 => normalize => { name: '', value: '', dynamic: ''}
  * @param {*} el 
  */
 function processAttrs (el) {
   const list = el.attrsList
-  let i, l, name, rawName, value, modifiers
+  let i, l, name, rawName, value, modifiers, isDynamic, syncGen
   for (i = 0, l = list.length; i < l; i++) {
     name = rawName = list[i].name
     value = list[i].value
-    // /^v-|^@|^:|^\.|^#/
+    // /^v-|^@|^:|^#/
     if (dirRE.test(name)) {
       // 标记为动态元素
       el.hasBindings = true
@@ -324,8 +334,68 @@ function processAttrs (el) {
         name = name.replace(modifierRE, '')
       }
 
-      // 事件指令v-on
-      if (onRE.test(name)) {
+      // v-bind
+      if (bindRE.test(name)) {
+        debugger
+        name = name.replace(bindRE, '')
+        value = parseFilters(value)
+        isDynamic = dynamicArgRE.test(name) // 是否是数组
+        if (isDynamic) {
+          name = name.slice(1, -1)
+        }
+
+        // 忽略警告：The value for a v-bind expression cannot be empty. Found in "v-bind:${name}"`
+        
+        if (modifiers) {
+          if (modifiers.prop && !isDynamic) {
+            name= camelize(name)
+            if (name === 'innerHtml') name = 'innerHTML'
+          }
+          if (modifiers.camel && !isDynamic) {
+            name = camelize(name)
+          }
+          if (modifiers.sync) {
+            syncGen = genAssignmentCode(value, `$event`)
+            if (!isDynamic) {
+              addHandler(
+                el,
+                `update:${camelize(name)}`,
+                syncGen,
+                null,
+                false,
+                list[i]
+              )
+              if (hyphenate(name) !== camelize(name)) {
+                addHandler(
+                  el,
+                  `update:${hyphenate(name)}`,
+                  syncGen,
+                  null,
+                  false,
+                  list[i]
+                )
+              }
+            } else {
+              addHandler(
+                el,
+                `"update:"+(${name})`,
+                syncGen,
+                null,
+                list[i],
+                true // dynamic
+              )
+            }
+          }
+        }
+
+        if ((modifiers && modifiers.prop) || (!el.component && platformMustUseProp(el.tag, el.attrsMap.type, name))) {
+          addProp(el, name, value, isDynamic)
+        } else {
+          addAttr(el, name, value, isDynamic)
+        }
+      }
+      // v-on
+      else if (onRE.test(name)) {
         name = name.replace(onRE, '')
         addHandler(el, name, value, modifiers, false, () => {})
       }
@@ -401,7 +471,7 @@ export function addIfCondition (el, condition) {
 }
 
 /**
- * 加工原始属性，属于静态节点
+ * 静态节点属性解析 => { name: '', value: ''}
  * @param {*} el 
  */
 function processRawAttrs (el) {

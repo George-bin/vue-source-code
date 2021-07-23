@@ -18,6 +18,7 @@ export const createCompiler = createCompilerCreator(function baseCompile (
     // 优化阶段：遍历AST，找出其中的静态节点，并打上标记
     optimize(ast, options)
   }
+  console.log(ast)
   // 代码生成阶段：将AST转换成渲染函数
   const code = generate(ast, options)
   console.log(code)
