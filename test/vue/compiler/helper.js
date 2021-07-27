@@ -129,7 +129,7 @@ export function addRawAttr (el, name, value, range) {
 }
 
 /**
- * 添加 DOM 属性
+ * 添加 DOM对象 属性
  * @param {*} el 
  * @param {*} name 
  * @param {*} value 
@@ -141,7 +141,7 @@ export function addProp (el, name, value, dynamic) {
 }
 
 /**
- * 添加 HTML 属性
+ * 添加 HTML标签 属性
  * @param {*} el 
  * @param {*} name 
  * @param {*} value 

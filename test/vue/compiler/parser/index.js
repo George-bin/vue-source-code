@@ -79,7 +79,7 @@ function makeAttrsMap (attrs) {
 export function parse (template, options) {
   template = template.trim()
   platformIsPreTag = options.isPreTag                                   // 是否是 pre 元素
-  platformMustUseProp = options.mustUseProp                             // 是否包含表单元素上必须具备的属性
+  platformMustUseProp = options.mustUseProp                             // 是否包含表单元素（input,textarea,option,select,progress）上必须具备的属性
   platformGetTagNamespace = options.getTagNamespace
   transforms = pluckModuleFunction(options.modules, 'transformNode')
   preTransforms = pluckModuleFunction(options.modules, 'preTransformNode')
@@ -336,10 +336,9 @@ function processAttrs (el) {
 
       // v-bind
       if (bindRE.test(name)) {
-        debugger
         name = name.replace(bindRE, '')
         value = parseFilters(value)
-        isDynamic = dynamicArgRE.test(name) // 是否是数组
+        isDynamic = dynamicArgRE.test(name) // 动态的 attribute 名 => v-bind:[key]=""
         if (isDynamic) {
           name = name.slice(1, -1)
         }
@@ -355,7 +354,7 @@ function processAttrs (el) {
             name = camelize(name)
           }
           if (modifiers.sync) {
-            syncGen = genAssignmentCode(value, `$event`)
+            syncGen = genAssignmentCode(value, `$event`) // 生成类似 => value=$event
             if (!isDynamic) {
               addHandler(
                 el,
@@ -389,8 +388,10 @@ function processAttrs (el) {
         }
 
         if ((modifiers && modifiers.prop) || (!el.component && platformMustUseProp(el.tag, el.attrsMap.type, name))) {
+          // 添加 DOM 对象属性 => 可变
           addProp(el, name, value, isDynamic)
         } else {
+          // 添加 HTML 标签属性 => 不变
           addAttr(el, name, value, isDynamic)
         }
       }
@@ -400,6 +401,7 @@ function processAttrs (el) {
         addHandler(el, name, value, modifiers, false, () => {})
       }
     } else {
+      // 添加 HTML 标签属性
       addAttr(el, name, JSON.stringify(value), list[i])
     }
   }

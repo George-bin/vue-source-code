@@ -10,7 +10,7 @@
 
 
 /**
- * 生成任务代码
+ * 生成任务可执行代码，如：value = $event
  * @param {*} value 
  * @param {*} assignment 
  */
