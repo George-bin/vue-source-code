@@ -155,3 +155,25 @@ export function addAttr (el, name, value, dynamic) {
   attrs.push({name, value, dynamic})
   el.plain = false
 }
+
+/**
+ * 添加自定义指令
+ * @param {*} el 
+ * @param {*} name 
+ * @param {*} rawName 
+ * @param {*} value 
+ * @param {*} arg 
+ * @param {*} isDynamicArg 
+ * @param {*} modifiers 
+ */
+export function addDirective (el, name, rawName, value, arg, isDynamicArg, modifiers) {
+  (el.directives || (el.directives = [])).push({
+    name,
+    rawName,
+    value,
+    arg,
+    isDynamicArg,
+    modifiers
+  })
+  el.plain = false
+}

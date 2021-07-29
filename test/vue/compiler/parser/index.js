@@ -7,7 +7,8 @@ import {
   pluckModuleFunction,
   getBindingAttr,
   addHandler,
-  getAndRemoveAttr 
+  getAndRemoveAttr,
+  addDirective
 } from '../helper.js'
 import {
   camelize,
@@ -23,6 +24,7 @@ export const onRE = /^@|^v-on:/
 export const dirRE = /^v-|^@|^:|^\.|^#/
 export const bindRE = /^:|^\.|^v-bind:/
 
+const argRE = /:(.*)$/
 export const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/
 export const forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/
 const stripParensRE = /^\(|\)$/g
@@ -399,6 +401,20 @@ function processAttrs (el) {
       else if (onRE.test(name)) {
         name = name.replace(onRE, '')
         addHandler(el, name, value, modifiers, false, () => {})
+      }
+      // 自定义指令
+      else {
+        const argMatch = name.match(argRE)
+        let arg = argMatch && argMatch[1]
+        isDynamic = false
+        if (arg) {
+          name = name.slice(0, -(arg.length + 1))
+          if (dynamicArgRE.test(arg)) {
+            arg = arg.slice(1, -1)
+            isDynamic = true
+          }
+        }
+        addDirective(el, name, rawName, value, arg, isDynamic, modifiers, list[i])
       }
     } else {
       // 添加 HTML 标签属性

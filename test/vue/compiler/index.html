@@ -39,9 +39,11 @@
     template = '<div v-on:click="handleClick"></div>'
     // v-bind
     template = '<div><my-component v-bind:username.sync="name"></my-component></div>'
+    // 静态节点
+    template = '<div><p>My name is George!</p><p>{{message}}</p></div>'
     let ast = parse(template, options)
     console.log(ast)
-    // optimizer(ast, options)
+    optimizer(ast, options)
     const code = generate(ast, options)
     console.log(code)
     // let errors = []

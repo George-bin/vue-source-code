@@ -1,12 +1,13 @@
-import { isBuiltInTag, cached } from "../shared/util.js"
+import { isBuiltInTag, cached, makeMap } from "../shared/util.js"
 
 let isStaticKey
 let isPlatformReservedTag = () => true
-// const genStaticKeysCached = cached(genStaticKeys)
+const genStaticKeysCached = cached(genStaticKeys)
 
 export function optimizer (root, options) {
   if (!root) return
   // isStaticKey = genStaticKeysCached(options.staticKeys || '')
+  debugger
   // 标记静态节点
   markStatic(root)
 
@@ -14,6 +15,18 @@ export function optimizer (root, options) {
   markStaticRoots(root, false)
 }
 
+function genStaticKeys (keys) {
+  return makeMap(
+    'type,tag,attrsList,attrsMap,plain,parent,children,attrs,start,end,rawAttrsMap'+
+    (keys ? ',' + keys : '')
+  )
+}
+
+/**
+ * 标记静态节点
+ * @param {*} node 
+ * @returns 
+ */
 function markStatic (node) {
   if (!node) return
 
